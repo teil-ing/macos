@@ -73,7 +73,7 @@ struct OnboardingView: View {
 
             Spacer()
         }
-        .frame(width: 480, minHeight: 480)
+        .frame(minWidth: 480, maxWidth: 480, minHeight: 480)
         .onAppear {
             viewModel.onComplete = onComplete
         }

@@ -10,18 +10,88 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private var popover: NSPopover!
     private var eventMonitor: Any?
+    private var onboardingWindowController: OnboardingWindowController?
 
     // MARK: - NSApplicationDelegate
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Belt-and-suspenders alongside LSUIElement: prevent any Dock icon flash
         NSApp.setActivationPolicy(.accessory)
-        setupStatusItem()
-        setupPopover()
+
+        if KeychainService.shared.apiKey != nil {
+            // Returning user — API key already in Keychain
+            showWelcomeBackAndProceed()
+        } else {
+            // First launch — no key found
+            showOnboardingWindow()
+        }
     }
 
     func applicationWillTerminate(_ notification: Notification) {
         stopEventMonitor()
+    }
+
+    // MARK: - Onboarding Gate
+
+    private func showOnboardingWindow() {
+        // Switch to .regular so the onboarding window can become key
+        // (per research pitfall: accessory-mode apps can't show key windows)
+        NSApp.setActivationPolicy(.regular)
+
+        let controller = OnboardingWindowController()
+        controller.onComplete = { [weak self] in
+            self?.onboardingWindowController = nil
+            NSApp.setActivationPolicy(.accessory)
+            self?.completeLaunch()
+        }
+
+        controller.showWindow(nil)
+        controller.window?.center()
+        controller.window?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+
+        onboardingWindowController = controller
+    }
+
+    private func showWelcomeBackAndProceed() {
+        // Switch to .regular temporarily so the welcome window can show
+        NSApp.setActivationPolicy(.regular)
+
+        let welcomeWindow = makeWelcomeBackWindow()
+        welcomeWindow.center()
+        welcomeWindow.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+
+        Task {
+            try? await Task.sleep(for: .milliseconds(1500))
+            welcomeWindow.close()
+            NSApp.setActivationPolicy(.accessory)
+            self.completeLaunch()
+        }
+    }
+
+    private func makeWelcomeBackWindow() -> NSWindow {
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 300, height: 120),
+            styleMask: [.titled],
+            backing: .buffered,
+            defer: false
+        )
+        window.title = "teil.ing"
+        window.isReleasedWhenClosed = false
+
+        let welcomeView = WelcomeBackView()
+        let hostingController = NSHostingController(rootView: welcomeView)
+        window.contentViewController = hostingController
+
+        return window
+    }
+
+    // MARK: - Launch Completion
+
+    private func completeLaunch() {
+        setupStatusItem()
+        setupPopover()
     }
 
     // MARK: - Status Item Setup
@@ -100,5 +170,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             NSEvent.removeMonitor(monitor)
             eventMonitor = nil
         }
+    }
+}
+
+// MARK: - WelcomeBackView
+
+private struct WelcomeBackView: View {
+    var body: some View {
+        VStack(spacing: 8) {
+            Image(nsImage: NSApp.applicationIconImage)
+                .resizable()
+                .frame(width: 32, height: 32)
+
+            Text("Welcome back!")
+                .font(.headline)
+
+            Text("API key found — launching...")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .frame(width: 300, height: 120)
+        .padding()
     }
 }

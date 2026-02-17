@@ -11,6 +11,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var popover: NSPopover!
     private var eventMonitor: Any?
     private var onboardingWindowController: OnboardingWindowController?
+    private let hotkeyMonitor = HotkeyMonitor()
 
     // MARK: - Capture Services
     private let captureEngine = CaptureEngine()
@@ -103,6 +104,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func completeLaunch() {
         setupStatusItem()
         setupPopover()
+        // setupHotkeyMonitor MUST come after setupStatusItem/setupPopover —
+        // the hotkey handlers reference statusItem, overlayCoordinator,
+        // windowSelectionCoordinator, and captureEngine (research Pitfall 7).
+        setupHotkeyMonitor()
     }
 
     // MARK: - Status Item Setup
@@ -118,6 +123,32 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         button.image = image
         button.action = #selector(togglePopover)
         button.target = self
+    }
+
+    // MARK: - Hotkey Monitor Setup
+
+    private func setupHotkeyMonitor() {
+        hotkeyMonitor.start(
+            onRegion: { [weak self] in
+                Task { @MainActor [weak self] in
+                    // 200ms delay — lets user lift fingers off keys before overlay appears
+                    try? await Task.sleep(for: .milliseconds(200))
+                    self?.startRegionCapture(fromHotkey: true)
+                }
+            },
+            onFullscreen: { [weak self] in
+                Task { @MainActor [weak self] in
+                    try? await Task.sleep(for: .milliseconds(200))
+                    self?.startFullscreenCapture(fromHotkey: true)
+                }
+            },
+            onWindow: { [weak self] in
+                Task { @MainActor [weak self] in
+                    try? await Task.sleep(for: .milliseconds(200))
+                    self?.startWindowCapture(fromHotkey: true)
+                }
+            }
+        )
     }
 
     // MARK: - Popover Setup
@@ -167,12 +198,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - Capture Flow: Region
 
-    private func startRegionCapture() {
-        closePopover()
+    private func startRegionCapture(fromHotkey: Bool = false) {
+        // When triggered from menu bar, close the popover first.
+        // When triggered from hotkey, the 200ms delay is already applied in setupHotkeyMonitor.
+        if !fromHotkey {
+            closePopover()
+        }
 
         Task { @MainActor in
-            // Let the popover fully dismiss before showing the overlay
-            try? await Task.sleep(for: .milliseconds(200))
+            if !fromHotkey {
+                // Let the popover fully dismiss before showing the overlay
+                try? await Task.sleep(for: .milliseconds(200))
+            }
 
             guard let selectedRect = await overlayCoordinator.beginRegionSelection() else {
                 // User cancelled — no capture, no feedback
@@ -197,12 +234,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - Capture Flow: Fullscreen
 
-    private func startFullscreenCapture() {
-        closePopover()
+    private func startFullscreenCapture(fromHotkey: Bool = false) {
+        if !fromHotkey {
+            closePopover()
+        }
 
         Task { @MainActor in
-            // Let the popover fully dismiss before capturing
-            try? await Task.sleep(for: .milliseconds(200))
+            if !fromHotkey {
+                // Let the popover fully dismiss before capturing
+                try? await Task.sleep(for: .milliseconds(200))
+            }
 
             do {
                 let result = try await captureEngine.captureFullscreen()
@@ -219,12 +260,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - Capture Flow: Window
 
-    private func startWindowCapture() {
-        closePopover()
+    private func startWindowCapture(fromHotkey: Bool = false) {
+        if !fromHotkey {
+            closePopover()
+        }
 
         Task { @MainActor in
-            // Same 200ms delay as other capture modes — lets popover fully dismiss
-            try? await Task.sleep(for: .milliseconds(200))
+            if !fromHotkey {
+                // Same 200ms delay as other capture modes — lets popover fully dismiss
+                try? await Task.sleep(for: .milliseconds(200))
+            }
 
             guard let selection = await windowSelectionCoordinator.beginWindowSelection() else {
                 // User cancelled (Escape) — no capture, no feedback

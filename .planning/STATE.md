@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Capture a screenshot and have a shareable teil.ing URL on the clipboard in seconds — zero friction from capture to share.
-**Current focus:** Phase 5 — Upload Pipeline (in progress)
+**Current focus:** Phase 5 — Upload Pipeline (complete)
 
 ## Current Position
 
-Phase: 5 of 9 (Upload Pipeline) — IN PROGRESS
-Plan: 2 of 3 in current phase — COMPLETE
-Status: Phase 5 Plan 02 complete — upload spinner, error icon (CaptureFeedback), and upload error banner with Retry button (PopoverRootView) implemented
-Last activity: 2026-02-18 — Phase 5 Plan 02 complete — visual feedback layer for upload errors implemented; ready for Plan 03 integration
+Phase: 5 of 9 (Upload Pipeline) — COMPLETE
+Plan: 3 of 3 in current phase — COMPLETE
+Status: Phase 5 complete — full capture-to-upload pipeline wired and human-verified end-to-end
+Last activity: 2026-02-18 — Phase 5 Plan 03 complete — AppDelegate upload pipeline integration verified; ready for Phase 6
 
-Progress: [████░░░░░░] 44%
+Progress: [█████░░░░░] 52%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
-- Average duration: 7 min
-- Total execution time: 0.8 hours
+- Total plans completed: 12
+- Average duration: 6 min
+- Total execution time: 0.9 hours
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [████░░░░░░] 44%
 | 02-onboarding-and-keychain | 2/2 | 1 min | 1 min |
 | 03-capture-engine-region-and-fullscreen | 3/3 | 21 min | 7 min |
 | 04-window-capture-and-global-hotkeys | 3/3 | ~12 min | 4 min |
-| 05-upload-pipeline | 1/3 (in progress) | 5 min | 5 min |
+| 05-upload-pipeline | 3/3 | 7 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (est. 5 min), 03-03 (~15 min incl. human verify), 04-01 (5 min), 05-01 (est.), 05-02 (5 min)
+- Last 5 plans: 03-03 (~15 min incl. human verify), 04-01 (5 min), 05-01 (est.), 05-02 (5 min), 05-03 (2 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -76,7 +76,7 @@ Recent decisions affecting current work:
 - [Phase 03-03]: Flash window uses withCheckedContinuation wrapping NSAnimationContext completion — awaitable by callers
 - [Phase 03-03]: Success icon revert Task stored as Task<Void, Never>? and cancelled before each new success — prevents stale revert on rapid captures
 - [Phase 03-03]: Capture trigger pattern: closePopover -> Task { @MainActor } -> sleep(200ms) -> action -> feedback
-- [Phase 03-03]: AppDelegate.lastCaptureResult: CaptureResult? stores last capture — ready for Phase 5 UploadService
+- ~~[Phase 03-03]: AppDelegate.lastCaptureResult: CaptureResult? stores last capture — ready for Phase 5 UploadService~~ (removed in Phase 05-03 — UploadService.failedCapture handles retention internally)
 - [Phase 04-01]: nonisolated(unsafe) used for SCWindow transfer (non-Sendable ObjC type) across MainActor → CaptureEngine actor boundary
 - [Phase 04-01]: SCWindow.frame extracted to Sendable CGRect before actor hop so it remains available on MainActor for CaptureFeedback positioning
 - [Phase 04-01]: cachedWindows fetched once in beginWindowSelection() before overlay appears — avoids async latency in hover loop (research Pitfall 6)
@@ -116,5 +116,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Checkpoint: 05-03 Task 2 human-verify — AppDelegate upload pipeline wired (Task 1 complete, efdec7c); awaiting end-to-end upload pipeline verification before plan completion
+Stopped at: Completed 05-03-PLAN.md (Upload pipeline integration — AppDelegate wired to UploadService, feedback state machine, error display, retry; human-verified end-to-end)
 Resume file: None

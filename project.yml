@@ -7,6 +7,11 @@ options:
   createIntermediateGroups: true
   groupSortPosition: top
 
+packages:
+  KeyboardShortcuts:
+    url: https://github.com/sindresorhus/KeyboardShortcuts
+    from: 2.4.0
+
 settings:
   base:
     MACOSX_DEPLOYMENT_TARGET: "15.0"
@@ -23,6 +28,8 @@ targets:
     type: application
     platform: macOS
     deploymentTarget: "15.0"
+    dependencies:
+      - package: KeyboardShortcuts
     sources:
       - path: teil.ing-client/App
       - path: teil.ing-client/Views

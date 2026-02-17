@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: App Shell** - Menu bar-only application skeleton with adaptive icon, no Dock presence, Xcode project and entitlements configured (completed 2026-02-17)
 - [x] **Phase 2: Onboarding and Keychain** - First-launch API key entry flow, secure Keychain storage, Screen Recording permission request (completed 2026-02-17)
-- [ ] **Phase 3: Capture Engine — Region and Fullscreen** - Region crosshair selection and fullscreen capture using ScreenCaptureKit, multi-monitor aware
+- [x] **Phase 3: Capture Engine — Region and Fullscreen** - Region crosshair selection and fullscreen capture using ScreenCaptureKit, multi-monitor aware (completed 2026-02-17)
 - [ ] **Phase 4: Window Capture and Global Hotkeys** - Click-to-select window capture mode and configurable global keyboard shortcuts for all three capture modes
 - [ ] **Phase 5: Upload Pipeline** - Automatic upload on capture, API key auth, clipboard copy, open-in-browser, upload error surfacing
 - [ ] **Phase 6: EXIF Stripping and Behavior Toggles** - EXIF metadata stripping preference and open-in-browser toggle wired into upload
@@ -83,12 +83,12 @@ Plans:
   3. User can assign keyboard shortcuts to region, fullscreen, and window capture modes in preferences; the shortcuts trigger the correct capture mode from any application
   4. Keyboard shortcuts are registered on the main thread and survive sleep/wake cycles without needing an app relaunch
   5. The app does not appear in the Dock or steal focus when a hotkey fires
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 04-01: Window capture mode — SCContentFilter by SCWindow; window selection overlay using NSCursor trackingArea; identify clicked window from SCShareableContent list
-- [ ] 04-02: HotkeyMonitor — KeyboardShortcuts library integration; registration in applicationDidFinishLaunching on main thread; sleep/wake NSWorkspaceDidWakeNotification re-registration
-- [ ] 04-03: Hotkey → capture dispatch — HotkeyMonitor fires → CaptureCoordinator receives capture type; no focus steal; LSUIElement activation policy preserved
+- [ ] 04-01-PLAN.md — Window capture mode: CaptureEngine.captureWindow, WindowSelectionCoordinator, WindowSelectionOverlayView with dimming overlay and camera cursor, wired into menu bar UI
+- [ ] 04-02-PLAN.md — HotkeyMonitor: KeyboardShortcuts library integration with Name extensions (Cmd+Shift+X/S/C defaults), onKeyUp registration, sleep/wake re-registration, wired into AppDelegate.completeLaunch
+- [ ] 04-03-PLAN.md — Human verification of complete window capture and global hotkeys end-to-end
 
 ### Phase 5: Upload Pipeline
 **Goal**: A captured image is automatically uploaded to teil.ing, the share URL is copied to the clipboard, the browser opens to the share URL, and any upload error is surfaced to the user — all without manual intervention.
@@ -187,7 +187,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 |-------|----------------|--------|-----------|
 | 1. App Shell | 2/2 | Complete    | 2026-02-17 |
 | 2. Onboarding and Keychain | 0/2 | Complete    | 2026-02-17 |
-| 3. Capture Engine — Region and Fullscreen | 0/3 | Planning complete | - |
+| 3. Capture Engine — Region and Fullscreen | 0/3 | Complete    | 2026-02-17 |
 | 4. Window Capture and Global Hotkeys | 0/3 | Not started | - |
 | 5. Upload Pipeline | 0/5 | Not started | - |
 | 6. EXIF Stripping and Behavior Toggles | 0/3 | Not started | - |

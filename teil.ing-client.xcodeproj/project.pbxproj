@@ -8,15 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		21C5A036B5B0348E3AF8B71B /* PopoverRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD361891CBFD8EC7D9217D1 /* PopoverRootView.swift */; };
+		4430E4C2DB797C284DB455F9 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DF3404403957C6127C6AF8 /* KeychainService.swift */; };
+		94AD34961158A908E95A724F /* APIValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F57EB412468C0BDB94A7D80 /* APIValidationService.swift */; };
 		AC145F60D0E6BEF8EA4DB645 /* PopoverFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97256E7981DEDBD082B4D40 /* PopoverFooterView.swift */; };
 		AC8737301B1E097457FB19BB /* teil_ing_clientApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79FE129C6A4205DC4ED337DE /* teil_ing_clientApp.swift */; };
 		ACF036FBBB9800FFD64F9E89 /* HistorySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04D9491FC028C6675EE0198 /* HistorySection.swift */; };
 		CD7571658B028D36436443B9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30B02122931ACB9EF7603C7 /* AppDelegate.swift */; };
 		D99F4B871A0EC1530359C44D /* CaptureSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A7E4F5870AEC3F97ED8639 /* CaptureSection.swift */; };
+		F2AAB53279FDDB1C49CA8D3E /* PermissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2636850C839B31C96E837D77 /* PermissionService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		18DF3404403957C6127C6AF8 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
+		2636850C839B31C96E837D77 /* PermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionService.swift; sourceTree = "<group>"; };
 		28A7E4F5870AEC3F97ED8639 /* CaptureSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSection.swift; sourceTree = "<group>"; };
+		2F57EB412468C0BDB94A7D80 /* APIValidationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIValidationService.swift; sourceTree = "<group>"; };
+		3BBDAFF04427F374A33EB8C0 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		52A8B355EB8ACE6F7AB81DA5 /* teil_ing_client.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = teil_ing_client.entitlements; sourceTree = "<group>"; };
 		79FE129C6A4205DC4ED337DE /* teil_ing_clientApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = teil_ing_clientApp.swift; sourceTree = "<group>"; };
 		A97256E7981DEDBD082B4D40 /* PopoverFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverFooterView.swift; sourceTree = "<group>"; };
@@ -50,9 +57,19 @@
 			isa = PBXGroup;
 			children = (
 				E9C859AC18AF3F3471D656B9 /* App */,
+				A33702A6CA3A4FCE9C0AECE8 /* Onboarding */,
+				B79AA908498BB41070F69537 /* Services */,
 				1F953F40E21E6D1045260827 /* Views */,
 			);
 			path = "teil.ing-client";
+			sourceTree = "<group>";
+		};
+		A33702A6CA3A4FCE9C0AECE8 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				3BBDAFF04427F374A33EB8C0 /* .gitkeep */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		B3D92ADDA415B32BB3BC6974 = {
@@ -61,6 +78,16 @@
 				2C0100339082E3D16C119290 /* teil.ing-client */,
 				1E562F7BB12D2C9ADA57121E /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		B79AA908498BB41070F69537 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				2F57EB412468C0BDB94A7D80 /* APIValidationService.swift */,
+				18DF3404403957C6127C6AF8 /* KeychainService.swift */,
+				2636850C839B31C96E837D77 /* PermissionService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		E9C859AC18AF3F3471D656B9 /* App */ = {
@@ -132,9 +159,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94AD34961158A908E95A724F /* APIValidationService.swift in Sources */,
 				CD7571658B028D36436443B9 /* AppDelegate.swift in Sources */,
 				D99F4B871A0EC1530359C44D /* CaptureSection.swift in Sources */,
 				ACF036FBBB9800FFD64F9E89 /* HistorySection.swift in Sources */,
+				4430E4C2DB797C284DB455F9 /* KeychainService.swift in Sources */,
+				F2AAB53279FDDB1C49CA8D3E /* PermissionService.swift in Sources */,
 				AC145F60D0E6BEF8EA4DB645 /* PopoverFooterView.swift in Sources */,
 				21C5A036B5B0348E3AF8B71B /* PopoverRootView.swift in Sources */,
 				AC8737301B1E097457FB19BB /* teil_ing_clientApp.swift in Sources */,

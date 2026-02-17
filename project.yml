@@ -26,6 +26,8 @@ targets:
     sources:
       - path: teil.ing-client/App
       - path: teil.ing-client/Views
+      - path: teil.ing-client/Services
+      - path: teil.ing-client/Onboarding
     resources:
       - path: teil.ing-client/Resources/Assets.xcassets
     info:

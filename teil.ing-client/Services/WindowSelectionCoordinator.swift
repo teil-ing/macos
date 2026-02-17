@@ -1,4 +1,6 @@
 import AppKit
+import ApplicationServices
+import CoreGraphics
 @preconcurrency import ScreenCaptureKit
 
 // MARK: - WindowSelectionResult
@@ -9,6 +11,15 @@ enum WindowSelectionResult {
     case window(SCWindow)
     /// User clicked on the desktop (no window under cursor) — caller should fullscreen-capture the display.
     case desktop
+}
+
+// MARK: - KeyableWindow
+
+/// Borderless NSWindow subclass that can become key.
+/// Standard borderless windows return false for canBecomeKey, which prevents
+/// keyDown events (Escape) from reaching the content view.
+private class KeyableWindow: NSWindow {
+    override var canBecomeKey: Bool { true }
 }
 
 // MARK: - WindowSelectionCoordinator
@@ -29,7 +40,7 @@ final class WindowSelectionCoordinator {
     // MARK: - State
 
     /// Retains overlay windows for the duration of the selection to prevent ARC deallocation.
-    private var overlayWindows: [(NSWindow, WindowSelectionOverlayView)] = []
+    private var overlayWindows: [(KeyableWindow, WindowSelectionOverlayView)] = []
 
     /// SCWindow list fetched once before showing the overlay (research Pitfall 6: avoids
     /// repeated async fetches on every mouseMoved, which would cause lag).
@@ -44,20 +55,36 @@ final class WindowSelectionCoordinator {
     ///   clicked an area with no window, or `nil` if the user pressed Escape to cancel.
     func beginWindowSelection() async -> WindowSelectionResult? {
         // 1. Fetch window list ONCE before showing overlay (avoids per-mouseMoved async latency)
-        let content = try? await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
-        cachedWindows = (content?.windows ?? []).filter {
-            $0.isOnScreen && $0.owningApplication?.bundleIdentifier != Bundle.main.bundleIdentifier
+        //
+        // excludingDesktopWindows: true — excludes the Finder's Desktop window which covers
+        // the entire screen and would always win hit-testing if included.
+        // windowLayer == 0 — normal application windows only (excludes menu bar, system overlays).
+        //
+        // CGWindowListCopyWindowInfo provides correct front-to-back z-ordering which
+        // SCShareableContent does NOT guarantee. We sort SCWindows by their position
+        // in the CGWindowList so findWindow(at:) returns the frontmost match.
+        let content = try? await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: true)
+        let ownBundleID = Bundle.main.bundleIdentifier
+        let scWindows = (content?.windows ?? []).filter {
+            $0.isOnScreen
+                && $0.windowLayer == 0
+                && $0.owningApplication?.bundleIdentifier != ownBundleID
         }
+
+        // Get front-to-back z-order from CGWindowList
+        let windowList = CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]] ?? []
+        let orderedIDs = windowList.compactMap { $0[kCGWindowNumber as String] as? CGWindowID }
+
+        // Sort SCWindows by CGWindowList z-order (front-to-back)
+        let idToWindow = Dictionary(scWindows.map { ($0.windowID, $0) }, uniquingKeysWith: { first, _ in first })
+        cachedWindows = orderedIDs.compactMap { idToWindow[$0] }
 
         // 2. Load camera cursor
         let cursor = makeWindowSelectionCursor()
 
-        // 3. Create overlay windows for each screen
-        let windows = createOverlayWindows()
+        // 3. Create overlay windows for each screen (pass cursor for addCursorRect)
+        let windows = createOverlayWindows(cursor: cursor)
         overlayWindows = windows
-
-        // 4. Push camera cursor before showing windows
-        cursor.push()
 
         // 5. Order all overlay windows to front
         for (window, _) in windows {
@@ -130,9 +157,11 @@ final class WindowSelectionCoordinator {
 
     // MARK: - Window Creation
 
-    private func createOverlayWindows() -> [(NSWindow, WindowSelectionOverlayView)] {
+    private func createOverlayWindows(cursor: NSCursor) -> [(KeyableWindow, WindowSelectionOverlayView)] {
         NSScreen.screens.map { screen in
-            let window = NSWindow(
+            // KeyableWindow allows becoming key — required for keyDown (Escape) to fire.
+            // Standard borderless NSWindow returns canBecomeKey=false by default.
+            let window = KeyableWindow(
                 contentRect: screen.frame,
                 styleMask: [.borderless],
                 backing: .buffered,
@@ -159,6 +188,7 @@ final class WindowSelectionCoordinator {
             let view = WindowSelectionOverlayView(frame: CGRect(origin: .zero, size: screen.frame.size))
             view.owningScreen = screen
             view.coordinator = self
+            view.cameraCursor = cursor  // Used in resetCursorRects for proper cursor display
             window.contentView = view
 
             // The view needs to be first responder to receive key events (Escape)
@@ -196,11 +226,48 @@ final class WindowSelectionCoordinator {
         return NSCursor(image: image, hotSpot: NSPoint(x: hotX, y: hotY))
     }
 
+    // MARK: - Window Raising
+
+    /// Brings the hovered window to the front (below overlay) via the Accessibility API.
+    ///
+    /// Uses kAXRaiseAction which raises the window within its app's z-order without
+    /// activating the app or stealing focus. Silently does nothing if Accessibility
+    /// permission is not granted — the dimming highlight still works as fallback.
+    func raiseWindow(_ scWindow: SCWindow) {
+        guard let pid = scWindow.owningApplication?.processID else { return }
+
+        let appElement = AXUIElementCreateApplication(pid)
+        var windowListRef: CFTypeRef?
+        guard AXUIElementCopyAttributeValue(appElement, kAXWindowsAttribute as CFString, &windowListRef) == .success,
+              let axWindows = windowListRef as? [AXUIElement] else { return }
+
+        let targetFrame = scWindow.frame
+
+        for axWindow in axWindows {
+            var posRef: CFTypeRef?
+            var sizeRef: CFTypeRef?
+            AXUIElementCopyAttributeValue(axWindow, kAXPositionAttribute as CFString, &posRef)
+            AXUIElementCopyAttributeValue(axWindow, kAXSizeAttribute as CFString, &sizeRef)
+
+            var position = CGPoint.zero
+            var size = CGSize.zero
+            if let pv = posRef { AXValueGetValue(pv as! AXValue, .cgPoint, &position) }
+            if let sv = sizeRef { AXValueGetValue(sv as! AXValue, .cgSize, &size) }
+
+            // Match AX window to SCWindow by frame (both use CG coordinates)
+            if abs(position.x - targetFrame.origin.x) < 2
+                && abs(position.y - targetFrame.origin.y) < 2
+                && abs(size.width - targetFrame.width) < 2
+                && abs(size.height - targetFrame.height) < 2 {
+                AXUIElementPerformAction(axWindow, kAXRaiseAction as CFString)
+                break
+            }
+        }
+    }
+
     // MARK: - Tear-Down
 
     private func tearDown() {
-        NSCursor.pop()
-
         for (window, _) in overlayWindows {
             window.orderOut(nil)
             window.close()

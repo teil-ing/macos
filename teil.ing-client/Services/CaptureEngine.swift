@@ -73,7 +73,9 @@ actor CaptureEngine {
             image = try await bridge.captureOneFrame(filter: f, config: c)
         }
 
-        let capturedRect = display.frame
+        // Convert display.frame from CG coords (top-left origin) to AppKit coords (bottom-left origin)
+        // so CaptureFeedback.showCaptureFlash positions correctly.
+        let capturedRect = screenInfo.frame
         return CaptureResult(image: image, capturedRect: capturedRect)
     }
 
@@ -86,8 +88,10 @@ actor CaptureEngine {
     /// - Returns: A CaptureResult containing the captured CGImage.
     func captureRegion(_ rect: CGRect) async throws -> CaptureResult {
         // Collect NSScreen data on MainActor — NSScreen is not Sendable
-        let screenInfos: [(frame: CGRect, scale: CGFloat)] = await MainActor.run {
-            NSScreen.screens.map { ($0.frame, $0.backingScaleFactor) }
+        let (primaryHeight, screenInfos): (CGFloat, [(frame: CGRect, scale: CGFloat)]) = await MainActor.run {
+            let primary = NSScreen.screens.first?.frame.height ?? 0
+            let infos = NSScreen.screens.map { ($0.frame, $0.backingScaleFactor) }
+            return (primary, infos)
         }
 
         // Find which screens intersect the requested rect
@@ -108,7 +112,10 @@ actor CaptureEngine {
             let entry = intersecting[0]
             let display = try await findDisplayByFrame(entry.frame)
             let filter = try await buildFilter(for: display)
-            let config = buildConfig(sourceRect: entry.intersection, display: display, scale: entry.scale)
+            // Convert intersection from AppKit screen coords (bottom-left origin, Y-up)
+            // to CG screen coords (top-left origin, Y-down) for SCStreamConfiguration.sourceRect
+            let cgIntersection = appKitRectToCG(entry.intersection, primaryHeight: primaryHeight)
+            let config = buildConfig(sourceRect: cgIntersection, display: display, scale: entry.scale)
 
             let image: CGImage
             if #available(macOS 14, *) {
@@ -126,7 +133,8 @@ actor CaptureEngine {
             for entry in intersecting {
                 let display = try await findDisplayByFrame(entry.frame)
                 let filter = try await buildFilter(for: display)
-                let config = buildConfig(sourceRect: entry.intersection, display: display, scale: entry.scale)
+                let cgIntersection = appKitRectToCG(entry.intersection, primaryHeight: primaryHeight)
+                let config = buildConfig(sourceRect: cgIntersection, display: display, scale: entry.scale)
 
                 let image: CGImage
                 if #available(macOS 14, *) {
@@ -203,6 +211,17 @@ actor CaptureEngine {
 
     // MARK: - Private Helpers
 
+    /// Converts a rect from AppKit screen coordinates (bottom-left origin, Y-up)
+    /// to CG screen coordinates (top-left origin, Y-down).
+    ///
+    /// The conversion uses the primary display height as the reference point since both
+    /// coordinate systems share the same origin horizontally but are Y-flipped relative
+    /// to the primary display's top/bottom edge.
+    private func appKitRectToCG(_ appKitRect: CGRect, primaryHeight: CGFloat) -> CGRect {
+        let cgY = primaryHeight - appKitRect.maxY
+        return CGRect(x: appKitRect.origin.x, y: cgY, width: appKitRect.width, height: appKitRect.height)
+    }
+
     /// Builds an SCContentFilter for the given display, excluding the app's own bundle.
     private func buildFilter(for display: SCDisplay) async throws -> SCContentFilter {
         let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
@@ -245,12 +264,18 @@ actor CaptureEngine {
         return config
     }
 
-    /// Finds the SCDisplay whose frame origin matches the given screen frame origin.
+    /// Finds the SCDisplay matching a given NSScreen frame.
+    ///
+    /// Matches by x-origin and dimensions rather than full origin because NSScreen uses
+    /// AppKit coordinates (bottom-left, Y-up) while SCDisplay uses CG coordinates
+    /// (top-left, Y-down). The x-origin is the same in both systems; the y-origin differs
+    /// for vertically-offset displays.
     private func findDisplayByFrame(_ screenFrame: CGRect) async throws -> SCDisplay {
         let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
         guard let display = content.displays.first(where: {
             abs($0.frame.origin.x - screenFrame.origin.x) < 1.0
-                && abs($0.frame.origin.y - screenFrame.origin.y) < 1.0
+                && abs($0.frame.width - screenFrame.width) < 1.0
+                && abs($0.frame.height - screenFrame.height) < 1.0
         }) else {
             throw CaptureEngineError.noDisplayFound
         }

@@ -194,7 +194,7 @@
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					0D6AD409C8B89ECBEAFC89F0 = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = 5A7M476YY2;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -262,7 +262,7 @@
 				CODE_SIGN_ENTITLEMENTS = "teil.ing-client/App/teil_ing_client.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5A7M476YY2;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "teil.ing-client/Info.plist";
@@ -286,7 +286,7 @@
 				CODE_SIGN_ENTITLEMENTS = "teil.ing-client/App/teil_ing_client.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5A7M476YY2;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "teil.ing-client/Info.plist";
@@ -340,7 +340,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5A7M476YY2;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -409,7 +409,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5A7M476YY2;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

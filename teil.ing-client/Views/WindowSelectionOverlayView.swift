@@ -30,6 +30,9 @@ final class WindowSelectionOverlayView: NSView {
     /// Weak to avoid a reference cycle between coordinator (which holds the view pair) and the view.
     weak var coordinator: WindowSelectionCoordinator?
 
+    /// Camera cursor set by WindowSelectionCoordinator, used in resetCursorRects.
+    var cameraCursor: NSCursor?
+
     // MARK: - Layers
 
     /// evenOdd fill: dims everything except the highlighted window rect (the "hole").
@@ -139,8 +142,7 @@ final class WindowSelectionOverlayView: NSView {
     // MARK: - Cursor Rects
 
     override func resetCursorRects() {
-        // Cursor is managed by WindowSelectionCoordinator via NSCursor push/pop.
-        // Do NOT add cursor rects here — they would reset the coordinator's pushed cursor.
+        addCursorRect(bounds, cursor: cameraCursor ?? .crosshair)
     }
 
     // MARK: - Mouse Moved
@@ -163,6 +165,8 @@ final class WindowSelectionOverlayView: NSView {
         highlightedWindow = foundWindow
 
         if let win = foundWindow {
+            // Raise the window to front (below overlay) so it's fully visible through the hole
+            coord.raiseWindow(win)
             let highlightRect = viewLocalRect(for: win, coordinator: coord)
             updateDimmingPath(highlightRect: highlightRect)
         } else {

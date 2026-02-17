@@ -10,6 +10,7 @@ enum CaptureEngineError: LocalizedError {
     case noScreenFound
     case captureFailedNoImage
     case stitchFailed
+    case windowCaptureFailedNoImage
 
     var errorDescription: String? {
         switch self {
@@ -21,6 +22,8 @@ enum CaptureEngineError: LocalizedError {
             return "Capture did not produce an image."
         case .stitchFailed:
             return "Could not stitch cross-monitor captures."
+        case .windowCaptureFailedNoImage:
+            return "Window capture did not produce an image."
         }
     }
 }
@@ -148,6 +151,54 @@ actor CaptureEngine {
 
             return CaptureResult(image: stitched, capturedRect: rect)
         }
+    }
+
+    /// Captures a specific window without shadow and with transparent corners.
+    ///
+    /// Uses `SCContentFilter(desktopIndependentWindow:)` to capture the full window
+    /// regardless of screen position (correctly handles partially off-screen windows).
+    ///
+    /// - Parameter scWindow: The window to capture, obtained from SCShareableContent.
+    /// - Returns: A CaptureResult with a BGRA CGImage (alpha channel preserved).
+    func captureWindow(_ scWindow: SCWindow) async throws -> CaptureResult {
+        let filter = SCContentFilter(desktopIndependentWindow: scWindow)
+
+        let config = SCStreamConfiguration()
+        config.pixelFormat = kCVPixelFormatType_32BGRA  // Has alpha channel for transparent corners
+        config.showsCursor = false
+        config.capturesAudio = false
+
+        // true = IGNORE (exclude) the shadow — counter-intuitive naming (Pitfall 3 from research)
+        config.ignoreShadowsSingleWindow = true
+
+        // false = do NOT force opaque — preserves the window's alpha channel for rounded corners
+        config.shouldBeOpaque = false
+
+        // Logical points: SCKit handles Retina backing scale internally
+        config.width = Int(scWindow.frame.width)
+        config.height = Int(scWindow.frame.height)
+
+        // Wrap in nonisolated(unsafe) to transfer non-Sendable SCKit types across actor boundary.
+        // These values are fully constructed before the transfer and not mutated afterward.
+        let image: CGImage
+        if #available(macOS 14, *) {
+            nonisolated(unsafe) let f = filter
+            nonisolated(unsafe) let c = config
+            image = try await SCScreenshotManager.captureImage(
+                contentFilter: f,
+                configuration: c
+            )
+        } else {
+            nonisolated(unsafe) let f = filter
+            nonisolated(unsafe) let c = config
+            let bridge = StreamCaptureBridge()
+            image = try await bridge.captureOneFrame(filter: f, config: c)
+        }
+
+        // capturedRect: SCWindow.frame is in CG coordinates; CaptureResult documents AppKit.
+        // For window capture the rect is used only for flash feedback positioning in AppDelegate,
+        // which calls cgFrameToAppKit before passing to CaptureFeedback.
+        return CaptureResult(image: image, capturedRect: scWindow.frame)
     }
 
     // MARK: - Private Helpers

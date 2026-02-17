@@ -1,5 +1,6 @@
 import AppKit
 import AudioToolbox
+import QuartzCore
 
 // MARK: - CaptureFeedback
 
@@ -109,9 +110,80 @@ enum CaptureFeedback {
         }
     }
 
-    // MARK: - Private Helpers
+    // MARK: - Upload Spinner and Error Icon
 
-    private static func restoreNormalIcon(on statusItem: NSStatusItem) {
+    /// Starts an animated rotation spinner on the menu bar icon to indicate an ongoing upload.
+    ///
+    /// Cancels any pending icon revert task — the spinner supersedes a pending success revert.
+    /// Uses CABasicAnimation for smooth infinite rotation without polling.
+    ///
+    /// - Parameter statusItem: The NSStatusItem whose button will be animated.
+    static func showUploadSpinner(on statusItem: NSStatusItem) {
+        // Cancel any pending revert task — spinner supersedes it
+        iconRevertTask?.cancel()
+        iconRevertTask = nil
+
+        guard let button = statusItem.button else { return }
+
+        let spinnerImage = NSImage(
+            systemSymbolName: "arrow.triangle.2.circlepath",
+            accessibilityDescription: "Uploading"
+        )
+        spinnerImage?.isTemplate = true
+        button.image = spinnerImage
+
+        // CABasicAnimation requires the view to have a backing layer
+        button.wantsLayer = true
+
+        let rotation = CABasicAnimation(keyPath: "transform.rotation.z")
+        rotation.toValue = CGFloat.pi * 2
+        rotation.duration = 1.0
+        rotation.timingFunction = CAMediaTimingFunction(name: .linear)
+        rotation.repeatCount = .infinity
+
+        button.layer?.add(rotation, forKey: "uploadSpinner")
+    }
+
+    /// Stops the upload spinner animation, leaving the current icon image unchanged.
+    ///
+    /// The caller is responsible for setting the next icon state (success checkmark,
+    /// error icon, or normal icon) after calling this method.
+    ///
+    /// - Parameter statusItem: The NSStatusItem whose spinner animation will be removed.
+    static func stopUploadSpinner(on statusItem: NSStatusItem) {
+        statusItem.button?.layer?.removeAnimation(forKey: "uploadSpinner")
+    }
+
+    /// Shows a persistent error icon on the menu bar to indicate an upload failure.
+    ///
+    /// The error icon does NOT auto-revert — it stays until AppDelegate explicitly
+    /// calls `restoreNormalIcon` (e.g., when the user opens the popover or a retry succeeds).
+    ///
+    /// - Parameter statusItem: The NSStatusItem whose button image will be updated.
+    static func showErrorIcon(on statusItem: NSStatusItem) {
+        // Stop any running spinner first (belt-and-suspenders)
+        stopUploadSpinner(on: statusItem)
+
+        // Cancel any pending revert task
+        iconRevertTask?.cancel()
+        iconRevertTask = nil
+
+        let errorImage = NSImage(
+            systemSymbolName: "exclamationmark.triangle.fill",
+            accessibilityDescription: "Upload failed"
+        )
+        errorImage?.isTemplate = true
+        statusItem.button?.image = errorImage
+        // No auto-revert — the error icon stays until AppDelegate calls restoreNormalIcon
+    }
+
+    // MARK: - Icon Helpers
+
+    /// Restores the menu bar icon to the normal (non-error, non-success) state.
+    ///
+    /// Internal so AppDelegate (Plan 03) can call this when the user dismisses
+    /// an upload error or a retry succeeds, clearing the persistent error icon.
+    static func restoreNormalIcon(on statusItem: NSStatusItem) {
         let normalImage = NSImage(
             systemSymbolName: "rectangle.dashed",
             accessibilityDescription: "teil.ing"

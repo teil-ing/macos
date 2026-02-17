@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Capture a screenshot and have a shareable teil.ing URL on the clipboard in seconds — zero friction from capture to share.
-**Current focus:** Phase 4 — Window Capture and Global Hotkeys (in progress — Plans 01 and 02 complete)
+**Current focus:** Phase 5 — Upload Service (next phase)
 
 ## Current Position
 
-Phase: 4 of 9 (Window Capture and Global Hotkeys) — IN PROGRESS
-Plan: 2 of 3 in current phase — COMPLETE (Plan 03 remaining)
-Status: Phase 4 Plan 02 complete — global hotkeys (Cmd+Shift+X/S/C) via KeyboardShortcuts library with sleep/wake re-registration
-Last activity: 2026-02-17 — Phase 4 Plan 02 (Global Hotkeys) complete — KeyboardShortcuts SPM dependency, HotkeyMonitor.swift, AppDelegate.setupHotkeyMonitor() wiring compiled and built successfully
+Phase: 4 of 9 (Window Capture and Global Hotkeys) — COMPLETE
+Plan: 3 of 3 in current phase — COMPLETE
+Status: Phase 4 fully complete — window capture (CAPT-03) and global hotkeys (CAPT-04) human-verified across all 21 test scenarios
+Last activity: 2026-02-17 — Phase 4 Plan 03 (Verification) complete — all 21 scenarios approved, keyboard shortcut hints added to CaptureSection buttons
 
-Progress: [████░░░░░░] 36%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
+- Total plans completed: 10
 - Average duration: 7 min
 - Total execution time: 0.7 hours
 
@@ -30,7 +30,7 @@ Progress: [████░░░░░░] 36%
 | 01-app-shell | 2/3 | 18 min | 9 min |
 | 02-onboarding-and-keychain | 2/2 | 1 min | 1 min |
 | 03-capture-engine-region-and-fullscreen | 3/3 | 21 min | 7 min |
-| 04-window-capture-and-global-hotkeys | 2/3 | 7 min | 4 min |
+| 04-window-capture-and-global-hotkeys | 3/3 | ~12 min | 4 min |
 
 **Recent Trend:**
 - Last 5 plans: 03-01 (6 min), 03-02 (est. 5 min), 03-03 (~15 min incl. human verify), 04-01 (5 min)
@@ -85,6 +85,7 @@ Recent decisions affecting current work:
 - [Phase 04-02]: Sleep/wake re-registration via disable/enable only — re-calling onKeyUp would accumulate duplicate handlers silently (research Pitfall 2)
 - [Phase 04-02]: fromHotkey: Bool = false parameter on capture methods — DRY single code path; hotkey path skips closePopover() and the 200ms popover-dismiss delay
 - [Phase 04-02]: Shortcut conflict handling is silent — KeyboardShortcuts handles gracefully if another app holds the shortcut
+- [Phase 04-03]: Keyboard shortcut hints (Cmd+Shift+X/S/C) added to CaptureSection buttons — discovered during human verification as a discoverability improvement
 
 ### Pending Todos
 
@@ -99,5 +100,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 04-02-PLAN.md (Global Hotkeys — KeyboardShortcuts SPM, HotkeyMonitor.swift, AppDelegate.setupHotkeyMonitor() — built successfully with zero errors)
+Stopped at: Completed 04-03-PLAN.md (Verification — all 21 window capture and global hotkey scenarios human-approved; keyboard shortcut hints added to CaptureSection; Phase 4 fully complete)
 Resume file: None

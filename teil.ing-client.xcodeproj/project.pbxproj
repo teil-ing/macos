@@ -7,12 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C715C0F76946509D2F4B4BF /* teil.ing-client in Resources */ = {isa = PBXBuildFile; fileRef = 442DA77ABD3B16EA1CBE3385 /* teil.ing-client */; };
+		21C5A036B5B0348E3AF8B71B /* PopoverRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD361891CBFD8EC7D9217D1 /* PopoverRootView.swift */; };
+		AC145F60D0E6BEF8EA4DB645 /* PopoverFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97256E7981DEDBD082B4D40 /* PopoverFooterView.swift */; };
+		AC8737301B1E097457FB19BB /* teil_ing_clientApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79FE129C6A4205DC4ED337DE /* teil_ing_clientApp.swift */; };
+		ACF036FBBB9800FFD64F9E89 /* HistorySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04D9491FC028C6675EE0198 /* HistorySection.swift */; };
+		CD7571658B028D36436443B9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30B02122931ACB9EF7603C7 /* AppDelegate.swift */; };
+		D99F4B871A0EC1530359C44D /* CaptureSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A7E4F5870AEC3F97ED8639 /* CaptureSection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		442DA77ABD3B16EA1CBE3385 /* teil.ing-client */ = {isa = PBXFileReference; path = "teil.ing-client"; sourceTree = "<group>"; };
+		28A7E4F5870AEC3F97ED8639 /* CaptureSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSection.swift; sourceTree = "<group>"; };
+		52A8B355EB8ACE6F7AB81DA5 /* teil_ing_client.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = teil_ing_client.entitlements; sourceTree = "<group>"; };
+		79FE129C6A4205DC4ED337DE /* teil_ing_clientApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = teil_ing_clientApp.swift; sourceTree = "<group>"; };
+		A97256E7981DEDBD082B4D40 /* PopoverFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverFooterView.swift; sourceTree = "<group>"; };
+		B30B02122931ACB9EF7603C7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		D04D9491FC028C6675EE0198 /* HistorySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySection.swift; sourceTree = "<group>"; };
 		D57FD8412C278D2F498DA447 /* teil.ing-client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "teil.ing-client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DAD361891CBFD8EC7D9217D1 /* PopoverRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverRootView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -24,12 +35,42 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1F953F40E21E6D1045260827 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				28A7E4F5870AEC3F97ED8639 /* CaptureSection.swift */,
+				D04D9491FC028C6675EE0198 /* HistorySection.swift */,
+				A97256E7981DEDBD082B4D40 /* PopoverFooterView.swift */,
+				DAD361891CBFD8EC7D9217D1 /* PopoverRootView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		2C0100339082E3D16C119290 /* teil.ing-client */ = {
+			isa = PBXGroup;
+			children = (
+				E9C859AC18AF3F3471D656B9 /* App */,
+				1F953F40E21E6D1045260827 /* Views */,
+			);
+			path = "teil.ing-client";
+			sourceTree = "<group>";
+		};
 		B3D92ADDA415B32BB3BC6974 = {
 			isa = PBXGroup;
 			children = (
-				442DA77ABD3B16EA1CBE3385 /* teil.ing-client */,
+				2C0100339082E3D16C119290 /* teil.ing-client */,
 				1E562F7BB12D2C9ADA57121E /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		E9C859AC18AF3F3471D656B9 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				B30B02122931ACB9EF7603C7 /* AppDelegate.swift */,
+				52A8B355EB8ACE6F7AB81DA5 /* teil_ing_client.entitlements */,
+				79FE129C6A4205DC4ED337DE /* teil_ing_clientApp.swift */,
+			);
+			path = App;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -40,7 +81,6 @@
 			buildConfigurationList = 995F24D395DBAA8D6F1FF061 /* Build configuration list for PBXNativeTarget "teil.ing-client" */;
 			buildPhases = (
 				E5D4FE38579D47A93D9E4C59 /* Sources */,
-				BFD0D28743387E501F48CB54 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -87,22 +127,17 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXResourcesBuildPhase section */
-		BFD0D28743387E501F48CB54 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				0C715C0F76946509D2F4B4BF /* teil.ing-client in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		E5D4FE38579D47A93D9E4C59 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD7571658B028D36436443B9 /* AppDelegate.swift in Sources */,
+				D99F4B871A0EC1530359C44D /* CaptureSection.swift in Sources */,
+				ACF036FBBB9800FFD64F9E89 /* HistorySection.swift in Sources */,
+				AC145F60D0E6BEF8EA4DB645 /* PopoverFooterView.swift in Sources */,
+				21C5A036B5B0348E3AF8B71B /* PopoverRootView.swift in Sources */,
+				AC8737301B1E097457FB19BB /* teil_ing_clientApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

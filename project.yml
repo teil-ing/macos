@@ -24,10 +24,8 @@ targets:
     platform: macOS
     deploymentTarget: "15.0"
     sources:
-      - path: teil.ing-client
-        includes:
-          - "**/*.swift"
-        excludes: []
+      - path: teil.ing-client/App
+      - path: teil.ing-client/Views
     resources:
       - path: teil.ing-client/Resources/Assets.xcassets
     info:

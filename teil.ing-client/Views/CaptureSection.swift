@@ -1,4 +1,5 @@
 import SwiftUI
+import KeyboardShortcuts
 
 struct CaptureSection: View {
     var onRegionCapture: (() -> Void)?
@@ -17,18 +18,21 @@ struct CaptureSection: View {
             CaptureModeButton(
                 label: "Region",
                 systemImage: "crop",
+                shortcut: .regionCapture,
                 disabled: false,
                 action: { onRegionCapture?() }
             )
             CaptureModeButton(
                 label: "Fullscreen",
                 systemImage: "display",
+                shortcut: .fullscreenCapture,
                 disabled: false,
                 action: { onFullscreenCapture?() }
             )
             CaptureModeButton(
                 label: "Window",
                 systemImage: "macwindow",
+                shortcut: .windowCapture,
                 disabled: false,
                 action: { onWindowCapture?() }
             )
@@ -40,6 +44,7 @@ struct CaptureSection: View {
 private struct CaptureModeButton: View {
     let label: String
     let systemImage: String
+    let shortcut: KeyboardShortcuts.Name
     let disabled: Bool
     let action: () -> Void
 
@@ -49,12 +54,20 @@ private struct CaptureModeButton: View {
         Button {
             action()
         } label: {
-            Label(label, systemImage: systemImage)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 4)
-                .background(isHovered && !disabled ? Color(nsColor: .controlAccentColor).opacity(0.15) : Color.clear)
-                .contentShape(Rectangle())
+            HStack {
+                Label(label, systemImage: systemImage)
+                Spacer()
+                if let shortcut = KeyboardShortcuts.getShortcut(for: shortcut) {
+                    Text(shortcut.description)
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 4)
+            .background(isHovered && !disabled ? Color(nsColor: .controlAccentColor).opacity(0.15) : Color.clear)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .disabled(disabled)

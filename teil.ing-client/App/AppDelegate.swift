@@ -102,13 +102,3 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 }
-
-// MARK: - Temporary Placeholder
-// PopoverRootView is a minimal placeholder that will be replaced in Plan 02
-// with the real popover content (capture controls, history, preferences footer).
-struct PopoverRootView: View {
-    var body: some View {
-        Text("teil.ing")
-            .padding()
-    }
-}

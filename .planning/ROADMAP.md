@@ -13,7 +13,7 @@ The teil.ing macOS client is built in nine phases following the component depend
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: App Shell** - Menu bar-only application skeleton with adaptive icon, no Dock presence, Xcode project and entitlements configured (completed 2026-02-17)
-- [ ] **Phase 2: Onboarding and Keychain** - First-launch API key entry flow, secure Keychain storage, Screen Recording permission request
+- [x] **Phase 2: Onboarding and Keychain** - First-launch API key entry flow, secure Keychain storage, Screen Recording permission request (completed 2026-02-17)
 - [ ] **Phase 3: Capture Engine — Region and Fullscreen** - Region crosshair selection and fullscreen capture using ScreenCaptureKit, multi-monitor aware
 - [ ] **Phase 4: Window Capture and Global Hotkeys** - Click-to-select window capture mode and configurable global keyboard shortcuts for all three capture modes
 - [ ] **Phase 5: Upload Pipeline** - Automatic upload on capture, API key auth, clipboard copy, open-in-browser, upload error surfacing
@@ -66,14 +66,12 @@ Plans:
   3. Capture works correctly on macOS 13 (Ventura) using the SCStream fallback path and on macOS 14+ using SCScreenshotManager
   4. The region selection overlay covers each monitor at the correct screen coordinates with no gaps or overlaps between displays
   5. No memory leak occurs during or after capture — CMSampleBuffer is released inside the delegate callback before any async Task is spawned
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 03-01: CaptureCoordinator actor — async Swift actor; serializes concurrent capture requests; protocol-backed for testability; availability-guarded SCScreenshotManager vs SCStream dispatch
-- [ ] 03-02: SCScreenshotManager one-shot capture (macOS 14+) — fullscreen and region capture paths; CGImage extraction; CMSampleBuffer release pattern
-- [ ] 03-03: SCStream single-frame capture (macOS 13 fallback) — SCStreamDelegate implementation; CMSampleBuffer → CGImage extraction; stream stop after first frame
-- [ ] 03-04: InteractiveSelectionOverlay — NSPanel per display at screenSaverWindowLevel; .canJoinAllSpaces + .fullScreenAuxiliary; crosshair NSCursor; drag-to-select rect drawing; multi-monitor coordinate mapping
-- [ ] 03-05: Fullscreen capture — enumerate SCDisplay; capture all displays; produce per-monitor or stitched CGImage per design decision
+- [ ] 03-01-PLAN.md — CaptureEngine actor + SCScreenshotManager (macOS 14+) + StreamCaptureBridge (macOS 13) + CrossMonitorStitcher
+- [ ] 03-02-PLAN.md — Interactive selection overlay (dimming, crosshair guidelines, marching ants, dimension label, multi-monitor)
+- [ ] 03-03-PLAN.md — Menu bar wiring, capture feedback (flash, sound, icon), and human verification
 
 ### Phase 4: Window Capture and Global Hotkeys
 **Goal**: A user can click to select a specific open window for capture, and can trigger any capture mode from anywhere on the system using configurable keyboard shortcuts without touching the menu bar.
@@ -188,8 +186,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. App Shell | 2/2 | Complete    | 2026-02-17 |
-| 2. Onboarding and Keychain | 0/2 | Not started | - |
-| 3. Capture Engine — Region and Fullscreen | 0/5 | Not started | - |
+| 2. Onboarding and Keychain | 0/2 | Complete    | 2026-02-17 |
+| 3. Capture Engine — Region and Fullscreen | 0/3 | Planning complete | - |
 | 4. Window Capture and Global Hotkeys | 0/3 | Not started | - |
 | 5. Upload Pipeline | 0/5 | Not started | - |
 | 6. EXIF Stripping and Behavior Toggles | 0/3 | Not started | - |

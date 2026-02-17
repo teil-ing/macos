@@ -3,6 +3,7 @@ import SwiftUI
 struct PopoverRootView: View {
     var onRegionCapture: (() -> Void)?
     var onFullscreenCapture: (() -> Void)?
+    var onWindowCapture: (() -> Void)?
 
     /// Non-nil when a capture error has occurred and needs to be shown inside the popover.
     var captureError: String?
@@ -28,7 +29,8 @@ struct PopoverRootView: View {
 
             CaptureSection(
                 onRegionCapture: onRegionCapture,
-                onFullscreenCapture: onFullscreenCapture
+                onFullscreenCapture: onFullscreenCapture,
+                onWindowCapture: onWindowCapture
             )
             Divider()
             HistorySection()

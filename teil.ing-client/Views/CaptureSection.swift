@@ -3,6 +3,7 @@ import SwiftUI
 struct CaptureSection: View {
     var onRegionCapture: (() -> Void)?
     var onFullscreenCapture: (() -> Void)?
+    var onWindowCapture: (() -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -28,8 +29,8 @@ struct CaptureSection: View {
             CaptureModeButton(
                 label: "Window",
                 systemImage: "macwindow",
-                disabled: true,
-                action: {}
+                disabled: false,
+                action: { onWindowCapture?() }
             )
         }
         .padding(.bottom, 4)

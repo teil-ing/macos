@@ -15,6 +15,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Capture Services
     private let captureEngine = CaptureEngine()
     private let overlayCoordinator = OverlayCoordinator()
+    private let windowSelectionCoordinator = WindowSelectionCoordinator()
 
     /// The most recent successful capture result — consumed by the upload pipeline in a later phase.
     private var lastCaptureResult: CaptureResult?
@@ -125,6 +126,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let rootView = PopoverRootView(
             onRegionCapture: { [weak self] in self?.startRegionCapture() },
             onFullscreenCapture: { [weak self] in self?.startFullscreenCapture() },
+            onWindowCapture: { [weak self] in self?.startWindowCapture() },
             captureError: captureError
         )
         let hostingController = NSHostingController(rootView: rootView)
@@ -215,6 +217,59 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    // MARK: - Capture Flow: Window
+
+    private func startWindowCapture() {
+        closePopover()
+
+        Task { @MainActor in
+            // Same 200ms delay as other capture modes — lets popover fully dismiss
+            try? await Task.sleep(for: .milliseconds(200))
+
+            guard let selection = await windowSelectionCoordinator.beginWindowSelection() else {
+                // User cancelled (Escape) — no capture, no feedback
+                return
+            }
+
+            // Give compositor one frame to clear overlay windows before capturing
+            try? await Task.sleep(for: .milliseconds(50))
+
+            switch selection {
+            case .window(let scWindow):
+                do {
+                    // Extract Sendable value (CGRect) before crossing actor boundary
+                    let windowFrame = scWindow.frame
+                    // Wrap non-Sendable SCWindow in nonisolated(unsafe) to transfer across actor boundary.
+                    // The value is fully constructed here and not mutated after transfer.
+                    nonisolated(unsafe) let windowToCapture = scWindow
+                    let result = try await captureEngine.captureWindow(windowToCapture)
+                    lastCaptureResult = result
+
+                    // Convert CG frame to AppKit coordinates for flash feedback positioning
+                    let appKitRect = windowSelectionCoordinator.cgFrameToAppKit(windowFrame)
+                    await CaptureFeedback.showCaptureFlash(in: appKitRect)
+                    CaptureFeedback.playCaptureSound()
+                    CaptureFeedback.showSuccessIcon(on: statusItem)
+                } catch {
+                    showCaptureError(error.localizedDescription)
+                }
+
+            case .desktop:
+                // Per locked decision: clicking desktop = fullscreen capture of the current display
+                do {
+                    let result = try await captureEngine.captureFullscreen()
+                    lastCaptureResult = result
+
+                    await CaptureFeedback.showCaptureFlash(in: result.capturedRect)
+                    CaptureFeedback.playCaptureSound()
+                    CaptureFeedback.showSuccessIcon(on: statusItem)
+                } catch {
+                    showCaptureError(error.localizedDescription)
+                }
+            }
+        }
+    }
+
     // MARK: - Error Display
 
     /// Reopens the popover with an inline error banner.
@@ -229,6 +284,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let rootView = PopoverRootView(
             onRegionCapture: { [weak self] in self?.startRegionCapture() },
             onFullscreenCapture: { [weak self] in self?.startFullscreenCapture() },
+            onWindowCapture: { [weak self] in self?.startWindowCapture() },
             captureError: message
         )
         let hostingController = NSHostingController(rootView: rootView)

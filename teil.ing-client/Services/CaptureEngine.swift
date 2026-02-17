@@ -169,6 +169,21 @@ actor CaptureEngine {
     /// - Parameter scWindow: The window to capture, obtained from SCShareableContent.
     /// - Returns: A CaptureResult with a BGRA CGImage (alpha channel preserved).
     func captureWindow(_ scWindow: SCWindow) async throws -> CaptureResult {
+        // Get the backing scale factor for the screen containing the window
+        let scale: CGFloat = await MainActor.run {
+            let windowCenter = CGPoint(
+                x: scWindow.frame.midX,
+                y: scWindow.frame.midY
+            )
+            // SCWindow.frame is in CG coordinates; NSScreen.frame is AppKit coordinates.
+            // Match by x-origin and dimensions (same approach as findDisplayByFrame).
+            let screen = NSScreen.screens.first(where: {
+                abs($0.frame.origin.x - scWindow.frame.origin.x) < scWindow.frame.width
+                    && $0.frame.contains(CGPoint(x: windowCenter.x, y: $0.frame.midY))
+            }) ?? NSScreen.main
+            return screen?.backingScaleFactor ?? 2.0
+        }
+
         let filter = SCContentFilter(desktopIndependentWindow: scWindow)
 
         let config = SCStreamConfiguration()
@@ -182,9 +197,9 @@ actor CaptureEngine {
         // false = do NOT force opaque — preserves the window's alpha channel for rounded corners
         config.shouldBeOpaque = false
 
-        // Logical points: SCKit handles Retina backing scale internally
-        config.width = Int(scWindow.frame.width)
-        config.height = Int(scWindow.frame.height)
+        // Backing pixels: multiply by scale for Retina sharpness
+        config.width = Int(scWindow.frame.width * scale)
+        config.height = Int(scWindow.frame.height * scale)
 
         // Wrap in nonisolated(unsafe) to transfer non-Sendable SCKit types across actor boundary.
         // These values are fully constructed before the transfer and not mutated afterward.

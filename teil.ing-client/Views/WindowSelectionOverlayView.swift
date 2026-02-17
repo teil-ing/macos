@@ -60,6 +60,10 @@ final class WindowSelectionOverlayView: NSView {
 
     override var acceptsFirstResponder: Bool { true }
 
+    /// Accept the first mouse click without requiring window activation first.
+    /// Without this, the first click only activates the overlay window and is swallowed.
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
     // MARK: - Layer Setup
 
     private func setupLayers() {
@@ -195,6 +199,12 @@ final class WindowSelectionOverlayView: NSView {
             // No window under cursor — user clicked desktop
             onWindowSelected?(.desktop)
         }
+    }
+
+    // MARK: - Right Mouse Down (Cancel)
+
+    override func rightMouseDown(with event: NSEvent) {
+        onWindowSelected?(nil)
     }
 
     // MARK: - Key Down

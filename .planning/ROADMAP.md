@@ -100,14 +100,12 @@ Plans:
   3. After a successful upload the share URL is on the clipboard within one second of the upload response arriving
   4. After a successful upload the share URL opens in the default browser (subject to user preference, wired in Phase 6)
   5. If upload fails (network error, rate limit, API error) the user sees a visible error — menu bar indicator or notification — not a silent failure
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 05-01: UploadService — protocol-backed; URLSession multipart/form-data POST to /api/v1/upload; X-API-Key header from KeychainClient; response decoding (shareUrl, imageUrl, thumbnailUrl)
-- [ ] 05-02: Multipart body construction — correct Content-Type boundary header; file field name and filename; MIME type detection from CGImage format
-- [ ] 05-03: Error handling and retry — HTTP error codes mapped to user-visible messages; 429 rate limit detection with Retry-After header; exponential backoff (max 3 attempts)
-- [ ] 05-04: ResultDispatcher — clipboard write (NSPasteboard) after confirmed upload success (not before); open-in-browser via NSWorkspace.open (controlled by preference flag, Phase 6)
-- [ ] 05-05: Upload error surfacing — menu bar icon state change during upload and on failure; error message accessible from menu; UNUserNotification for failure (notification permission requested during onboarding)
+- [ ] 05-01-PLAN.md — UploadService actor with serial queue, multipart POST, X-API-Key auth, retry logic, clipboard copy, browser open
+- [ ] 05-02-PLAN.md — Upload feedback UI: CaptureFeedback spinner/error icon extensions + PopoverRootView upload error banner with Retry button
+- [ ] 05-03-PLAN.md — Integration wiring: AppDelegate capture-to-upload pipeline, feedback state machine, and human verification
 
 ### Phase 6: EXIF Stripping and Behavior Toggles
 **Goal**: A user can enable EXIF stripping so uploaded images have metadata removed, and can control whether the browser opens after upload — both preferences are applied to every subsequent upload automatically.
@@ -189,7 +187,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 2. Onboarding and Keychain | 0/2 | Complete    | 2026-02-17 |
 | 3. Capture Engine — Region and Fullscreen | 0/3 | Complete    | 2026-02-17 |
 | 4. Window Capture and Global Hotkeys | 0/3 | Not started | - |
-| 5. Upload Pipeline | 0/5 | Not started | - |
+| 5. Upload Pipeline | 0/3 | Not started | - |
 | 6. EXIF Stripping and Behavior Toggles | 0/3 | Not started | - |
 | 7. Upload History | 0/4 | Not started | - |
 | 8. Preferences Window | 0/4 | Not started | - |

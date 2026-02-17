@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Capture a screenshot and have a shareable teil.ing URL on the clipboard in seconds — zero friction from capture to share.
-**Current focus:** Phase 4 — Window Capture and Global Hotkeys (in progress — Plan 01 complete)
+**Current focus:** Phase 4 — Window Capture and Global Hotkeys (in progress — Plans 01 and 02 complete)
 
 ## Current Position
 
 Phase: 4 of 9 (Window Capture and Global Hotkeys) — IN PROGRESS
-Plan: 1 of 3 in current phase — COMPLETE (Plans 02 and 03 remaining)
-Status: Phase 4 Plan 01 complete — window capture overlay and menu bar wiring done
-Last activity: 2026-02-17 — Phase 4 Plan 01 (Window Capture Core) complete — CaptureEngine.captureWindow, WindowSelectionCoordinator, WindowSelectionOverlayView, AppDelegate wiring compiled and built successfully
+Plan: 2 of 3 in current phase — COMPLETE (Plan 03 remaining)
+Status: Phase 4 Plan 02 complete — global hotkeys (Cmd+Shift+X/S/C) via KeyboardShortcuts library with sleep/wake re-registration
+Last activity: 2026-02-17 — Phase 4 Plan 02 (Global Hotkeys) complete — KeyboardShortcuts SPM dependency, HotkeyMonitor.swift, AppDelegate.setupHotkeyMonitor() wiring compiled and built successfully
 
 Progress: [████░░░░░░] 36%
 
@@ -30,7 +30,7 @@ Progress: [████░░░░░░] 36%
 | 01-app-shell | 2/3 | 18 min | 9 min |
 | 02-onboarding-and-keychain | 2/2 | 1 min | 1 min |
 | 03-capture-engine-region-and-fullscreen | 3/3 | 21 min | 7 min |
-| 04-window-capture-and-global-hotkeys | 1/3 | 5 min | 5 min |
+| 04-window-capture-and-global-hotkeys | 2/3 | 7 min | 4 min |
 
 **Recent Trend:**
 - Last 5 plans: 03-01 (6 min), 03-02 (est. 5 min), 03-03 (~15 min incl. human verify), 04-01 (5 min)
@@ -80,6 +80,11 @@ Recent decisions affecting current work:
 - [Phase 04-01]: cachedWindows fetched once in beginWindowSelection() before overlay appears — avoids async latency in hover loop (research Pitfall 6)
 - [Phase 04-01]: WindowSelectionOverlayView uses weak coordinator reference to avoid reference cycle
 - [Phase 04-01]: .activeAlways tracking area used (not .activeInKeyWindow) since overlay is never key window during hover
+- [Phase 04-02]: KeyboardShortcuts.Name extensions defined at file scope (not nested in type) — Swift 6 strict concurrency compliance
+- [Phase 04-02]: onKeyUp used (not onKeyDown) — fires after user lifts key, preventing overlay from consuming the key-up event
+- [Phase 04-02]: Sleep/wake re-registration via disable/enable only — re-calling onKeyUp would accumulate duplicate handlers silently (research Pitfall 2)
+- [Phase 04-02]: fromHotkey: Bool = false parameter on capture methods — DRY single code path; hotkey path skips closePopover() and the 200ms popover-dismiss delay
+- [Phase 04-02]: Shortcut conflict handling is silent — KeyboardShortcuts handles gracefully if another app holds the shortcut
 
 ### Pending Todos
 
@@ -87,12 +92,12 @@ None.
 
 ### Blockers/Concerns
 
-- **Phase 4**: CGEventTap and Accessibility permission prompting behavior changed in macOS 14/15 — validate before implementing HotkeyMonitor
+- ~~**Phase 4**: CGEventTap and Accessibility permission prompting behavior changed in macOS 14/15 — validate before implementing HotkeyMonitor~~ (resolved — KeyboardShortcuts library handles Carbon event registration without CGEventTap)
 - **Phase 5**: teil.ing REST API contract (exact multipart field names, rate limit headers, response schema) must be confirmed with project owner before implementing UploadService
 - **Phase 9**: Apple Developer ID certificate and notarization workflow availability must be confirmed before Phase 9 starts
 
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 04-01-PLAN.md (Window Capture Core — CaptureEngine.captureWindow, WindowSelectionCoordinator, WindowSelectionOverlayView, AppDelegate wiring — built successfully with zero errors)
+Stopped at: Completed 04-02-PLAN.md (Global Hotkeys — KeyboardShortcuts SPM, HotkeyMonitor.swift, AppDelegate.setupHotkeyMonitor() — built successfully with zero errors)
 Resume file: None

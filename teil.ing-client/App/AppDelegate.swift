@@ -18,11 +18,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let overlayCoordinator = OverlayCoordinator()
     private let windowSelectionCoordinator = WindowSelectionCoordinator()
 
-    /// The most recent successful capture result — consumed by the upload pipeline in a later phase.
-    private var lastCaptureResult: CaptureResult?
-
     /// Error message to surface inside the popover after a capture failure.
     private var captureError: String?
+
+    /// Error message from the most recent failed upload — shown in popover error banner.
+    private var uploadError: String?
 
     // MARK: - NSApplicationDelegate
 
@@ -158,7 +158,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             onRegionCapture: { [weak self] in self?.startRegionCapture() },
             onFullscreenCapture: { [weak self] in self?.startFullscreenCapture() },
             onWindowCapture: { [weak self] in self?.startWindowCapture() },
-            captureError: captureError
+            captureError: captureError,
+            uploadError: uploadError,
+            onRetry: { [weak self] in self?.retryUpload() }
         )
         let hostingController = NSHostingController(rootView: rootView)
         // preferredContentSize: enables content-adaptive height — popover grows/shrinks with content
@@ -167,6 +169,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         popover = NSPopover()
         popover.behavior = .transient
         popover.animates = true
+        popover.contentViewController = hostingController
+    }
+
+    // MARK: - Popover Content Rebuild
+
+    /// Rebuilds the popover content view with the current error state.
+    ///
+    /// Called before showing the popover and whenever error state changes,
+    /// ensuring the popover always reflects current captureError and uploadError.
+    private func rebuildPopoverContent() {
+        let rootView = PopoverRootView(
+            onRegionCapture: { [weak self] in self?.startRegionCapture() },
+            onFullscreenCapture: { [weak self] in self?.startFullscreenCapture() },
+            onWindowCapture: { [weak self] in self?.startWindowCapture() },
+            captureError: captureError,
+            uploadError: uploadError,
+            onRetry: { [weak self] in self?.retryUpload() }
+        )
+        let hostingController = NSHostingController(rootView: rootView)
+        hostingController.sizingOptions = [.preferredContentSize]
         popover.contentViewController = hostingController
     }
 
@@ -182,6 +204,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func showPopover() {
         guard let button = statusItem.button else { return }
+        // Always rebuild before showing so the popover reflects current error state
+        rebuildPopoverContent()
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
         // makeKey() is REQUIRED for .transient dismiss to work on first open —
         // without this the popover does not receive events on first show.
@@ -189,11 +213,76 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Ensure popover receives events properly
         NSApp.activate(ignoringOtherApps: true)
         startEventMonitor()
+
+        // Acknowledge error icon by restoring normal icon when popover opens
+        if uploadError != nil {
+            CaptureFeedback.restoreNormalIcon(on: statusItem)
+        }
     }
 
     private func closePopover() {
         popover.performClose(nil)
         stopEventMonitor()
+    }
+
+    // MARK: - Upload Feedback Handler
+
+    /// Handles UploadFeedbackEvent callbacks from UploadService.
+    ///
+    /// Drives the menu bar icon state machine: spinner during upload,
+    /// checkmark + sound on success, error icon on failure.
+    private func handleUploadFeedback(_ event: UploadFeedbackEvent) {
+        switch event {
+        case .uploadStarted:
+            // Clear any previous error when a new upload starts
+            uploadError = nil
+            CaptureFeedback.showUploadSpinner(on: statusItem)
+
+        case .uploadSucceeded(let shareUrl):
+            _ = shareUrl  // clipboard/browser handled by UploadService internally
+            CaptureFeedback.stopUploadSpinner(on: statusItem)
+            CaptureFeedback.playCaptureSound()
+            CaptureFeedback.showSuccessIcon(on: statusItem)
+            // Upload succeeded — clear error state
+            uploadError = nil
+
+        case .uploadFailed(let error):
+            CaptureFeedback.stopUploadSpinner(on: statusItem)
+            CaptureFeedback.showErrorIcon(on: statusItem)
+            uploadError = error.localizedDescription
+            // Show the popover with the error banner
+            showUploadError(error.localizedDescription)
+        }
+    }
+
+    // MARK: - Error Display
+
+    /// Reopens the popover with an upload error banner.
+    private func showUploadError(_ message: String) {
+        uploadError = message
+        rebuildPopoverContent()
+        showPopover()
+    }
+
+    /// Reopens the popover with a capture error banner.
+    ///
+    /// Error is shown inside the popover per locked decision:
+    /// capture errors must not appear as system notifications.
+    private func showCaptureError(_ message: String) {
+        captureError = message
+        rebuildPopoverContent()
+        showPopover()
+    }
+
+    // MARK: - Retry Upload
+
+    /// Re-enqueues the last failed upload into UploadService.
+    private func retryUpload() {
+        Task {
+            await UploadService.shared.retry(onFeedback: { [weak self] event in
+                self?.handleUploadFeedback(event)
+            })
+        }
     }
 
     // MARK: - Capture Flow: Region
@@ -221,11 +310,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
             do {
                 let result = try await captureEngine.captureRegion(selectedRect)
-                lastCaptureResult = result
 
+                // Flash fires at capture time (no sound — sound plays on upload success)
                 await CaptureFeedback.showCaptureFlash(in: selectedRect)
-                CaptureFeedback.playCaptureSound()
-                CaptureFeedback.showSuccessIcon(on: statusItem)
+
+                // Enqueue for upload — sound/checkmark/browser happen on upload success
+                Task {
+                    await UploadService.shared.enqueue(result, onFeedback: { [weak self] event in
+                        self?.handleUploadFeedback(event)
+                    })
+                }
             } catch {
                 showCaptureError(error.localizedDescription)
             }
@@ -247,11 +341,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
             do {
                 let result = try await captureEngine.captureFullscreen()
-                lastCaptureResult = result
 
+                // Flash fires at capture time (no sound — sound plays on upload success)
                 await CaptureFeedback.showCaptureFlash(in: result.capturedRect)
-                CaptureFeedback.playCaptureSound()
-                CaptureFeedback.showSuccessIcon(on: statusItem)
+
+                // Enqueue for upload — sound/checkmark/browser happen on upload success
+                Task {
+                    await UploadService.shared.enqueue(result, onFeedback: { [weak self] event in
+                        self?.handleUploadFeedback(event)
+                    })
+                }
             } catch {
                 showCaptureError(error.localizedDescription)
             }
@@ -288,13 +387,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     // The value is fully constructed here and not mutated after transfer.
                     nonisolated(unsafe) let windowToCapture = scWindow
                     let result = try await captureEngine.captureWindow(windowToCapture)
-                    lastCaptureResult = result
 
                     // Convert CG frame to AppKit coordinates for flash feedback positioning
                     let appKitRect = windowSelectionCoordinator.cgFrameToAppKit(windowFrame)
+
+                    // Flash fires at capture time (no sound — sound plays on upload success)
                     await CaptureFeedback.showCaptureFlash(in: appKitRect)
-                    CaptureFeedback.playCaptureSound()
-                    CaptureFeedback.showSuccessIcon(on: statusItem)
+
+                    // Enqueue for upload — sound/checkmark/browser happen on upload success
+                    Task {
+                        await UploadService.shared.enqueue(result, onFeedback: { [weak self] event in
+                            self?.handleUploadFeedback(event)
+                        })
+                    }
                 } catch {
                     showCaptureError(error.localizedDescription)
                 }
@@ -303,40 +408,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 // Per locked decision: clicking desktop = fullscreen capture of the current display
                 do {
                     let result = try await captureEngine.captureFullscreen()
-                    lastCaptureResult = result
 
+                    // Flash fires at capture time (no sound — sound plays on upload success)
                     await CaptureFeedback.showCaptureFlash(in: result.capturedRect)
-                    CaptureFeedback.playCaptureSound()
-                    CaptureFeedback.showSuccessIcon(on: statusItem)
+
+                    // Enqueue for upload — sound/checkmark/browser happen on upload success
+                    Task {
+                        await UploadService.shared.enqueue(result, onFeedback: { [weak self] event in
+                            self?.handleUploadFeedback(event)
+                        })
+                    }
                 } catch {
                     showCaptureError(error.localizedDescription)
                 }
             }
         }
-    }
-
-    // MARK: - Error Display
-
-    /// Reopens the popover with an inline error banner.
-    ///
-    /// Error is shown inside the popover per locked decision:
-    /// capture errors must not appear as system notifications.
-    private func showCaptureError(_ message: String) {
-        captureError = message
-
-        // Rebuild the popover content with the error message included,
-        // then open it so the user sees the error inside the popover.
-        let rootView = PopoverRootView(
-            onRegionCapture: { [weak self] in self?.startRegionCapture() },
-            onFullscreenCapture: { [weak self] in self?.startFullscreenCapture() },
-            onWindowCapture: { [weak self] in self?.startWindowCapture() },
-            captureError: message
-        )
-        let hostingController = NSHostingController(rootView: rootView)
-        hostingController.sizingOptions = [.preferredContentSize]
-        popover.contentViewController = hostingController
-
-        showPopover()
     }
 
     // MARK: - Event Monitor

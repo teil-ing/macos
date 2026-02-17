@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Capture a screenshot and have a shareable teil.ing URL on the clipboard in seconds — zero friction from capture to share.
-**Current focus:** Phase 5 — Upload Service (next phase)
+**Current focus:** Phase 5 — Upload Pipeline (in progress)
 
 ## Current Position
 
-Phase: 4 of 9 (Window Capture and Global Hotkeys) — COMPLETE
-Plan: 3 of 3 in current phase — COMPLETE
-Status: Phase 4 fully complete — window capture (CAPT-03) and global hotkeys (CAPT-04) human-verified across all 21 test scenarios
-Last activity: 2026-02-17 — Phase 4 Plan 03 (Verification) complete — all 21 scenarios approved, keyboard shortcut hints added to CaptureSection buttons
+Phase: 5 of 9 (Upload Pipeline) — IN PROGRESS
+Plan: 2 of 3 in current phase — COMPLETE
+Status: Phase 5 Plan 02 complete — upload spinner, error icon (CaptureFeedback), and upload error banner with Retry button (PopoverRootView) implemented
+Last activity: 2026-02-18 — Phase 5 Plan 02 complete — visual feedback layer for upload errors implemented; ready for Plan 03 integration
 
-Progress: [████░░░░░░] 40%
+Progress: [████░░░░░░] 44%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
+- Total plans completed: 11
 - Average duration: 7 min
-- Total execution time: 0.7 hours
+- Total execution time: 0.8 hours
 
 **By Phase:**
 
@@ -31,9 +31,10 @@ Progress: [████░░░░░░] 40%
 | 02-onboarding-and-keychain | 2/2 | 1 min | 1 min |
 | 03-capture-engine-region-and-fullscreen | 3/3 | 21 min | 7 min |
 | 04-window-capture-and-global-hotkeys | 3/3 | ~12 min | 4 min |
+| 05-upload-pipeline | 1/3 (in progress) | 5 min | 5 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (6 min), 03-02 (est. 5 min), 03-03 (~15 min incl. human verify), 04-01 (5 min)
+- Last 5 plans: 03-02 (est. 5 min), 03-03 (~15 min incl. human verify), 04-01 (5 min), 05-01 (est.), 05-02 (5 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -86,6 +87,16 @@ Recent decisions affecting current work:
 - [Phase 04-02]: fromHotkey: Bool = false parameter on capture methods — DRY single code path; hotkey path skips closePopover() and the 200ms popover-dismiss delay
 - [Phase 04-02]: Shortcut conflict handling is silent — KeyboardShortcuts handles gracefully if another app holds the shortcut
 - [Phase 04-03]: Keyboard shortcut hints (Cmd+Shift+X/S/C) added to CaptureSection buttons — discovered during human verification as a discoverability improvement
+- [Phase 05-01]: UploadService is a Swift actor (not @MainActor) — runs on its own executor; all NSPasteboard and NSWorkspace calls wrapped in MainActor.run
+- [Phase 05-01]: Serial FIFO queue via chained Task pattern: uploadTask = Task { await previousTask?.value; ... } — idiomatic Swift concurrency, no OperationQueue or locks
+- [Phase 05-01]: pendingCount snapshot before async gap determines last-wins clipboard/browser semantics (capturedPendingCount == pendingCount after upload identifies last)
+- [Phase 05-01]: 401 Unauthorized rethrows immediately in performWithRetry — never consumes a retry attempt
+- [Phase 05-01]: Retry-After header parsed from 429 response; falls back to pow(2, attempt) if absent
+- [Phase 05-01]: failedCapture and lastError are private(set) actor properties — Plan 02 reads them for Retry button and error banner
+- [Phase 05-02]: showUploadSpinner uses CABasicAnimation(keyPath: transform.rotation.z) with repeatCount .infinity — smooth native animation without polling
+- [Phase 05-02]: showErrorIcon does NOT auto-revert — error icon persists until AppDelegate explicitly clears it via restoreNormalIcon
+- [Phase 05-02]: restoreNormalIcon changed from private to internal — Plan 03 AppDelegate integration requires direct call access
+- [Phase 05-02]: wantsLayer=true on NSStatusItem.button required before adding CABasicAnimation — AppKit views have no backing layer by default
 
 ### Pending Todos
 
@@ -99,6 +110,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-17
-Stopped at: Completed 04-03-PLAN.md (Verification — all 21 window capture and global hotkey scenarios human-approved; keyboard shortcut hints added to CaptureSection; Phase 4 fully complete)
+Last session: 2026-02-18
+Stopped at: Completed 05-01-PLAN.md (UploadService actor and models — UploadResponse, UploadError, serial chained-Task queue, multipart POST, retry pipeline, clipboard, browser open; SUMMARY created)
 Resume file: None

@@ -38,6 +38,7 @@ Progress: [████░░░░░░] 44%
 - Trend: Stable
 
 *Updated after each plan completion*
+| Phase 05-upload-pipeline P03 | 2 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -97,6 +98,10 @@ Recent decisions affecting current work:
 - [Phase 05-02]: showErrorIcon does NOT auto-revert — error icon persists until AppDelegate explicitly clears it via restoreNormalIcon
 - [Phase 05-02]: restoreNormalIcon changed from private to internal — Plan 03 AppDelegate integration requires direct call access
 - [Phase 05-02]: wantsLayer=true on NSStatusItem.button required before adding CABasicAnimation — AppKit views have no backing layer by default
+- [Phase 05-upload-pipeline]: rebuildPopoverContent() called every showPopover() — ensures popover always reflects current error state
+- [Phase 05-upload-pipeline]: playCaptureSound() removed from capture paths — sound deferred to uploadSucceeded event only
+- [Phase 05-upload-pipeline]: lastCaptureResult property removed — UploadService.failedCapture handles Retry retention internally
+- [Phase 05-upload-pipeline]: Upload error icon acknowledged on popover open — restoreNormalIcon called when uploadError != nil
 
 ### Pending Todos
 
@@ -111,5 +116,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 05-01-PLAN.md (UploadService actor and models — UploadResponse, UploadError, serial chained-Task queue, multipart POST, retry pipeline, clipboard, browser open; SUMMARY created)
+Stopped at: Checkpoint: 05-03 Task 2 human-verify — AppDelegate upload pipeline wired (Task 1 complete, efdec7c); awaiting end-to-end upload pipeline verification before plan completion
 Resume file: None

@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Capture a screenshot and have a shareable teil.ing URL on the clipboard in seconds — zero friction from capture to share.
-**Current focus:** Phase 5 — Upload Pipeline (complete)
+**Current focus:** Phase 6 — EXIF Stripping and Behavior Toggles (complete)
 
 ## Current Position
 
-Phase: 5 of 9 (Upload Pipeline) — COMPLETE
-Plan: 3 of 3 in current phase — COMPLETE
-Status: Phase 5 complete — full capture-to-upload pipeline wired and human-verified end-to-end
-Last activity: 2026-02-18 — Phase 5 Plan 03 complete — AppDelegate upload pipeline integration verified; ready for Phase 6
+Phase: 6 of 9 (EXIF Stripping and Behavior Toggles) — COMPLETE
+Plan: 1 of 1 in current phase — COMPLETE
+Status: Phase 6 complete — PreferencesStore wired into UploadService and AppDelegate; all three preference toggles active with ON defaults
+Last activity: 2026-02-18 — Phase 6 Plan 01 complete — preference-gated upload pipeline; EXIF stripping, clipboard copy, browser open all toggle-controlled
 
-Progress: [█████░░░░░] 52%
+Progress: [██████░░░░] 58%
 
 ## Performance Metrics
 
@@ -32,13 +32,15 @@ Progress: [█████░░░░░] 52%
 | 03-capture-engine-region-and-fullscreen | 3/3 | 21 min | 7 min |
 | 04-window-capture-and-global-hotkeys | 3/3 | ~12 min | 4 min |
 | 05-upload-pipeline | 3/3 | 7 min | 2 min |
+| 06-exif-stripping-and-behavior-toggles | 1/1 | 3 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-03 (~15 min incl. human verify), 04-01 (5 min), 05-01 (est.), 05-02 (5 min), 05-03 (2 min)
+- Last 5 plans: 04-01 (5 min), 05-01 (est.), 05-02 (5 min), 05-03 (2 min), 06-01 (3 min)
 - Trend: Stable
 
 *Updated after each plan completion*
 | Phase 05-upload-pipeline P03 | 2 | 1 tasks | 1 files |
+| Phase 06-exif-stripping-and-behavior-toggles P01 | 3 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -102,6 +104,12 @@ Recent decisions affecting current work:
 - [Phase 05-upload-pipeline]: playCaptureSound() removed from capture paths — sound deferred to uploadSucceeded event only
 - [Phase 05-upload-pipeline]: lastCaptureResult property removed — UploadService.failedCapture handles Retry retention internally
 - [Phase 05-upload-pipeline]: Upload error icon acknowledged on popover open — restoreNormalIcon called when uploadError != nil
+- [Phase 06-exif-stripping-and-behavior-toggles]: PreferencesStore uses ObservableObject (not @Observable macro) — @Observable incompatible with @AppStorage (converts stored properties to computed, blocking property wrapper composition)
+- [Phase 06-exif-stripping-and-behavior-toggles]: Bool preference values passed as enqueue() parameters at capture time — no actor-crossing needed; PreferencesStore is @MainActor, UploadService is actor
+- [Phase 06-exif-stripping-and-behavior-toggles]: pref_ prefix on all UserDefaults keys (pref_stripExif, pref_openInBrowser, pref_clipboardCopy) to avoid collision with KeyboardShortcuts library namespace
+- [Phase 06-exif-stripping-and-behavior-toggles]: stripExif form field omitted entirely when false — API contract specifies only "true" value; absence = no stripping
+- [Phase 06-exif-stripping-and-behavior-toggles]: retry() passes current preference values at retry time (not original capture-time values) — honours preference changes made between failure and retry
+- [Phase 06-exif-stripping-and-behavior-toggles]: performUpload() Bool parameters renamed to shouldOpenInBrowser/shouldCopyToClipboard to avoid shadowing private openInBrowser(_:) method
 
 ### Pending Todos
 
@@ -116,5 +124,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 05-03-PLAN.md (Upload pipeline integration — AppDelegate wired to UploadService, feedback state machine, error display, retry; human-verified end-to-end)
+Stopped at: Completed 06-01-PLAN.md (EXIF stripping + behavior toggles — PreferencesStore wired into UploadService and AppDelegate; three preference toggles active with ON defaults; zero new dependencies)
 Resume file: None

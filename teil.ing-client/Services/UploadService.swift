@@ -49,12 +49,19 @@ actor UploadService {
     ///
     /// Chains a new Task onto the current uploadTask for serial execution.
     /// Only the last enqueued upload will copy the URL to clipboard and open the browser.
+    /// Preference values are snapshotted at enqueue time — no actor-crossing needed during upload.
     func enqueue(
         _ capture: CaptureResult,
+        stripExif: Bool,
+        openInBrowser: Bool,
+        clipboardCopy: Bool,
         onFeedback: @MainActor @Sendable @escaping (UploadFeedbackEvent) -> Void
     ) {
         pendingCount += 1
         let capturedPendingCount = pendingCount
+        let capturedStripExif = stripExif
+        let capturedOpenInBrowser = openInBrowser
+        let capturedClipboardCopy = clipboardCopy
         failedCapture = nil
         lastError = nil
 
@@ -64,15 +71,32 @@ actor UploadService {
             await self.performUpload(
                 capture: capture,
                 capturedPendingCount: capturedPendingCount,
+                stripExif: capturedStripExif,
+                openInBrowser: capturedOpenInBrowser,
+                clipboardCopy: capturedClipboardCopy,
                 onFeedback: onFeedback
             )
         }
     }
 
     /// Retry the last failed upload, if one exists.
-    func retry(onFeedback: @MainActor @Sendable @escaping (UploadFeedbackEvent) -> Void) {
+    ///
+    /// Passes current preference values at retry time so any preference changes
+    /// made between failure and retry are honoured.
+    func retry(
+        stripExif: Bool,
+        openInBrowser: Bool,
+        clipboardCopy: Bool,
+        onFeedback: @MainActor @Sendable @escaping (UploadFeedbackEvent) -> Void
+    ) {
         if let capture = failedCapture {
-            enqueue(capture, onFeedback: onFeedback)
+            enqueue(
+                capture,
+                stripExif: stripExif,
+                openInBrowser: openInBrowser,
+                clipboardCopy: clipboardCopy,
+                onFeedback: onFeedback
+            )
         }
     }
 
@@ -81,6 +105,9 @@ actor UploadService {
     private func performUpload(
         capture: CaptureResult,
         capturedPendingCount: Int,
+        stripExif: Bool,
+        openInBrowser: Bool,
+        clipboardCopy: Bool,
         onFeedback: @MainActor @Sendable @escaping (UploadFeedbackEvent) -> Void
     ) async {
         await onFeedback(.uploadStarted)
@@ -102,8 +129,8 @@ actor UploadService {
             return
         }
 
-        // Step 3: Build multipart request.
-        let (request, bodyData) = buildMultipartRequest(apiKey: apiKey, pngData: pngData)
+        // Step 3: Build multipart request (stripExif field conditionally included).
+        let (request, bodyData) = buildMultipartRequest(apiKey: apiKey, pngData: pngData, stripExif: stripExif)
 
         // Step 4: Perform upload with retry.
         do {
@@ -114,8 +141,12 @@ actor UploadService {
             // Step 5: Post-upload actions — only the last queued upload triggers clipboard/browser.
             let isLast = capturedPendingCount == pendingCount
             if isLast {
-                await copyToClipboard(result.shareUrl)
-                await openInBrowser(result.shareUrl)
+                if clipboardCopy {
+                    await copyToClipboard(result.shareUrl)
+                }
+                if openInBrowser {
+                    await openInBrowser(result.shareUrl)
+                }
             }
 
             lastError = nil
@@ -134,7 +165,7 @@ actor UploadService {
 
     // MARK: - Private: Multipart Request Builder
 
-    private func buildMultipartRequest(apiKey: String, pngData: Data) -> (URLRequest, Data) {
+    private func buildMultipartRequest(apiKey: String, pngData: Data, stripExif: Bool) -> (URLRequest, Data) {
         let boundary = "Boundary-\(UUID().uuidString)"
         let url = URL(string: "https://teil.ing/api/v1/upload")!
 
@@ -145,12 +176,25 @@ actor UploadService {
         request.timeoutInterval = 30
 
         var body = Data()
+
+        // File field (always required)
         body.append("--\(boundary)\r\n")
         body.append("Content-Disposition: form-data; name=\"file\"; filename=\"screenshot.png\"\r\n")
         body.append("Content-Type: image/png\r\n")
         body.append("\r\n")
         body.append(pngData)
         body.append("\r\n")
+
+        // stripExif field — only included when preference is ON.
+        // API contract: omit the field entirely when stripping is off (do NOT send stripExif=false).
+        if stripExif {
+            body.append("--\(boundary)\r\n")
+            body.append("Content-Disposition: form-data; name=\"stripExif\"\r\n")
+            body.append("\r\n")
+            body.append("true")
+            body.append("\r\n")
+        }
+
         body.append("--\(boundary)--\r\n")
 
         return (request, body)

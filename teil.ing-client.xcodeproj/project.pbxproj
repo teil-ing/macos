@@ -12,6 +12,7 @@
 		2C36B92ACD493D01DB3BBF02 /* CaptureEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04ABF06C86D6AE92C0CBC4D8 /* CaptureEngine.swift */; };
 		344652B52AD6DB7EDA5FAB83 /* StreamCaptureBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B81FC0B1570C3A7DABAC5B54 /* StreamCaptureBridge.swift */; };
 		4430E4C2DB797C284DB455F9 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DF3404403957C6127C6AF8 /* KeychainService.swift */; };
+		538A11BEDE77FF87F4273BF4 /* UploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11286FFD4E91BED24067A03F /* UploadService.swift */; };
 		5C873EE6760DF44690424A4F /* OverlayCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169AE4303DE7180CDD3A95F6 /* OverlayCoordinator.swift */; };
 		6557F019E5684905950BAF6B /* CrossMonitorStitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6946776B2A0FD372528A677 /* CrossMonitorStitcher.swift */; };
 		713092BC2FCBBCFCF8E03D6E /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = BE20488E9D885F9E6A993924 /* KeyboardShortcuts */; };
@@ -24,6 +25,8 @@
 		ACF036FBBB9800FFD64F9E89 /* HistorySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04D9491FC028C6675EE0198 /* HistorySection.swift */; };
 		B4A503F13E90A57790AC3F41 /* WindowSelectionOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF80C8EE166F12938BAECE74 /* WindowSelectionOverlayView.swift */; };
 		BD3327977BFAF09A65DF6080 /* WindowSelectionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1BDA6C75FB9D6458F05C02 /* WindowSelectionCoordinator.swift */; };
+		C065ADB4C13D90B8B0FEC693 /* UploadResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ACC5A437F11482181CFFBF /* UploadResponse.swift */; };
+		CABCDA558A792C8CB7826BE2 /* PreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F332AA95EDADAACBE2013279 /* PreferencesStore.swift */; };
 		CC096D043FDE10F76B00D80A /* HotkeyMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5576D5A3E4BF4D32E477CB95 /* HotkeyMonitor.swift */; };
 		CD7571658B028D36436443B9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30B02122931ACB9EF7603C7 /* AppDelegate.swift */; };
 		D99F4B871A0EC1530359C44D /* CaptureSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A7E4F5870AEC3F97ED8639 /* CaptureSection.swift */; };
@@ -35,6 +38,7 @@
 
 /* Begin PBXFileReference section */
 		04ABF06C86D6AE92C0CBC4D8 /* CaptureEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureEngine.swift; sourceTree = "<group>"; };
+		11286FFD4E91BED24067A03F /* UploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadService.swift; sourceTree = "<group>"; };
 		169AE4303DE7180CDD3A95F6 /* OverlayCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayCoordinator.swift; sourceTree = "<group>"; };
 		18DF3404403957C6127C6AF8 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		1F1BDA6C75FB9D6458F05C02 /* WindowSelectionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSelectionCoordinator.swift; sourceTree = "<group>"; };
@@ -46,6 +50,7 @@
 		52A8B355EB8ACE6F7AB81DA5 /* teil_ing_client.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = teil_ing_client.entitlements; sourceTree = "<group>"; };
 		5576D5A3E4BF4D32E477CB95 /* HotkeyMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyMonitor.swift; sourceTree = "<group>"; };
 		5B75AC409AE3C9BA83581CEE /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		75ACC5A437F11482181CFFBF /* UploadResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadResponse.swift; sourceTree = "<group>"; };
 		79FE129C6A4205DC4ED337DE /* teil_ing_clientApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = teil_ing_clientApp.swift; sourceTree = "<group>"; };
 		814583DD4F976A375EE3DBC4 /* OnboardingWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWindowController.swift; sourceTree = "<group>"; };
 		A97256E7981DEDBD082B4D40 /* PopoverFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverFooterView.swift; sourceTree = "<group>"; };
@@ -60,6 +65,7 @@
 		DAD361891CBFD8EC7D9217D1 /* PopoverRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverRootView.swift; sourceTree = "<group>"; };
 		E401D2612FBAAB3278E3E38A /* CaptureResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureResult.swift; sourceTree = "<group>"; };
 		E513EEE6F5A576C862945AF1 /* SelectionOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionOverlayView.swift; sourceTree = "<group>"; };
+		F332AA95EDADAACBE2013279 /* PreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				E401D2612FBAAB3278E3E38A /* CaptureResult.swift */,
+				75ACC5A437F11482181CFFBF /* UploadResponse.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -145,8 +152,10 @@
 				18DF3404403957C6127C6AF8 /* KeychainService.swift */,
 				169AE4303DE7180CDD3A95F6 /* OverlayCoordinator.swift */,
 				2636850C839B31C96E837D77 /* PermissionService.swift */,
+				F332AA95EDADAACBE2013279 /* PreferencesStore.swift */,
 				CE6D7FE277E3A1F19C33FD18 /* ScreenshotCapture.swift */,
 				B81FC0B1570C3A7DABAC5B54 /* StreamCaptureBridge.swift */,
+				11286FFD4E91BED24067A03F /* UploadService.swift */,
 				1F1BDA6C75FB9D6458F05C02 /* WindowSelectionCoordinator.swift */,
 			);
 			path = Services;
@@ -243,9 +252,12 @@
 				F2AAB53279FDDB1C49CA8D3E /* PermissionService.swift in Sources */,
 				AC145F60D0E6BEF8EA4DB645 /* PopoverFooterView.swift in Sources */,
 				21C5A036B5B0348E3AF8B71B /* PopoverRootView.swift in Sources */,
+				CABCDA558A792C8CB7826BE2 /* PreferencesStore.swift in Sources */,
 				DC5A39D572A9C3F2A0A5CF2C /* ScreenshotCapture.swift in Sources */,
 				8C64C92FE4C5313EABD79442 /* SelectionOverlayView.swift in Sources */,
 				344652B52AD6DB7EDA5FAB83 /* StreamCaptureBridge.swift in Sources */,
+				C065ADB4C13D90B8B0FEC693 /* UploadResponse.swift in Sources */,
+				538A11BEDE77FF87F4273BF4 /* UploadService.swift in Sources */,
 				BD3327977BFAF09A65DF6080 /* WindowSelectionCoordinator.swift in Sources */,
 				B4A503F13E90A57790AC3F41 /* WindowSelectionOverlayView.swift in Sources */,
 				AC8737301B1E097457FB19BB /* teil_ing_clientApp.swift in Sources */,

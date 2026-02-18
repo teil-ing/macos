@@ -277,11 +277,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Retry Upload
 
     /// Re-enqueues the last failed upload into UploadService.
+    ///
+    /// Passes current preference values at retry time so any changes made
+    /// between failure and retry are honoured.
     private func retryUpload() {
         Task {
-            await UploadService.shared.retry(onFeedback: { [weak self] event in
-                self?.handleUploadFeedback(event)
-            })
+            await UploadService.shared.retry(
+                stripExif: PreferencesStore.shared.stripExif,
+                openInBrowser: PreferencesStore.shared.openInBrowser,
+                clipboardCopy: PreferencesStore.shared.clipboardCopy,
+                onFeedback: { [weak self] event in
+                    self?.handleUploadFeedback(event)
+                }
+            )
         }
     }
 
@@ -316,9 +324,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
                 // Enqueue for upload — sound/checkmark/browser happen on upload success
                 Task {
-                    await UploadService.shared.enqueue(result, onFeedback: { [weak self] event in
-                        self?.handleUploadFeedback(event)
-                    })
+                    await UploadService.shared.enqueue(
+                        result,
+                        stripExif: PreferencesStore.shared.stripExif,
+                        openInBrowser: PreferencesStore.shared.openInBrowser,
+                        clipboardCopy: PreferencesStore.shared.clipboardCopy,
+                        onFeedback: { [weak self] event in
+                            self?.handleUploadFeedback(event)
+                        }
+                    )
                 }
             } catch {
                 showCaptureError(error.localizedDescription)
@@ -347,9 +361,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
                 // Enqueue for upload — sound/checkmark/browser happen on upload success
                 Task {
-                    await UploadService.shared.enqueue(result, onFeedback: { [weak self] event in
-                        self?.handleUploadFeedback(event)
-                    })
+                    await UploadService.shared.enqueue(
+                        result,
+                        stripExif: PreferencesStore.shared.stripExif,
+                        openInBrowser: PreferencesStore.shared.openInBrowser,
+                        clipboardCopy: PreferencesStore.shared.clipboardCopy,
+                        onFeedback: { [weak self] event in
+                            self?.handleUploadFeedback(event)
+                        }
+                    )
                 }
             } catch {
                 showCaptureError(error.localizedDescription)
@@ -396,9 +416,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
                     // Enqueue for upload — sound/checkmark/browser happen on upload success
                     Task {
-                        await UploadService.shared.enqueue(result, onFeedback: { [weak self] event in
-                            self?.handleUploadFeedback(event)
-                        })
+                        await UploadService.shared.enqueue(
+                            result,
+                            stripExif: PreferencesStore.shared.stripExif,
+                            openInBrowser: PreferencesStore.shared.openInBrowser,
+                            clipboardCopy: PreferencesStore.shared.clipboardCopy,
+                            onFeedback: { [weak self] event in
+                                self?.handleUploadFeedback(event)
+                            }
+                        )
                     }
                 } catch {
                     showCaptureError(error.localizedDescription)
@@ -414,9 +440,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
                     // Enqueue for upload — sound/checkmark/browser happen on upload success
                     Task {
-                        await UploadService.shared.enqueue(result, onFeedback: { [weak self] event in
-                            self?.handleUploadFeedback(event)
-                        })
+                        await UploadService.shared.enqueue(
+                            result,
+                            stripExif: PreferencesStore.shared.stripExif,
+                            openInBrowser: PreferencesStore.shared.openInBrowser,
+                            clipboardCopy: PreferencesStore.shared.clipboardCopy,
+                            onFeedback: { [weak self] event in
+                                self?.handleUploadFeedback(event)
+                            }
+                        )
                     }
                 } catch {
                     showCaptureError(error.localizedDescription)

@@ -89,7 +89,7 @@ final class HistoryStore: ObservableObject {
     /// Fetches entries sorted oldest-first, then deletes the prefix that pushes
     /// the total over the 50-entry cap. Thumbnail files are deleted after the DB records.
     private func evictOldEntriesIfNeeded() {
-        var descriptor = FetchDescriptor<HistoryEntry>(
+        let descriptor = FetchDescriptor<HistoryEntry>(
             sortBy: [SortDescriptor(\.timestamp, order: .forward)]
         )
         guard let all = try? context.fetch(descriptor), all.count > 50 else { return }

@@ -238,7 +238,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             uploadError = nil
             CaptureFeedback.showUploadSpinner(on: statusItem)
 
-        case .uploadSucceeded(let shareUrl):
+        case .uploadSucceeded(let shareUrl, _):
             _ = shareUrl  // clipboard/browser handled by UploadService internally
             CaptureFeedback.stopUploadSpinner(on: statusItem)
             CaptureFeedback.playCaptureSound()

@@ -6,7 +6,7 @@ import Foundation
 /// Events emitted by UploadService to drive UI feedback on the main actor.
 enum UploadFeedbackEvent: Sendable {
     case uploadStarted
-    case uploadSucceeded(shareUrl: String)
+    case uploadSucceeded(shareUrl: String, capture: CaptureResult)
     case uploadFailed(error: UploadError)
 }
 
@@ -72,8 +72,8 @@ actor UploadService {
                 capture: capture,
                 capturedPendingCount: capturedPendingCount,
                 stripExif: capturedStripExif,
-                openInBrowser: capturedOpenInBrowser,
-                clipboardCopy: capturedClipboardCopy,
+                shouldOpenInBrowser: capturedOpenInBrowser,
+                shouldCopyToClipboard: capturedClipboardCopy,
                 onFeedback: onFeedback
             )
         }
@@ -106,8 +106,8 @@ actor UploadService {
         capture: CaptureResult,
         capturedPendingCount: Int,
         stripExif: Bool,
-        openInBrowser: Bool,
-        clipboardCopy: Bool,
+        shouldOpenInBrowser: Bool,
+        shouldCopyToClipboard: Bool,
         onFeedback: @MainActor @Sendable @escaping (UploadFeedbackEvent) -> Void
     ) async {
         await onFeedback(.uploadStarted)
@@ -141,16 +141,16 @@ actor UploadService {
             // Step 5: Post-upload actions — only the last queued upload triggers clipboard/browser.
             let isLast = capturedPendingCount == pendingCount
             if isLast {
-                if clipboardCopy {
+                if shouldCopyToClipboard {
                     await copyToClipboard(result.shareUrl)
                 }
-                if openInBrowser {
+                if shouldOpenInBrowser {
                     await openInBrowser(result.shareUrl)
                 }
             }
 
             lastError = nil
-            await onFeedback(.uploadSucceeded(shareUrl: result.shareUrl))
+            await onFeedback(.uploadSucceeded(shareUrl: result.shareUrl, capture: capture))
         } catch let uploadError as UploadError {
             failedCapture = capture
             lastError = uploadError

@@ -14,6 +14,7 @@
 		4430E4C2DB797C284DB455F9 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DF3404403957C6127C6AF8 /* KeychainService.swift */; };
 		538A11BEDE77FF87F4273BF4 /* UploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11286FFD4E91BED24067A03F /* UploadService.swift */; };
 		5C873EE6760DF44690424A4F /* OverlayCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169AE4303DE7180CDD3A95F6 /* OverlayCoordinator.swift */; };
+		6001B8C0C77B96A32960FA86 /* HistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D0B338FCE68B3FFEFFCBFB /* HistoryStore.swift */; };
 		6557F019E5684905950BAF6B /* CrossMonitorStitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6946776B2A0FD372528A677 /* CrossMonitorStitcher.swift */; };
 		6585FEDDAB400D50E827243F /* ThumbnailService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFF43B32AEDA5B2AAA021FB /* ThumbnailService.swift */; };
 		713092BC2FCBBCFCF8E03D6E /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = BE20488E9D885F9E6A993924 /* KeyboardShortcuts */; };
@@ -52,6 +53,7 @@
 		4E1A2F03DCF529D0FA5AFD6C /* HistoryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryEntry.swift; sourceTree = "<group>"; };
 		4EFF43B32AEDA5B2AAA021FB /* ThumbnailService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailService.swift; sourceTree = "<group>"; };
 		52A8B355EB8ACE6F7AB81DA5 /* teil_ing_client.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = teil_ing_client.entitlements; sourceTree = "<group>"; };
+		54D0B338FCE68B3FFEFFCBFB /* HistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryStore.swift; sourceTree = "<group>"; };
 		5576D5A3E4BF4D32E477CB95 /* HotkeyMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyMonitor.swift; sourceTree = "<group>"; };
 		5B75AC409AE3C9BA83581CEE /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		75ACC5A437F11482181CFFBF /* UploadResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadResponse.swift; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 				04ABF06C86D6AE92C0CBC4D8 /* CaptureEngine.swift */,
 				4455AC96905B120220E2DE7A /* CaptureFeedback.swift */,
 				C6946776B2A0FD372528A677 /* CrossMonitorStitcher.swift */,
+				54D0B338FCE68B3FFEFFCBFB /* HistoryStore.swift */,
 				5576D5A3E4BF4D32E477CB95 /* HotkeyMonitor.swift */,
 				18DF3404403957C6127C6AF8 /* KeychainService.swift */,
 				169AE4303DE7180CDD3A95F6 /* OverlayCoordinator.swift */,
@@ -250,6 +253,7 @@
 				6557F019E5684905950BAF6B /* CrossMonitorStitcher.swift in Sources */,
 				8CF12B5954399FB5E4BAA1DD /* HistoryEntry.swift in Sources */,
 				ACF036FBBB9800FFD64F9E89 /* HistorySection.swift in Sources */,
+				6001B8C0C77B96A32960FA86 /* HistoryStore.swift in Sources */,
 				CC096D043FDE10F76B00D80A /* HotkeyMonitor.swift in Sources */,
 				4430E4C2DB797C284DB455F9 /* KeychainService.swift in Sources */,
 				0C679B94FD7402456A78E8F5 /* OnboardingView.swift in Sources */,

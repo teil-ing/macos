@@ -130,13 +130,12 @@ Plans:
   2. Clicking the copy-URL action for a history entry copies that entry's share URL to the clipboard
   3. The history list persists across app restarts — entries from a previous session are visible after relaunching the app
   4. History thumbnails are stored as files in Application Support (not in UserDefaults); the history list is capped at 50 entries with oldest entries evicted
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 07-01: HistoryStore — @Published list of UploadRecord (id, shareUrl, thumbnailUrl, imageUrl, timestamp); macOS 14+ SwiftData backend; macOS 13 Codable+JSON fallback; thumbnail files in ~/Library/Application Support/teilingClient/thumbnails/
-- [ ] 07-02: Thumbnail generation — CGImage → resized thumbnail using ImageIO; saved to disk at upload time; loaded lazily for display
-- [ ] 07-03: HistoryView — SwiftUI List with thumbnail Image, relative timestamp (DateComponentsFormatter), copy-URL Button; integrated into menu bar popover
-- [ ] 07-04: LRU eviction — HistoryStore enforces 50-item max; oldest entry file removed from disk when limit exceeded
+- [ ] 07-01-PLAN.md — Data layer: HistoryEntry SwiftData model, ThumbnailService, HistoryStore with LRU eviction, UploadFeedbackEvent extension
+- [ ] 07-02-PLAN.md — UI + integration: HistorySection rebuild, HistoryRowView, PopoverRootView widening, AppDelegate ModelContainer and history write wiring
+- [ ] 07-03-PLAN.md — Human verification of complete upload history feature (9 scenarios)
 
 ### Phase 8: Preferences Window
 **Goal**: A user can open a preferences window from the menu bar and manage their API key, reconfigure keyboard shortcuts, and toggle EXIF stripping and open-in-browser behavior — without the Dock icon appearing.
@@ -187,6 +186,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 4. Window Capture and Global Hotkeys | 0/3 | Not started | - |
 | 5. Upload Pipeline | 0/3 | Complete    | 2026-02-17 |
 | 6. EXIF Stripping and Behavior Toggles | 0/1 | Not started | - |
-| 7. Upload History | 0/4 | Not started | - |
+| 7. Upload History | 0/3 | Not started | - |
 | 8. Preferences Window | 0/4 | Not started | - |
 | 9. Polish and Distribution | 0/5 | Not started | - |

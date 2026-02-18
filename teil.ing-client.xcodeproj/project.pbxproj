@@ -32,6 +32,7 @@
 		B4A503F13E90A57790AC3F41 /* WindowSelectionOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF80C8EE166F12938BAECE74 /* WindowSelectionOverlayView.swift */; };
 		BD3327977BFAF09A65DF6080 /* WindowSelectionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1BDA6C75FB9D6458F05C02 /* WindowSelectionCoordinator.swift */; };
 		C065ADB4C13D90B8B0FEC693 /* UploadResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ACC5A437F11482181CFFBF /* UploadResponse.swift */; };
+		C84A325D1BF1E0351FA76927 /* ErrorPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A36000FFE90B65A17C61F6D /* ErrorPathTests.swift */; };
 		CABCDA558A792C8CB7826BE2 /* PreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F332AA95EDADAACBE2013279 /* PreferencesStore.swift */; };
 		CC096D043FDE10F76B00D80A /* HotkeyMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5576D5A3E4BF4D32E477CB95 /* HotkeyMonitor.swift */; };
 		CD7571658B028D36436443B9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30B02122931ACB9EF7603C7 /* AppDelegate.swift */; };
@@ -41,6 +42,16 @@
 		EFAE9486DCB9C506D2B04582 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4A8699592B3ECA0209739D /* OnboardingViewModel.swift */; };
 		F2AAB53279FDDB1C49CA8D3E /* PermissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2636850C839B31C96E837D77 /* PermissionService.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		20B1BA3DBCFF8E28AEFBE433 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7CBE121952EA345BCE749AFC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0D6AD409C8B89ECBEAFC89F0;
+			remoteInfo = "teil.ing-client";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		04ABF06C86D6AE92C0CBC4D8 /* CaptureEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureEngine.swift; sourceTree = "<group>"; };
@@ -61,7 +72,9 @@
 		5576D5A3E4BF4D32E477CB95 /* HotkeyMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyMonitor.swift; sourceTree = "<group>"; };
 		5B75AC409AE3C9BA83581CEE /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		5DDA4550CC0BA799E09CB978 /* HistoryRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryRowView.swift; sourceTree = "<group>"; };
+		6A36000FFE90B65A17C61F6D /* ErrorPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorPathTests.swift; sourceTree = "<group>"; };
 		75ACC5A437F11482181CFFBF /* UploadResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadResponse.swift; sourceTree = "<group>"; };
+		7692C7AE7E8C96C3F604576E /* teil.ing-clientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "teil.ing-clientTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		79FE129C6A4205DC4ED337DE /* teil_ing_clientApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = teil_ing_clientApp.swift; sourceTree = "<group>"; };
 		814583DD4F976A375EE3DBC4 /* OnboardingWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWindowController.swift; sourceTree = "<group>"; };
 		A12C97ADB87DD38629B37429 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
@@ -105,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				D57FD8412C278D2F498DA447 /* teil.ing-client.app */,
+				7692C7AE7E8C96C3F604576E /* teil.ing-clientTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -121,6 +135,14 @@
 				CF80C8EE166F12938BAECE74 /* WindowSelectionOverlayView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		2B9A8BA272BC772E1576A1CE /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				6A36000FFE90B65A17C61F6D /* ErrorPathTests.swift */,
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		2C0100339082E3D16C119290 /* teil.ing-client */ = {
@@ -161,6 +183,7 @@
 			isa = PBXGroup;
 			children = (
 				2C0100339082E3D16C119290 /* teil.ing-client */,
+				2B9A8BA272BC772E1576A1CE /* Tests */,
 				1E562F7BB12D2C9ADA57121E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -219,6 +242,24 @@
 			productReference = D57FD8412C278D2F498DA447 /* teil.ing-client.app */;
 			productType = "com.apple.product-type.application";
 		};
+		604EA338A86D16CAB83CD137 /* teil.ing-clientTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 41C42277DC91FF2441730E21 /* Build configuration list for PBXNativeTarget "teil.ing-clientTests" */;
+			buildPhases = (
+				5D40BF9F91179650F490BBE6 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				807C6C85CF6726B742A3B184 /* PBXTargetDependency */,
+			);
+			name = "teil.ing-clientTests";
+			packageProductDependencies = (
+			);
+			productName = "teil.ing-clientTests";
+			productReference = 7692C7AE7E8C96C3F604576E /* teil.ing-clientTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -229,6 +270,10 @@
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					0D6AD409C8B89ECBEAFC89F0 = {
+						DevelopmentTeam = 5A7M476YY2;
+						ProvisioningStyle = Automatic;
+					};
+					604EA338A86D16CAB83CD137 = {
 						DevelopmentTeam = 5A7M476YY2;
 						ProvisioningStyle = Automatic;
 					};
@@ -252,11 +297,20 @@
 			projectRoot = "";
 			targets = (
 				0D6AD409C8B89ECBEAFC89F0 /* teil.ing-client */,
+				604EA338A86D16CAB83CD137 /* teil.ing-clientTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		5D40BF9F91179650F490BBE6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C84A325D1BF1E0351FA76927 /* ErrorPathTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E5D4FE38579D47A93D9E4C59 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -298,6 +352,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		807C6C85CF6726B742A3B184 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0D6AD409C8B89ECBEAFC89F0 /* teil.ing-client */;
+			targetProxy = 20B1BA3DBCFF8E28AEFBE433 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		01535F320629FDC9333EB685 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -320,6 +382,26 @@
 				SDKROOT = macosx;
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		037376E5DC5C5C9B97300055 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ing.teil.clientTests;
+				SDKROOT = macosx;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/teil.ing-client.app/Contents/MacOS/teil.ing-client";
 			};
 			name = Release;
 		};
@@ -478,9 +560,38 @@
 			};
 			name = Release;
 		};
+		E37E58A501C5E04A08BB25D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ing.teil.clientTests;
+				SDKROOT = macosx;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/teil.ing-client.app/Contents/MacOS/teil.ing-client";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		41C42277DC91FF2441730E21 /* Build configuration list for PBXNativeTarget "teil.ing-clientTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E37E58A501C5E04A08BB25D0 /* Debug */,
+				037376E5DC5C5C9B97300055 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		995F24D395DBAA8D6F1FF061 /* Build configuration list for PBXNativeTarget "teil.ing-client" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

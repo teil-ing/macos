@@ -313,6 +313,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         showPopover()
     }
 
+    // MARK: - Screen Recording Permission Alert
+
+    /// Shows a modal NSAlert when Screen Recording permission is denied or revoked.
+    ///
+    /// Per locked decision: modal NSAlert (not inline in popover) with "Open Settings" button
+    /// that calls PermissionService.openScreenRecordingSettings().
+    private func presentScreenRecordingDeniedAlert() {
+        let alert = NSAlert()
+        alert.messageText = "Screen Recording Access Required"
+        alert.informativeText = "teil.ing needs Screen Recording permission to capture screenshots.\n\nOpen System Settings > Privacy & Security > Screen Recording and enable teil.ing."
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "Open Settings")
+        alert.addButton(withTitle: "Not Now")
+
+        let response = alert.runModal()
+        if response == .alertFirstButtonReturn {
+            PermissionService.openScreenRecordingSettings()
+        }
+    }
+
     // MARK: - Retry Upload
 
     /// Re-enqueues the last failed upload into UploadService.
@@ -345,6 +365,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             if !fromHotkey {
                 // Let the popover fully dismiss before showing the overlay
                 try? await Task.sleep(for: .milliseconds(200))
+            }
+
+            // Check screen recording permission before attempting capture
+            let hasPermission = await PermissionService.checkScreenRecordingPermission()
+            if !hasPermission {
+                presentScreenRecordingDeniedAlert()
+                return
             }
 
             guard let selectedRect = await overlayCoordinator.beginRegionSelection() else {
@@ -392,6 +419,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 try? await Task.sleep(for: .milliseconds(200))
             }
 
+            // Check screen recording permission before attempting capture
+            let hasPermission = await PermissionService.checkScreenRecordingPermission()
+            if !hasPermission {
+                presentScreenRecordingDeniedAlert()
+                return
+            }
+
             do {
                 let result = try await captureEngine.captureFullscreen()
 
@@ -427,6 +461,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             if !fromHotkey {
                 // Same 200ms delay as other capture modes — lets popover fully dismiss
                 try? await Task.sleep(for: .milliseconds(200))
+            }
+
+            // Check screen recording permission before attempting capture
+            let hasPermission = await PermissionService.checkScreenRecordingPermission()
+            if !hasPermission {
+                presentScreenRecordingDeniedAlert()
+                return
             }
 
             guard let selection = await windowSelectionCoordinator.beginWindowSelection() else {

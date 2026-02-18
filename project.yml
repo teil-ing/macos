@@ -64,3 +64,18 @@ targets:
         CODE_SIGN_STYLE: Automatic
         DEVELOPMENT_TEAM: 5A7M476YY2
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+  teil.ing-clientTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: Tests
+    dependencies:
+      - target: teil.ing-client
+    settings:
+      base:
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        PRODUCT_BUNDLE_IDENTIFIER: ing.teil.clientTests
+        GENERATE_INFOPLIST_FILE: YES

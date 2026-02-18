@@ -19,6 +19,7 @@ DERIVED_DATA="${BUILD_DIR}/DerivedData"
 APP_PATH="${BUILD_DIR}/${APP_NAME}.app"
 DMG_PATH="${BUILD_DIR}/${APP_NAME}-${VERSION}.dmg"
 BACKGROUND="Resources/dmg-background.png"
+VOLICON="Resources/AppIcon.icns"
 
 # Clean previous build artifacts
 rm -rf "${BUILD_DIR}"
@@ -40,6 +41,7 @@ cp -R "${DERIVED_DATA}/Build/Products/Release/${APP_NAME}.app" "${APP_PATH}"
 echo "==> [2/2] Creating DMG..."
 create-dmg \
   --volname "teil.ing" \
+  --volicon "${VOLICON}" \
   --background "${BACKGROUND}" \
   --window-pos 200 120 \
   --window-size 540 380 \

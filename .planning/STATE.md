@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 
 ## Current Position
 
-Phase: 8 of 9 (Preferences Window) — IN PROGRESS
-Plan: 1 of 2 in current phase — COMPLETE
-Status: Phase 8 Plan 01 complete — PreferencesWindowController and PreferencesView created with all three sections (Account, Shortcuts, Upload Settings); builds cleanly; ready for Plan 02 (gear button wiring)
-Last activity: 2026-02-18 — Phase 8 Plan 01 complete — preferences window controller and SwiftUI view implemented; xcodegen regenerated; build passes
+Phase: 8 of 9 (Preferences Window) — COMPLETE
+Plan: 2 of 2 in current phase — COMPLETE
+Status: Phase 8 fully complete — all 13 human verification scenarios passed; gear button wiring, preferences window lifecycle, API key management, shortcuts, and upload settings all verified
+Last activity: 2026-02-18 — Phase 8 Plan 02 complete — all 13 verification scenarios passed; Phase 8 done
 
-Progress: [████████░░] 81%
+Progress: [█████████░] 90%
 
 ## Performance Metrics
 
@@ -46,6 +46,7 @@ Progress: [████████░░] 81%
 | Phase 07-upload-history P02 | 2 | 2 tasks | 4 files |
 | Phase 07-upload-history P03 | <1 | 1 task (verify) | 1 file |
 | Phase 08-preferences-window P01 | 1 | 1 task | 4 files |
+| Phase 08-preferences-window P02 | 11 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -127,6 +128,7 @@ Recent decisions affecting current work:
 - [Phase 08-preferences-window]: PreferencesWindowController mirrors OnboardingWindowController pattern — NSWindow + activation policy .regular on open, .accessory on windowWillClose; isReleasedWhenClosed=false prevents deallocation; open() reuses existing window if isVisible
 - [Phase 08-preferences-window]: KeyboardShortcuts.reset(.regionCapture, .fullscreenCapture, .windowCapture) for Reset to Defaults — resetAll() sets to nil, reset() restores to default: value on Name
 - [Phase 08-preferences-window]: Duplicate shortcut detection only compares against others array (not self) in onChange — avoids false positive self-comparison; uses setShortcut(nil, for: name) to refuse conflict
+- [Phase 08-preferences-window]: onOpenPreferences closure injection pattern follows existing capture closure pattern — consistent architecture across all popover actions
 
 ### Pending Todos
 
@@ -141,5 +143,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 08-01-PLAN.md (Preferences window controller and SwiftUI view — PreferencesWindowController + PreferencesView with all three sections; xcodegen regenerated; build passes)
+Stopped at: Completed 08-02-PLAN.md — Phase 8 fully complete; all 13 verification scenarios approved by user
 Resume file: None

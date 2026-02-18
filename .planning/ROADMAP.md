@@ -147,31 +147,26 @@ Plans:
   3. User can see the current keyboard shortcut for each capture mode and record a new shortcut using the KeyboardShortcuts.Recorder UI
   4. EXIF stripping toggle and open-in-browser toggle are present in preferences and reflect the current preference state
   5. Changes to keyboard shortcuts take effect immediately without restarting the app
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 08-01: Preferences window scaffold — NSPanel (not SwiftUI Settings scene) to avoid Dock icon reappearance; .accessory activation policy restoration on close; opened from menu bar action
-- [ ] 08-02: API key settings section — masked text field showing last 8 chars; replace-key flow reuses onboarding validation; delete-key option with confirmation
-- [ ] 08-03: Keyboard shortcuts section — KeyboardShortcuts.Recorder for each of the three capture modes; bound to HotkeyMonitor registered shortcuts
-- [ ] 08-04: EXIF and browser toggle section — Toggle views bound to PreferencesStore @AppStorage values; persisted automatically
+- [ ] 08-01-PLAN.md — PreferencesWindowController (NSWindow + activation policy) + PreferencesView with all three sections (Account, Shortcuts, Upload Settings) + project.yml update
+- [ ] 08-02-PLAN.md — Wire gear button through PopoverFooterView/PopoverRootView/AppDelegate + human verification (13 scenarios)
 
 ### Phase 9: Polish and Distribution
-**Goal**: All error paths are surfaced gracefully, multi-monitor edge cases are verified, the app is code-signed, notarized, and packaged as a DMG ready for direct download distribution.
+**Goal**: All error paths are surfaced gracefully, the app is code-signed, notarized, and packaged as a DMG ready for direct download distribution via GitHub Releases.
 **Depends on**: Phase 8
 **Requirements**: (none — hardening and distribution work; all v1 requirements already covered)
 **Success Criteria** (what must be TRUE):
   1. Every error path (denied Screen Recording permission, missing API key, network failure, rate limit) shows the user a specific, actionable message rather than a silent failure
-  2. Region capture and fullscreen capture behave correctly when two or more external monitors are connected with different resolutions or arrangements
-  3. The app passes macOS notarization (no staple errors, no Gatekeeper quarantine warning on first open)
-  4. A user on a clean macOS 13 Ventura machine and a clean macOS 14 Sonoma machine can install from the DMG and reach a working capture-and-upload flow
-**Plans**: TBD
+  2. The app passes macOS notarization (no staple errors, no Gatekeeper quarantine warning on first open)
+  3. A build-dmg.sh script and GitHub Actions workflow automate the full archive, sign, notarize, DMG, and release pipeline
+**Plans**: 3 plans
 
 Plans:
-- [ ] 09-01: Error path audit — walk every error state (permission denied, Keychain failure, upload failure, rate limit, missing key on launch); ensure each has visible UI feedback
-- [ ] 09-02: Multi-monitor validation — test region capture spanning two displays; test fullscreen capture on secondary display; verify overlay window per-monitor placement
-- [ ] 09-03: Release build validation — Archive build test on macOS 13 VM and macOS 14 device; Keychain behavior, NSStatusItem retention, hotkey registration all confirmed in Release configuration
-- [ ] 09-04: Code signing and entitlements — Developer ID Application certificate; Hardened Runtime with required exceptions; entitlements file audit (Screen Recording, Keychain Sharing, no unnecessary sandbox)
-- [ ] 09-05: Notarization and DMG packaging — codesign --deep; notarytool submit; staple; create DMG with background and Applications symlink; verify Gatekeeper acceptance
+- [ ] 09-01-PLAN.md — Error path hardening: XCTest target, NSAlert for screen recording denial, permission checks in capture methods, error path unit tests
+- [ ] 09-02-PLAN.md — Build and distribution pipeline: entitlements audit, ExportOptions.plist, DMG background image, build-dmg.sh, GitHub Actions release.yml
+- [ ] 09-03-PLAN.md — Human verification of error paths and build infrastructure review
 
 ## Progress
 
@@ -188,4 +183,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. EXIF Stripping and Behavior Toggles | 0/1 | Not started | - |
 | 7. Upload History | 0/3 | Complete    | 2026-02-18 |
 | 8. Preferences Window | 0/4 | Not started | - |
-| 9. Polish and Distribution | 0/5 | Not started | - |
+| 9. Polish and Distribution | 0/3 | Not started | - |

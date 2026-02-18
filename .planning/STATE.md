@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 
 ## Current Position
 
-Phase: 7 of 9 (Upload History) — IN PROGRESS
-Plan: 2 of 3 in current phase — COMPLETE
-Status: Phase 7 Plan 02 complete — UI wired end-to-end: HistoryRowView, rebuilt HistorySection, PopoverRootView with 320pt width and HistoryStore injection, AppDelegate ModelContainer init and thumbnail/history writes on upload success
-Last activity: 2026-02-18 — Phase 7 Plan 02 complete — upload history UI integration; HistoryRowView, HistorySection, PopoverRootView (320pt), AppDelegate full pipeline wiring
+Phase: 7 of 9 (Upload History) — COMPLETE
+Plan: 3 of 3 in current phase — COMPLETE
+Status: Phase 7 complete — all 9 human verification scenarios passed; fix applied (List->ScrollView+LazyVStack in HistorySection for NSPopover zero-height bug); upload history feature fully verified
+Last activity: 2026-02-18 — Phase 7 Plan 03 complete — human verification passed; NSTableView zero-height-in-NSPopover fix applied; upload history ready for Phase 8
 
-Progress: [███████░░░] 70%
+Progress: [████████░░] 78%
 
 ## Performance Metrics
 
@@ -33,7 +33,7 @@ Progress: [███████░░░] 70%
 | 04-window-capture-and-global-hotkeys | 3/3 | ~12 min | 4 min |
 | 05-upload-pipeline | 3/3 | 7 min | 2 min |
 | 06-exif-stripping-and-behavior-toggles | 1/1 | 3 min | 3 min |
-| 07-upload-history | 1/3 | 21 min | 21 min |
+| 07-upload-history | 3/3 | ~24 min | 8 min |
 
 **Recent Trend:**
 - Last 5 plans: 04-01 (5 min), 05-01 (est.), 05-02 (5 min), 05-03 (2 min), 06-01 (3 min)
@@ -44,6 +44,7 @@ Progress: [███████░░░] 70%
 | Phase 06-exif-stripping-and-behavior-toggles P01 | 3 | 2 tasks | 4 files |
 | Phase 07-upload-history P01 | 21 | 2 tasks | 5 files |
 | Phase 07-upload-history P02 | 2 | 2 tasks | 4 files |
+| Phase 07-upload-history P03 | <1 | 1 task (verify) | 1 file |
 
 ## Accumulated Context
 
@@ -121,6 +122,7 @@ Recent decisions affecting current work:
 - [Phase 07-upload-history]: HistorySection List capped at 330pt maxHeight to prevent popover height explosion with many entries
 - [Phase 07-upload-history]: RelativeDateTimeFormatter stored as struct property — expensive to init, not created inside body
 - [Phase 07-upload-history]: TimelineView(.everyMinute) used in HistoryRowView for automatic relative timestamp refresh without polling
+- [Phase 07-upload-history]: List replaced with ScrollView+LazyVStack in HistorySection — NSTableView (backing List) collapses to zero height when nested in VStack inside NSPopover; LazyVStack renders correctly
 
 ### Pending Todos
 
@@ -135,5 +137,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 07-02-PLAN.md (Upload history UI integration — HistoryRowView, HistorySection, PopoverRootView 320pt, AppDelegate ModelContainer init and full upload→thumbnail→history pipeline)
+Stopped at: Completed 07-03-PLAN.md (Upload history human verification — all 9 scenarios passed; NSTableView zero-height fix applied; Phase 7 complete)
 Resume file: None

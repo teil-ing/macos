@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 4: Window Capture and Global Hotkeys** - Click-to-select window capture mode and configurable global keyboard shortcuts for all three capture modes
 - [x] **Phase 5: Upload Pipeline** - Automatic upload on capture, API key auth, clipboard copy, open-in-browser, upload error surfacing (completed 2026-02-17)
 - [ ] **Phase 6: EXIF Stripping and Behavior Toggles** - EXIF metadata stripping preference and open-in-browser toggle wired into upload
-- [ ] **Phase 7: Upload History** - Persistent upload history in menu bar dropdown with thumbnails, timestamps, and copy-URL action
+- [x] **Phase 7: Upload History** - Persistent upload history in menu bar dropdown with thumbnails, timestamps, and copy-URL action (completed 2026-02-18)
 - [ ] **Phase 8: Preferences Window** - Full preferences UI for API key management, keyboard shortcut configuration, EXIF toggle, and browser toggle
 - [ ] **Phase 9: Polish and Distribution** - Error path hardening, multi-monitor edge case validation, notarized DMG build and release pipeline
 
@@ -186,6 +186,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 4. Window Capture and Global Hotkeys | 0/3 | Not started | - |
 | 5. Upload Pipeline | 0/3 | Complete    | 2026-02-17 |
 | 6. EXIF Stripping and Behavior Toggles | 0/1 | Not started | - |
-| 7. Upload History | 0/3 | Not started | - |
+| 7. Upload History | 0/3 | Complete    | 2026-02-18 |
 | 8. Preferences Window | 0/4 | Not started | - |
 | 9. Polish and Distribution | 0/5 | Not started | - |

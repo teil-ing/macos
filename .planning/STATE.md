@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Capture a screenshot and have a shareable teil.ing URL on the clipboard in seconds — zero friction from capture to share.
-**Current focus:** Phase 6 — EXIF Stripping and Behavior Toggles (complete)
+**Current focus:** Phase 7 — Upload History (in progress)
 
 ## Current Position
 
-Phase: 6 of 9 (EXIF Stripping and Behavior Toggles) — COMPLETE
-Plan: 1 of 1 in current phase — COMPLETE
-Status: Phase 6 complete — PreferencesStore wired into UploadService and AppDelegate; all three preference toggles active with ON defaults
-Last activity: 2026-02-18 — Phase 6 Plan 01 complete — preference-gated upload pipeline; EXIF stripping, clipboard copy, browser open all toggle-controlled
+Phase: 7 of 9 (Upload History) — IN PROGRESS
+Plan: 1 of 3 in current phase — COMPLETE
+Status: Phase 7 Plan 01 complete — data layer established: HistoryEntry SwiftData model, ThumbnailService, HistoryStore with 50-entry LRU eviction, UploadFeedbackEvent extended with CaptureResult
+Last activity: 2026-02-18 — Phase 7 Plan 01 complete — data layer for upload history; SwiftData model, thumbnail generation, history store, UploadFeedbackEvent extension
 
-Progress: [██████░░░░] 58%
+Progress: [██████░░░░] 62%
 
 ## Performance Metrics
 
@@ -33,6 +33,7 @@ Progress: [██████░░░░] 58%
 | 04-window-capture-and-global-hotkeys | 3/3 | ~12 min | 4 min |
 | 05-upload-pipeline | 3/3 | 7 min | 2 min |
 | 06-exif-stripping-and-behavior-toggles | 1/1 | 3 min | 3 min |
+| 07-upload-history | 1/3 | 21 min | 21 min |
 
 **Recent Trend:**
 - Last 5 plans: 04-01 (5 min), 05-01 (est.), 05-02 (5 min), 05-03 (2 min), 06-01 (3 min)
@@ -41,6 +42,7 @@ Progress: [██████░░░░] 58%
 *Updated after each plan completion*
 | Phase 05-upload-pipeline P03 | 2 | 1 tasks | 1 files |
 | Phase 06-exif-stripping-and-behavior-toggles P01 | 3 | 2 tasks | 4 files |
+| Phase 07-upload-history P01 | 21 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -110,6 +112,10 @@ Recent decisions affecting current work:
 - [Phase 06-exif-stripping-and-behavior-toggles]: stripExif form field omitted entirely when false — API contract specifies only "true" value; absence = no stripping
 - [Phase 06-exif-stripping-and-behavior-toggles]: retry() passes current preference values at retry time (not original capture-time values) — honours preference changes made between failure and retry
 - [Phase 06-exif-stripping-and-behavior-toggles]: performUpload() Bool parameters renamed to shouldOpenInBrowser/shouldCopyToClipboard to avoid shadowing private openInBrowser(_:) method
+- [Phase 07-upload-history]: HistoryEntry stores thumbnailPath as String (not URL) to avoid SwiftData URL encoding quirks
+- [Phase 07-upload-history]: HistoryStore is ObservableObject (not @Observable) matching Phase 6 PreferencesStore pattern
+- [Phase 07-upload-history]: CaptureResult threaded through UploadFeedbackEvent.uploadSucceeded to avoid AppDelegate stored-state race with concurrent queued uploads
+- [Phase 07-upload-history]: DB record deleted before thumbnail file — orphaned file safer than dangling DB record (Pitfall 3)
 
 ### Pending Todos
 
@@ -124,5 +130,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 06-01-PLAN.md (EXIF stripping + behavior toggles — PreferencesStore wired into UploadService and AppDelegate; three preference toggles active with ON defaults; zero new dependencies)
+Stopped at: Completed 07-01-PLAN.md (Upload history data layer — HistoryEntry SwiftData model, ThumbnailService, HistoryStore with 50-entry LRU eviction, UploadFeedbackEvent extended with CaptureResult)
 Resume file: None

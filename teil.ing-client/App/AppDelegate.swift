@@ -1,4 +1,5 @@
 import AppKit
+import SwiftData
 import SwiftUI
 
 @MainActor
@@ -12,6 +13,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var eventMonitor: Any?
     private var onboardingWindowController: OnboardingWindowController?
     private let hotkeyMonitor = HotkeyMonitor()
+
+    // MARK: - Persistence
+    private var modelContainer: ModelContainer!
+    private var historyStore: HistoryStore!
 
     // MARK: - Capture Services
     private let captureEngine = CaptureEngine()
@@ -102,6 +107,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Launch Completion
 
     private func completeLaunch() {
+        // Initialize SwiftData ModelContainer and HistoryStore before other setup.
+        // Fatal error is appropriate here — if SwiftData cannot create its store,
+        // the app cannot function correctly.
+        do {
+            modelContainer = try ModelContainer(for: HistoryEntry.self)
+            historyStore = HistoryStore(container: modelContainer)
+        } catch {
+            fatalError("SwiftData ModelContainer failed: \(error)")
+        }
+
         setupStatusItem()
         setupPopover()
         // setupHotkeyMonitor MUST come after setupStatusItem/setupPopover —
@@ -160,7 +175,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             onWindowCapture: { [weak self] in self?.startWindowCapture() },
             captureError: captureError,
             uploadError: uploadError,
-            onRetry: { [weak self] in self?.retryUpload() }
+            onRetry: { [weak self] in self?.retryUpload() },
+            historyStore: historyStore
         )
         let hostingController = NSHostingController(rootView: rootView)
         // preferredContentSize: enables content-adaptive height — popover grows/shrinks with content
@@ -185,7 +201,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             onWindowCapture: { [weak self] in self?.startWindowCapture() },
             captureError: captureError,
             uploadError: uploadError,
-            onRetry: { [weak self] in self?.retryUpload() }
+            onRetry: { [weak self] in self?.retryUpload() },
+            historyStore: historyStore
         )
         let hostingController = NSHostingController(rootView: rootView)
         hostingController.sizingOptions = [.preferredContentSize]
@@ -238,13 +255,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             uploadError = nil
             CaptureFeedback.showUploadSpinner(on: statusItem)
 
-        case .uploadSucceeded(let shareUrl, _):
+        case .uploadSucceeded(let shareUrl, let capture):
             _ = shareUrl  // clipboard/browser handled by UploadService internally
             CaptureFeedback.stopUploadSpinner(on: statusItem)
             CaptureFeedback.playCaptureSound()
             CaptureFeedback.showSuccessIcon(on: statusItem)
             // Upload succeeded — clear error state
             uploadError = nil
+            // Write history entry — thumbnail generation is synchronous on main actor
+            // (CGImage resize at 64px is negligibly fast; no background dispatch needed)
+            if let thumbnailPath = try? ThumbnailService.saveThumbnail(from: capture.image, id: UUID()) {
+                historyStore.addEntry(
+                    shareURL: shareUrl,
+                    thumbnailPath: thumbnailPath,
+                    timestamp: capture.timestamp
+                )
+            }
 
         case .uploadFailed(let error):
             CaptureFeedback.stopUploadSpinner(on: statusItem)

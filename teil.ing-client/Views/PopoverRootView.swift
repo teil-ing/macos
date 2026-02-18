@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 struct PopoverRootView: View {
@@ -13,6 +14,9 @@ struct PopoverRootView: View {
 
     /// Called when the user taps "Retry Upload". Non-nil when a retry action is available.
     var onRetry: (() -> Void)?
+
+    /// History store injected from AppDelegate — provides upload history to HistorySection.
+    @ObservedObject var historyStore: HistoryStore
 
     var body: some View {
         VStack(spacing: 0) {
@@ -68,18 +72,31 @@ struct PopoverRootView: View {
                 onWindowCapture: onWindowCapture
             )
             Divider()
-            HistorySection()
+            HistorySection(store: historyStore)
             Divider()
             PopoverFooterView()
         }
-        .frame(width: 280)
+        // Popover width widened from 280pt to 320pt — per locked decision for upload history phase
+        .frame(width: 320)
     }
 }
 
 #Preview {
-    PopoverRootView()
+    let container = try! ModelContainer(
+        for: HistoryEntry.self,
+        configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+    return PopoverRootView(historyStore: HistoryStore(container: container))
 }
 
 #Preview("Upload Error") {
-    PopoverRootView(uploadError: "API key is invalid or expired.", onRetry: {})
+    let container = try! ModelContainer(
+        for: HistoryEntry.self,
+        configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+    )
+    return PopoverRootView(
+        uploadError: "API key is invalid or expired.",
+        onRetry: {},
+        historyStore: HistoryStore(container: container)
+    )
 }

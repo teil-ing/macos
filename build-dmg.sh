@@ -40,7 +40,6 @@ cp -R "${DERIVED_DATA}/Build/Products/Release/${APP_NAME}.app" "${APP_PATH}"
 echo "==> [2/2] Creating DMG..."
 create-dmg \
   --volname "teil.ing" \
-  --volicon "${APP_PATH}/Contents/Resources/AppIcon.icns" \
   --background "${BACKGROUND}" \
   --window-pos 200 120 \
   --window-size 540 380 \
@@ -49,7 +48,7 @@ create-dmg \
   --hide-extension "${APP_NAME}.app" \
   --app-drop-link 410 185 \
   "${DMG_PATH}" \
-  "${APP_PATH}/../"
+  "${APP_PATH}"
 
 echo ""
 echo "==> Done! Packaged teil.ing v${VERSION}"

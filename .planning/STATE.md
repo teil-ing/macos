@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Capture a screenshot and have a shareable teil.ing URL on the clipboard in seconds — zero friction from capture to share.
-**Current focus:** Phase 8 — Preferences Window (in progress)
+**Current focus:** Phase 9 — Polish and Distribution (in progress)
 
 ## Current Position
 
-Phase: 8 of 9 (Preferences Window) — COMPLETE
-Plan: 2 of 2 in current phase — COMPLETE
-Status: Phase 8 fully complete — all 13 human verification scenarios passed; gear button wiring, preferences window lifecycle, API key management, shortcuts, and upload settings all verified
-Last activity: 2026-02-18 — Phase 8 Plan 02 complete — all 13 verification scenarios passed; Phase 8 done
+Phase: 9 of 9 (Polish and Distribution) — IN PROGRESS
+Plan: 1 and 2 of 3 in current phase — COMPLETE (01 and 02 done, 03 remaining)
+Status: Phase 9 Plan 01 complete — XCTest target added, 11 error path tests passing, screen recording denial NSAlert wired into all three capture methods
+Last activity: 2026-02-18 — Phase 9 Plan 01 complete — error path testing and screen recording alert implemented
 
-Progress: [█████████░] 90%
+Progress: [█████████░] 93%
 
 ## Performance Metrics
 
@@ -47,6 +47,8 @@ Progress: [█████████░] 90%
 | Phase 07-upload-history P03 | <1 | 1 task (verify) | 1 file |
 | Phase 08-preferences-window P01 | 1 | 1 task | 4 files |
 | Phase 08-preferences-window P02 | 11 | 2 tasks | 3 files |
+| Phase 09 P02 | 2 | 2 tasks | 5 files |
+| Phase 09-polish-and-distribution P01 | 3 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -129,6 +131,11 @@ Recent decisions affecting current work:
 - [Phase 08-preferences-window]: KeyboardShortcuts.reset(.regionCapture, .fullscreenCapture, .windowCapture) for Reset to Defaults — resetAll() sets to nil, reset() restores to default: value on Name
 - [Phase 08-preferences-window]: Duplicate shortcut detection only compares against others array (not self) in onChange — avoids false positive self-comparison; uses setShortcut(nil, for: name) to refuse conflict
 - [Phase 08-preferences-window]: onOpenPreferences closure injection pattern follows existing capture closure pattern — consistent architecture across all popover actions
+- [Phase 09]: Entitlements minimal (hardened-runtime only) with inline documentation of App Sandbox, TCC, and Keychain decisions
+- [Phase 09]: ditto -c -k --keepParent for notarization zip (not zip -qr) and xcodebuild -exportArchive for signing (not codesign --deep)
+- [Phase 09]: Temporary CI build.keychain with if:always() cleanup; notarize .app before wrapping in DMG (Apple-recommended order)
+- [Phase 09-polish-and-distribution]: GENERATE_INFOPLIST_FILE=YES required in xcodegen bundle.unit-test target settings for code signing to succeed
+- [Phase 09-polish-and-distribution]: Permission gate pattern: checkScreenRecordingPermission() check before capture in all three AppDelegate capture methods, with presentScreenRecordingDeniedAlert() modal on denial
 
 ### Pending Todos
 
@@ -143,5 +150,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 08-02-PLAN.md — Phase 8 fully complete; all 13 verification scenarios approved by user
+Stopped at: Completed 09-02-PLAN.md — distribution pipeline complete; entitlements audited, ExportOptions.plist, build-dmg.sh, release.yml, and DMG background all ready
 Resume file: None

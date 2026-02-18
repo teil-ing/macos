@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0C679B94FD7402456A78E8F5 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B75AC409AE3C9BA83581CEE /* OnboardingView.swift */; };
+		1F94EF02C641801A90EC0D35 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12C97ADB87DD38629B37429 /* PreferencesView.swift */; };
 		21C5A036B5B0348E3AF8B71B /* PopoverRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD361891CBFD8EC7D9217D1 /* PopoverRootView.swift */; };
 		2C36B92ACD493D01DB3BBF02 /* CaptureEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04ABF06C86D6AE92C0CBC4D8 /* CaptureEngine.swift */; };
 		344652B52AD6DB7EDA5FAB83 /* StreamCaptureBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B81FC0B1570C3A7DABAC5B54 /* StreamCaptureBridge.swift */; };
@@ -27,6 +28,7 @@
 		AC145F60D0E6BEF8EA4DB645 /* PopoverFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97256E7981DEDBD082B4D40 /* PopoverFooterView.swift */; };
 		AC8737301B1E097457FB19BB /* teil_ing_clientApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79FE129C6A4205DC4ED337DE /* teil_ing_clientApp.swift */; };
 		ACF036FBBB9800FFD64F9E89 /* HistorySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04D9491FC028C6675EE0198 /* HistorySection.swift */; };
+		B3FCF8258E855D01E91D0D8B /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114868C5080045BD746A44E0 /* PreferencesWindowController.swift */; };
 		B4A503F13E90A57790AC3F41 /* WindowSelectionOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF80C8EE166F12938BAECE74 /* WindowSelectionOverlayView.swift */; };
 		BD3327977BFAF09A65DF6080 /* WindowSelectionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1BDA6C75FB9D6458F05C02 /* WindowSelectionCoordinator.swift */; };
 		C065ADB4C13D90B8B0FEC693 /* UploadResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ACC5A437F11482181CFFBF /* UploadResponse.swift */; };
@@ -43,6 +45,7 @@
 /* Begin PBXFileReference section */
 		04ABF06C86D6AE92C0CBC4D8 /* CaptureEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureEngine.swift; sourceTree = "<group>"; };
 		11286FFD4E91BED24067A03F /* UploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadService.swift; sourceTree = "<group>"; };
+		114868C5080045BD746A44E0 /* PreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
 		169AE4303DE7180CDD3A95F6 /* OverlayCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayCoordinator.swift; sourceTree = "<group>"; };
 		18DF3404403957C6127C6AF8 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		1F1BDA6C75FB9D6458F05C02 /* WindowSelectionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSelectionCoordinator.swift; sourceTree = "<group>"; };
@@ -61,6 +64,7 @@
 		75ACC5A437F11482181CFFBF /* UploadResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadResponse.swift; sourceTree = "<group>"; };
 		79FE129C6A4205DC4ED337DE /* teil_ing_clientApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = teil_ing_clientApp.swift; sourceTree = "<group>"; };
 		814583DD4F976A375EE3DBC4 /* OnboardingWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWindowController.swift; sourceTree = "<group>"; };
+		A12C97ADB87DD38629B37429 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		A97256E7981DEDBD082B4D40 /* PopoverFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverFooterView.swift; sourceTree = "<group>"; };
 		AE4A8699592B3ECA0209739D /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		B30B02122931ACB9EF7603C7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -88,6 +92,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1B587DB6B9424E3E370240A9 /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
+				A12C97ADB87DD38629B37429 /* PreferencesView.swift */,
+				114868C5080045BD746A44E0 /* PreferencesWindowController.swift */,
+			);
+			path = Preferences;
+			sourceTree = "<group>";
+		};
 		1E562F7BB12D2C9ADA57121E /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -116,6 +129,7 @@
 				E9C859AC18AF3F3471D656B9 /* App */,
 				98A436E9AFF90F5721A61AC6 /* Models */,
 				A33702A6CA3A4FCE9C0AECE8 /* Onboarding */,
+				1B587DB6B9424E3E370240A9 /* Preferences */,
 				B79AA908498BB41070F69537 /* Services */,
 				1F953F40E21E6D1045260827 /* Views */,
 			);
@@ -268,6 +282,8 @@
 				AC145F60D0E6BEF8EA4DB645 /* PopoverFooterView.swift in Sources */,
 				21C5A036B5B0348E3AF8B71B /* PopoverRootView.swift in Sources */,
 				CABCDA558A792C8CB7826BE2 /* PreferencesStore.swift in Sources */,
+				1F94EF02C641801A90EC0D35 /* PreferencesView.swift in Sources */,
+				B3FCF8258E855D01E91D0D8B /* PreferencesWindowController.swift in Sources */,
 				DC5A39D572A9C3F2A0A5CF2C /* ScreenshotCapture.swift in Sources */,
 				8C64C92FE4C5313EABD79442 /* SelectionOverlayView.swift in Sources */,
 				344652B52AD6DB7EDA5FAB83 /* StreamCaptureBridge.swift in Sources */,

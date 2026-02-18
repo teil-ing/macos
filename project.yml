@@ -36,6 +36,7 @@ targets:
       - path: teil.ing-client/Services
       - path: teil.ing-client/Onboarding
       - path: teil.ing-client/Models
+      - path: teil.ing-client/Preferences
     resources:
       - path: teil.ing-client/Resources/Assets.xcassets
     info:

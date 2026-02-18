@@ -2,16 +2,18 @@ import SwiftUI
 import AppKit
 
 struct PopoverFooterView: View {
+    var onOpenPreferences: (() -> Void)?
+
     var body: some View {
         HStack {
             Button {
-                // Settings — wired in Phase 8
+                onOpenPreferences?()
             } label: {
                 Image(systemName: "gearshape")
                     .imageScale(.medium)
             }
             .buttonStyle(.plain)
-            .disabled(true)
+            .disabled(onOpenPreferences == nil)
 
             Spacer()
 
@@ -27,6 +29,6 @@ struct PopoverFooterView: View {
 }
 
 #Preview {
-    PopoverFooterView()
+    PopoverFooterView(onOpenPreferences: {})
         .frame(width: 280)
 }

@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Capture a screenshot and have a shareable teil.ing URL on the clipboard in seconds — zero friction from capture to share.
-**Current focus:** Phase 7 — Upload History (in progress)
+**Current focus:** Phase 8 — Preferences Window (in progress)
 
 ## Current Position
 
-Phase: 7 of 9 (Upload History) — COMPLETE
-Plan: 3 of 3 in current phase — COMPLETE
-Status: Phase 7 complete — all 9 human verification scenarios passed; fix applied (List->ScrollView+LazyVStack in HistorySection for NSPopover zero-height bug); upload history feature fully verified
-Last activity: 2026-02-18 — Phase 7 Plan 03 complete — human verification passed; NSTableView zero-height-in-NSPopover fix applied; upload history ready for Phase 8
+Phase: 8 of 9 (Preferences Window) — IN PROGRESS
+Plan: 1 of 2 in current phase — COMPLETE
+Status: Phase 8 Plan 01 complete — PreferencesWindowController and PreferencesView created with all three sections (Account, Shortcuts, Upload Settings); builds cleanly; ready for Plan 02 (gear button wiring)
+Last activity: 2026-02-18 — Phase 8 Plan 01 complete — preferences window controller and SwiftUI view implemented; xcodegen regenerated; build passes
 
-Progress: [████████░░] 78%
+Progress: [████████░░] 81%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
+- Total plans completed: 13
 - Average duration: 6 min
 - Total execution time: 0.9 hours
 
@@ -45,6 +45,7 @@ Progress: [████████░░] 78%
 | Phase 07-upload-history P01 | 21 | 2 tasks | 5 files |
 | Phase 07-upload-history P02 | 2 | 2 tasks | 4 files |
 | Phase 07-upload-history P03 | <1 | 1 task (verify) | 1 file |
+| Phase 08-preferences-window P01 | 1 | 1 task | 4 files |
 
 ## Accumulated Context
 
@@ -123,6 +124,9 @@ Recent decisions affecting current work:
 - [Phase 07-upload-history]: RelativeDateTimeFormatter stored as struct property — expensive to init, not created inside body
 - [Phase 07-upload-history]: TimelineView(.everyMinute) used in HistoryRowView for automatic relative timestamp refresh without polling
 - [Phase 07-upload-history]: List replaced with ScrollView+LazyVStack in HistorySection — NSTableView (backing List) collapses to zero height when nested in VStack inside NSPopover; LazyVStack renders correctly
+- [Phase 08-preferences-window]: PreferencesWindowController mirrors OnboardingWindowController pattern — NSWindow + activation policy .regular on open, .accessory on windowWillClose; isReleasedWhenClosed=false prevents deallocation; open() reuses existing window if isVisible
+- [Phase 08-preferences-window]: KeyboardShortcuts.reset(.regionCapture, .fullscreenCapture, .windowCapture) for Reset to Defaults — resetAll() sets to nil, reset() restores to default: value on Name
+- [Phase 08-preferences-window]: Duplicate shortcut detection only compares against others array (not self) in onChange — avoids false positive self-comparison; uses setShortcut(nil, for: name) to refuse conflict
 
 ### Pending Todos
 
@@ -137,5 +141,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 07-03-PLAN.md (Upload history human verification — all 9 scenarios passed; NSTableView zero-height fix applied; Phase 7 complete)
+Stopped at: Completed 08-01-PLAN.md (Preferences window controller and SwiftUI view — PreferencesWindowController + PreferencesView with all three sections; xcodegen regenerated; build passes)
 Resume file: None

@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 7 of 9 (Upload History) — IN PROGRESS
-Plan: 1 of 3 in current phase — COMPLETE
-Status: Phase 7 Plan 01 complete — data layer established: HistoryEntry SwiftData model, ThumbnailService, HistoryStore with 50-entry LRU eviction, UploadFeedbackEvent extended with CaptureResult
-Last activity: 2026-02-18 — Phase 7 Plan 01 complete — data layer for upload history; SwiftData model, thumbnail generation, history store, UploadFeedbackEvent extension
+Plan: 2 of 3 in current phase — COMPLETE
+Status: Phase 7 Plan 02 complete — UI wired end-to-end: HistoryRowView, rebuilt HistorySection, PopoverRootView with 320pt width and HistoryStore injection, AppDelegate ModelContainer init and thumbnail/history writes on upload success
+Last activity: 2026-02-18 — Phase 7 Plan 02 complete — upload history UI integration; HistoryRowView, HistorySection, PopoverRootView (320pt), AppDelegate full pipeline wiring
 
-Progress: [██████░░░░] 62%
+Progress: [███████░░░] 70%
 
 ## Performance Metrics
 
@@ -43,6 +43,7 @@ Progress: [██████░░░░] 62%
 | Phase 05-upload-pipeline P03 | 2 | 1 tasks | 1 files |
 | Phase 06-exif-stripping-and-behavior-toggles P01 | 3 | 2 tasks | 4 files |
 | Phase 07-upload-history P01 | 21 | 2 tasks | 5 files |
+| Phase 07-upload-history P02 | 2 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -116,6 +117,10 @@ Recent decisions affecting current work:
 - [Phase 07-upload-history]: HistoryStore is ObservableObject (not @Observable) matching Phase 6 PreferencesStore pattern
 - [Phase 07-upload-history]: CaptureResult threaded through UploadFeedbackEvent.uploadSucceeded to avoid AppDelegate stored-state race with concurrent queued uploads
 - [Phase 07-upload-history]: DB record deleted before thumbnail file — orphaned file safer than dangling DB record (Pitfall 3)
+- [Phase 07-upload-history]: Popover width widened from 280pt to 320pt to accommodate history list with thumbnails and action buttons
+- [Phase 07-upload-history]: HistorySection List capped at 330pt maxHeight to prevent popover height explosion with many entries
+- [Phase 07-upload-history]: RelativeDateTimeFormatter stored as struct property — expensive to init, not created inside body
+- [Phase 07-upload-history]: TimelineView(.everyMinute) used in HistoryRowView for automatic relative timestamp refresh without polling
 
 ### Pending Todos
 
@@ -130,5 +135,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 07-01-PLAN.md (Upload history data layer — HistoryEntry SwiftData model, ThumbnailService, HistoryStore with 50-entry LRU eviction, UploadFeedbackEvent extended with CaptureResult)
+Stopped at: Completed 07-02-PLAN.md (Upload history UI integration — HistoryRowView, HistorySection, PopoverRootView 320pt, AppDelegate ModelContainer init and full upload→thumbnail→history pipeline)
 Resume file: None

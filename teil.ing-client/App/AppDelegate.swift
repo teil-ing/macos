@@ -37,8 +37,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.setActivationPolicy(.accessory)
 
         if KeychainService.shared.apiKey != nil {
-            // Returning user — API key already in Keychain
-            showWelcomeBackAndProceed()
+            // Returning user — API key already in Keychain, launch directly
+            completeLaunch()
         } else {
             // First launch — no key found
             showOnboardingWindow()
@@ -71,40 +71,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         onboardingWindowController = controller
     }
 
-    private func showWelcomeBackAndProceed() {
-        // Switch to .regular temporarily so the welcome window can show
-        NSApp.setActivationPolicy(.regular)
-
-        let welcomeWindow = makeWelcomeBackWindow()
-        welcomeWindow.center()
-        welcomeWindow.makeKeyAndOrderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
-
-        Task {
-            try? await Task.sleep(for: .milliseconds(1500))
-            welcomeWindow.close()
-            NSApp.setActivationPolicy(.accessory)
-            self.completeLaunch()
-        }
-    }
-
-    private func makeWelcomeBackWindow() -> NSWindow {
-        let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 300, height: 120),
-            styleMask: [.titled],
-            backing: .buffered,
-            defer: false
-        )
-        window.title = "teil.ing"
-        window.isReleasedWhenClosed = false
-
-        let welcomeView = WelcomeBackView()
-        let hostingController = NSHostingController(rootView: welcomeView)
-        window.contentViewController = hostingController
-
-        return window
-    }
-
     // MARK: - Launch Completion
 
     private func completeLaunch() {
@@ -116,6 +82,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             historyStore = HistoryStore(container: modelContainer)
         } catch {
             fatalError("SwiftData ModelContainer failed: \(error)")
+        }
+
+        // Sync launch-at-login state — ensures SMAppService matches stored preference
+        // (handles cases where user toggled it in System Settings > Login Items)
+        if PreferencesStore.shared.launchAtLogin {
+            LaunchAtLoginService.shared.setEnabled(true)
         }
 
         setupStatusItem()
@@ -562,23 +534,3 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
-// MARK: - WelcomeBackView
-
-private struct WelcomeBackView: View {
-    var body: some View {
-        VStack(spacing: 8) {
-            Image(nsImage: NSApp.applicationIconImage)
-                .resizable()
-                .frame(width: 32, height: 32)
-
-            Text("Welcome back!")
-                .font(.headline)
-
-            Text("API key found — launching...")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        }
-        .frame(width: 300, height: 120)
-        .padding()
-    }
-}

@@ -15,6 +15,8 @@ struct PreferencesView: View {
             VStack(alignment: .leading, spacing: 0) {
                 AccountSection()
                 Divider().padding(.vertical, 8)
+                GeneralSection(prefs: prefs)
+                Divider().padding(.vertical, 8)
                 ShortcutsSection()
                 Divider().padding(.vertical, 8)
                 UploadSettingsSection(prefs: prefs)
@@ -39,6 +41,37 @@ private struct SectionHeader: View {
         Text(title)
             .font(.headline)
             .padding(.bottom, 6)
+    }
+}
+
+// MARK: - GeneralSection
+
+/// General app settings including launch-at-login toggle.
+private struct GeneralSection: View {
+
+    @ObservedObject var prefs: PreferencesStore
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            SectionHeader("General")
+
+            HStack(alignment: .center) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Launch at Login")
+                        .font(.body)
+                    Text("Automatically start teil.ing when you log in to your Mac")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Toggle("", isOn: $prefs.launchAtLogin)
+                    .labelsHidden()
+                    .toggleStyle(.switch)
+                    .onChange(of: prefs.launchAtLogin) { _, newValue in
+                        LaunchAtLoginService.shared.setEnabled(newValue)
+                    }
+            }
+        }
     }
 }
 

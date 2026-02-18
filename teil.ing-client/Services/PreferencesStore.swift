@@ -33,5 +33,10 @@ final class PreferencesStore: ObservableObject {
     @AppStorage("pref_clipboardCopy")
     var clipboardCopy: Bool = true
 
+    /// Start teil.ing automatically when the user logs in.
+    /// Default: false (opt-in).
+    @AppStorage("pref_launchAtLogin")
+    var launchAtLogin: Bool = false
+
     private init() {}
 }

@@ -58,6 +58,10 @@ final class SelectionOverlayView: NSView {
 
     override var acceptsFirstResponder: Bool { true }
 
+    /// Accept the first mouse click without requiring window activation first.
+    /// Without this, the first click only activates the overlay window and is swallowed.
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
     // MARK: - Layer setup
 
     private func setupLayers() {
@@ -223,6 +227,18 @@ final class SelectionOverlayView: NSView {
 
     override func resetCursorRects() {
         addCursorRect(bounds, cursor: .crosshair)
+    }
+
+    // MARK: - Cancel (pre-drag)
+
+    override func keyDown(with event: NSEvent) {
+        if event.keyCode == 53 {  // Escape
+            onSelectionComplete?(nil)
+        }
+    }
+
+    override func rightMouseDown(with event: NSEvent) {
+        onSelectionComplete?(nil)
     }
 
     // MARK: - Mouse moved (pre-drag crosshair)

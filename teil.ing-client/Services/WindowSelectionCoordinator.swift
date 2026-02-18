@@ -91,7 +91,10 @@ final class WindowSelectionCoordinator {
             window.orderFrontRegardless()
         }
 
-        // 6. Make the window under the current cursor key so it receives keyboard events (Escape)
+        // 6. Activate the app so makeKey() works from .accessory mode / hotkey path
+        NSApp.activate(ignoringOtherApps: true)
+
+        // Make the window under the current cursor key so it receives keyboard events (Escape)
         let mouseLocation = NSEvent.mouseLocation
         if let (keyWindow, _) = windows.first(where: { $0.0.frame.contains(mouseLocation) }) {
             keyWindow.makeKey()

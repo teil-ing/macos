@@ -1,5 +1,14 @@
 import AppKit
 
+// MARK: - KeyableOverlayWindow
+
+/// Borderless NSWindow subclass that can become key.
+/// Standard borderless windows return false for canBecomeKey, which prevents
+/// keyDown events (Escape) from reaching the content view.
+private class KeyableOverlayWindow: NSWindow {
+    override var canBecomeKey: Bool { true }
+}
+
 // MARK: - OverlayCoordinator
 
 /// Manages the lifecycle of selection overlay windows across all connected displays.
@@ -16,7 +25,7 @@ final class OverlayCoordinator {
     // MARK: - State
 
     /// Retains overlay windows for the duration of the selection to prevent ARC deallocation.
-    private var overlayWindows: [(NSWindow, SelectionOverlayView)] = []
+    private var overlayWindows: [(KeyableOverlayWindow, SelectionOverlayView)] = []
 
     // MARK: - Public API
 
@@ -36,6 +45,11 @@ final class OverlayCoordinator {
         for (window, _) in windows {
             window.orderFrontRegardless()
         }
+
+        // Activate the app so makeKey() actually works — without this,
+        // keyboard events (Escape) are not delivered to borderless windows
+        // when the app is in .accessory mode or was backgrounded.
+        NSApp.activate(ignoringOtherApps: true)
 
         // Make the window under the current cursor the key window so it receives
         // keyboard events (Escape) immediately
@@ -71,10 +85,10 @@ final class OverlayCoordinator {
 
     // MARK: - Window creation
 
-    private func createOverlayWindows() -> [(NSWindow, SelectionOverlayView)] {
+    private func createOverlayWindows() -> [(KeyableOverlayWindow, SelectionOverlayView)] {
         NSScreen.screens.map { screen in
-            // Create an NSWindow that covers the entire screen
-            let window = NSWindow(
+            // Create a KeyableOverlayWindow so it can receive keyboard events (Escape)
+            let window = KeyableOverlayWindow(
                 contentRect: screen.frame,
                 styleMask: [.borderless],
                 backing: .buffered,

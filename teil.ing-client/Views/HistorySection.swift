@@ -42,23 +42,23 @@ struct HistorySection: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 20)
             } else {
-                // Scrollable list — capped at 330pt height to prevent popover height explosion (Pitfall 5)
-                List {
-                    ForEach(store.entries) { entry in
-                        HistoryRowView(entry: entry, onDelete: { store.delete(entry) })
-                            .listRowInsets(EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 8))
-                    }
-                    // .onDelete must be on ForEach, NOT on List (Pitfall 4)
-                    .onDelete { indexSet in
-                        for index in indexSet {
-                            store.delete(store.entries[index])
+                // ScrollView + LazyVStack instead of List — List/NSTableView collapses
+                // to zero height inside NSPopover VStack (no intrinsic content size).
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        ForEach(store.entries) { entry in
+                            HistoryRowView(entry: entry, onDelete: { store.delete(entry) })
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 2)
+
+                            if entry.id != store.entries.last?.id {
+                                Divider()
+                                    .padding(.leading, 8)
+                            }
                         }
                     }
                 }
-                .listStyle(.plain)
                 .frame(maxHeight: 330)
-                // Remove default List background for seamless popover integration
-                .scrollContentBackground(.hidden)
             }
         }
         .padding(.bottom, 4)

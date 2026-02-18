@@ -2,7 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <!-- Required: Hardened Runtime is mandatory for notarization -->
     <key>com.apple.security.hardened-runtime</key>
     <true/>
+    <!-- App Sandbox: DISABLED via ENABLE_APP_SANDBOX=NO in project.yml -->
+    <!-- Screen Recording: TCC runtime permission, not an entitlement -->
+    <!-- Keychain: non-sandboxed apps access Keychain without keychain-access-groups -->
+    <!-- If errSecMissingEntitlement (-34018) appears in Release builds, add:
+         <key>com.apple.security.keychain-access-groups</key>
+         <array><string>$(AppIdentifierPrefix)ing.teil.client</string></array> -->
 </dict>
 </plist>

@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Onboarding and Keychain** - First-launch API key entry flow, secure Keychain storage, Screen Recording permission request (completed 2026-02-17)
 - [x] **Phase 3: Capture Engine — Region and Fullscreen** - Region crosshair selection and fullscreen capture using ScreenCaptureKit, multi-monitor aware (completed 2026-02-17)
 - [ ] **Phase 4: Window Capture and Global Hotkeys** - Click-to-select window capture mode and configurable global keyboard shortcuts for all three capture modes
-- [ ] **Phase 5: Upload Pipeline** - Automatic upload on capture, API key auth, clipboard copy, open-in-browser, upload error surfacing
+- [x] **Phase 5: Upload Pipeline** - Automatic upload on capture, API key auth, clipboard copy, open-in-browser, upload error surfacing (completed 2026-02-17)
 - [ ] **Phase 6: EXIF Stripping and Behavior Toggles** - EXIF metadata stripping preference and open-in-browser toggle wired into upload
 - [ ] **Phase 7: Upload History** - Persistent upload history in menu bar dropdown with thumbnails, timestamps, and copy-URL action
 - [ ] **Phase 8: Preferences Window** - Full preferences UI for API key management, keyboard shortcut configuration, EXIF toggle, and browser toggle
@@ -116,12 +116,10 @@ Plans:
   2. A user can toggle EXIF stripping on or off; the change takes effect on the next capture without restarting the app
   3. When the open-in-browser preference is off, uploading does not open any browser window; when on, the browser opens automatically
   4. Both preference values persist across app relaunches
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 06-01: PreferencesStore — @AppStorage-backed (or UserDefaults) store for EXIF toggle and open-in-browser toggle; observed by UploadService and ResultDispatcher
-- [ ] 06-02: EXIF stripping via ImageIO — CGImageDestinationCopyImageSource with kCGImageDestinationMetadata exclusion or CoreImage approach; applied to CGImage before upload when toggle is enabled
-- [ ] 06-03: Wire toggles into pipeline — UploadService reads stripExif from PreferencesStore at call time; ResultDispatcher reads openInBrowser flag before NSWorkspace.open call
+- [ ] 06-01-PLAN.md — PreferencesStore with @AppStorage-backed toggles (EXIF, browser, clipboard) wired into UploadService and AppDelegate pipeline
 
 ### Phase 7: Upload History
 **Goal**: A user can open the menu bar dropdown and see their recent uploads with thumbnails, timestamps, and a one-click copy-URL action — and this history is still there after restarting the app.
@@ -187,8 +185,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 2. Onboarding and Keychain | 0/2 | Complete    | 2026-02-17 |
 | 3. Capture Engine — Region and Fullscreen | 0/3 | Complete    | 2026-02-17 |
 | 4. Window Capture and Global Hotkeys | 0/3 | Not started | - |
-| 5. Upload Pipeline | 0/3 | Not started | - |
-| 6. EXIF Stripping and Behavior Toggles | 0/3 | Not started | - |
+| 5. Upload Pipeline | 0/3 | Complete    | 2026-02-17 |
+| 6. EXIF Stripping and Behavior Toggles | 0/1 | Not started | - |
 | 7. Upload History | 0/4 | Not started | - |
 | 8. Preferences Window | 0/4 | Not started | - |
 | 9. Polish and Distribution | 0/5 | Not started | - |

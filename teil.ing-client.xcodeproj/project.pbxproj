@@ -31,6 +31,7 @@
 		ACF036FBBB9800FFD64F9E89 /* HistorySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04D9491FC028C6675EE0198 /* HistorySection.swift */; };
 		B3FCF8258E855D01E91D0D8B /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114868C5080045BD746A44E0 /* PreferencesWindowController.swift */; };
 		B4A503F13E90A57790AC3F41 /* WindowSelectionOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF80C8EE166F12938BAECE74 /* WindowSelectionOverlayView.swift */; };
+		B97F7735F3BE56A331860E04 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CB8DB0131D5892BBD148D423 /* Assets.xcassets */; };
 		BD3327977BFAF09A65DF6080 /* WindowSelectionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1BDA6C75FB9D6458F05C02 /* WindowSelectionCoordinator.swift */; };
 		C065ADB4C13D90B8B0FEC693 /* UploadResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ACC5A437F11482181CFFBF /* UploadResponse.swift */; };
 		C84A325D1BF1E0351FA76927 /* ErrorPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A36000FFE90B65A17C61F6D /* ErrorPathTests.swift */; };
@@ -85,6 +86,7 @@
 		B30B02122931ACB9EF7603C7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B81FC0B1570C3A7DABAC5B54 /* StreamCaptureBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamCaptureBridge.swift; sourceTree = "<group>"; };
 		C6946776B2A0FD372528A677 /* CrossMonitorStitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossMonitorStitcher.swift; sourceTree = "<group>"; };
+		CB8DB0131D5892BBD148D423 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CE6D7FE277E3A1F19C33FD18 /* ScreenshotCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotCapture.swift; sourceTree = "<group>"; };
 		CF80C8EE166F12938BAECE74 /* WindowSelectionOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSelectionOverlayView.swift; sourceTree = "<group>"; };
 		D04D9491FC028C6675EE0198 /* HistorySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySection.swift; sourceTree = "<group>"; };
@@ -154,10 +156,19 @@
 				98A436E9AFF90F5721A61AC6 /* Models */,
 				A33702A6CA3A4FCE9C0AECE8 /* Onboarding */,
 				1B587DB6B9424E3E370240A9 /* Preferences */,
+				7EDC61CDF09832DA1ED2C5D7 /* Resources */,
 				B79AA908498BB41070F69537 /* Services */,
 				1F953F40E21E6D1045260827 /* Views */,
 			);
 			path = "teil.ing-client";
+			sourceTree = "<group>";
+		};
+		7EDC61CDF09832DA1ED2C5D7 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CB8DB0131D5892BBD148D423 /* Assets.xcassets */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		98A436E9AFF90F5721A61AC6 /* Models */ = {
@@ -231,6 +242,7 @@
 			buildConfigurationList = 995F24D395DBAA8D6F1FF061 /* Build configuration list for PBXNativeTarget "teil.ing-client" */;
 			buildPhases = (
 				E5D4FE38579D47A93D9E4C59 /* Sources */,
+				BFD0D28743387E501F48CB54 /* Resources */,
 				5DFF3EB6F0C224749E54D0DD /* Frameworks */,
 			);
 			buildRules = (
@@ -304,6 +316,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BFD0D28743387E501F48CB54 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B97F7735F3BE56A331860E04 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		5D40BF9F91179650F490BBE6 /* Sources */ = {
@@ -468,7 +491,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 5A7M476YY2;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -489,7 +512,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -537,7 +560,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 5A7M476YY2;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -552,7 +575,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";

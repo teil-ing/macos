@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 Phase: 9 of 9 (Polish and Distribution) — COMPLETE
 Plan: 3 of 3 in current phase — ALL COMPLETE
 Status: Phase 9 Plan 03 complete — all 7 Phase 9 verification items confirmed by user; error paths, build infrastructure, and CI pipeline all approved
-Last activity: 2026-02-18 — Phase 9 Plan 03 complete — human verification passed, all 9 phases done
+Last activity: 2026-03-01 - Completed quick task 2: Move preferences from separate window into popover as inline navigation
 
 Progress: [██████████] 100%
 
@@ -143,6 +143,13 @@ Recent decisions affecting current work:
 
 None.
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 1 | Add config option: copy URL or copy image to clipboard (URL default) | 2026-03-01 | 0c0ae6b | [1-add-config-option-copy-url-or-copy-image](./quick/1-add-config-option-copy-url-or-copy-image/) |
+| 2 | Move preferences from separate window into popover as inline navigation | 2026-03-01 | a2ac5cd | [2-move-preferences-from-separate-window-in](./quick/2-move-preferences-from-separate-window-in/) |
+
 ### Blockers/Concerns
 
 - ~~**Phase 4**: CGEventTap and Accessibility permission prompting behavior changed in macOS 14/15 — validate before implementing HotkeyMonitor~~ (resolved — KeyboardShortcuts library handles Carbon event registration without CGEventTap)
@@ -151,6 +158,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-18
-Stopped at: Completed 09-03-PLAN.md — all Phase 9 verification items approved by user; full project complete
+Last session: 2026-03-01
+Stopped at: Completed quick task 2 — preferences moved inline into popover; PreferencesWindowController deleted
 Resume file: None

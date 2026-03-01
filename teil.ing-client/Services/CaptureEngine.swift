@@ -305,16 +305,14 @@ actor CaptureEngine {
     /// - Returns: A tuple of (SCDisplay, ScreenInfo) for the display under the cursor.
     private func findCurrentDisplay() async throws -> (SCDisplay, ScreenInfo) {
         // Collect NSScreen data on MainActor — NSScreen is not Sendable
-        let (mouseLocation, screenInfos): (CGPoint, [ScreenInfo]) = await MainActor.run {
+        // Use NSMouseInRect for correct AppKit coordinate hit-testing (CGRect.contains
+        // is exclusive on maxX/maxY and fails at screen boundaries)
+        let screenInfo: ScreenInfo = await MainActor.run {
             let mouse = NSEvent.mouseLocation
-            let infos = NSScreen.screens.map { ScreenInfo(frame: $0.frame, backingScaleFactor: $0.backingScaleFactor) }
-            return (mouse, infos)
-        }
-
-        // Find which screen contains the cursor
-        guard let screenInfo = screenInfos.first(where: { $0.frame.contains(mouseLocation) })
-            ?? screenInfos.first else {
-            throw CaptureEngineError.noScreenFound
+            let screen = NSScreen.screens.first(where: { NSMouseInRect(mouse, $0.frame, false) })
+                ?? NSScreen.main
+                ?? NSScreen.screens.first!
+            return ScreenInfo(frame: screen.frame, backingScaleFactor: screen.backingScaleFactor)
         }
 
         let display = try await findDisplayByFrame(screenInfo.frame)

@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 Phase: 9 of 9 (Polish and Distribution) — COMPLETE
 Plan: 3 of 3 in current phase — ALL COMPLETE
 Status: Phase 9 Plan 03 complete — all 7 Phase 9 verification items confirmed by user; error paths, build infrastructure, and CI pipeline all approved
-Last activity: 2026-03-01 - Completed quick task 2: Move preferences from separate window into popover as inline navigation
+Last activity: 2026-03-01 - Completed quick task 3: Fix multiscreen capture — NSMouseInRect replaces CGRect.contains for correct secondary screen targeting
 
 Progress: [██████████] 100%
 
@@ -138,6 +138,7 @@ Recent decisions affecting current work:
 - [Phase 09-polish-and-distribution]: GENERATE_INFOPLIST_FILE=YES required in xcodegen bundle.unit-test target settings for code signing to succeed
 - [Phase 09-polish-and-distribution]: Permission gate pattern: checkScreenRecordingPermission() check before capture in all three AppDelegate capture methods, with presentScreenRecordingDeniedAlert() modal on denial
 - [Phase 09-polish-and-distribution P03]: All 7 Phase 9 verification items confirmed by user — error paths work, build infrastructure reviewed; full pipeline execution deferred until Developer ID certificate is configured
+- [quick-3]: NSMouseInRect(mouse, frame, false) used instead of CGRect.contains for screen hit-testing in findCurrentDisplay() — CGRect.contains is exclusive on maxX/maxY and fails at screen boundaries; NSMouseInRect is the idiomatic AppKit function that handles all boundary cases correctly
 
 ### Pending Todos
 
@@ -149,6 +150,7 @@ None.
 |---|-------------|------|--------|-----------|
 | 1 | Add config option: copy URL or copy image to clipboard (URL default) | 2026-03-01 | 0c0ae6b | [1-add-config-option-copy-url-or-copy-image](./quick/1-add-config-option-copy-url-or-copy-image/) |
 | 2 | Move preferences from separate window into popover as inline navigation | 2026-03-01 | a2ac5cd | [2-move-preferences-from-separate-window-in](./quick/2-move-preferences-from-separate-window-in/) |
+| 3 | Fix multiscreen capture: use NSMouseInRect instead of CGRect.contains for correct secondary screen targeting | 2026-03-01 | 921b195 | [3-fix-multiscreen-capture-when-mouse-is-on](./quick/3-fix-multiscreen-capture-when-mouse-is-on/) |
 
 ### Blockers/Concerns
 
@@ -159,5 +161,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed quick task 2 — preferences moved inline into popover; PreferencesWindowController deleted
+Stopped at: Completed quick task 3 — NSMouseInRect fix for multi-screen fullscreen capture targeting
 Resume file: None

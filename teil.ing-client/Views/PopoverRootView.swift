@@ -5,7 +5,6 @@ struct PopoverRootView: View {
     var onRegionCapture: (() -> Void)?
     var onFullscreenCapture: (() -> Void)?
     var onWindowCapture: (() -> Void)?
-    var onOpenPreferences: (() -> Void)?
 
     /// Non-nil when a capture error has occurred and needs to be shown inside the popover.
     var captureError: String?
@@ -19,7 +18,30 @@ struct PopoverRootView: View {
     /// History store injected from AppDelegate — provides upload history to HistorySection.
     @ObservedObject var historyStore: HistoryStore
 
+    /// Tracks whether the popover is currently showing preferences inline.
+    @State private var showingPreferences = false
+
     var body: some View {
+        Group {
+            if showingPreferences {
+                PreferencesView(onBack: {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        showingPreferences = false
+                    }
+                })
+                .transition(.move(edge: .trailing))
+            } else {
+                mainContent
+                    .transition(.move(edge: .leading))
+            }
+        }
+        // Popover width widened from 280pt to 320pt — per locked decision for upload history phase
+        .frame(width: 320)
+    }
+
+    // MARK: - Main Content
+
+    private var mainContent: some View {
         VStack(spacing: 0) {
             if let uploadError = uploadError {
                 VStack(spacing: 6) {
@@ -75,10 +97,12 @@ struct PopoverRootView: View {
             Divider()
             HistorySection(store: historyStore)
             Divider()
-            PopoverFooterView(onOpenPreferences: onOpenPreferences)
+            PopoverFooterView(onOpenPreferences: {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    showingPreferences = true
+                }
+            })
         }
-        // Popover width widened from 280pt to 320pt — per locked decision for upload history phase
-        .frame(width: 320)
     }
 }
 
@@ -87,7 +111,7 @@ struct PopoverRootView: View {
         for: HistoryEntry.self,
         configurations: ModelConfiguration(isStoredInMemoryOnly: true)
     )
-    PopoverRootView(onOpenPreferences: {}, historyStore: HistoryStore(container: container))
+    PopoverRootView(historyStore: HistoryStore(container: container))
 }
 
 #Preview("Upload Error") {
@@ -96,7 +120,6 @@ struct PopoverRootView: View {
         configurations: ModelConfiguration(isStoredInMemoryOnly: true)
     )
     PopoverRootView(
-        onOpenPreferences: {},
         uploadError: "API key is invalid or expired.",
         onRetry: {},
         historyStore: HistoryStore(container: container)

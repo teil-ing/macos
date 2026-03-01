@@ -5,14 +5,46 @@ import SwiftUI
 // MARK: - PreferencesView
 
 /// Single-pane preferences view with three sections: Account, Shortcuts, Upload Settings.
-/// Hosted inside PreferencesWindowController's NSHostingController.
+/// Hosted inline inside the popover when the user taps the gear icon.
 struct PreferencesView: View {
 
     @ObservedObject private var prefs = PreferencesStore.shared
 
+    /// Called when the user taps the back button. Optional so the view can be previewed standalone.
+    var onBack: (() -> Void)?
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
+                // MARK: Header with back navigation
+                HStack {
+                    Button {
+                        onBack?()
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "chevron.left")
+                            Text("Back")
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.secondary)
+
+                    Spacer()
+
+                    Text("Preferences")
+                        .font(.headline)
+
+                    Spacer()
+
+                    // Invisible spacer to balance the back button and keep title centered
+                    HStack(spacing: 4) {
+                        Image(systemName: "chevron.left")
+                        Text("Back")
+                    }
+                    .hidden()
+                }
+                .padding(.bottom, 12)
+
                 AccountSection()
                 Divider().padding(.vertical, 8)
                 GeneralSection(prefs: prefs)
@@ -21,9 +53,9 @@ struct PreferencesView: View {
                 Divider().padding(.vertical, 8)
                 UploadSettingsSection(prefs: prefs)
             }
-            .padding(20)
+            .padding(16)
         }
-        .frame(width: 500, height: 500)
+        .frame(width: 320)
     }
 }
 
@@ -114,7 +146,7 @@ private struct AccountSection: View {
                     HStack(spacing: 8) {
                         TextField("Enter API key", text: $newKeyInput)
                             .textFieldStyle(.roundedBorder)
-                            .frame(maxWidth: 300)
+                            .frame(maxWidth: .infinity)
 
                         if isValidating {
                             ProgressView()
@@ -275,7 +307,8 @@ private struct ShortcutRow: View {
         VStack(alignment: .leading, spacing: 2) {
             HStack {
                 Text(label)
-                    .frame(width: 150, alignment: .leading)
+                    // Narrowed from 150 to 110 so label + recorder fit within 320pt popover width
+                    .frame(width: 110, alignment: .leading)
                 KeyboardShortcuts.Recorder(for: name) { newShortcut in
                     guard let newShortcut else {
                         // Shortcut was cleared — no conflict possible

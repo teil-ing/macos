@@ -154,6 +154,11 @@ final class WindowSelectionOverlayView: NSView {
     // MARK: - Mouse Moved
 
     override func mouseMoved(with event: NSEvent) {
+        // Force camera cursor on every mouse move. Cursor rects (resetCursorRects)
+        // only work on the key window — this ensures the camera cursor appears on
+        // ALL screens since the tracking area uses .activeAlways.
+        (cameraCursor ?? .crosshair).set()
+
         guard let coord = coordinator else { return }
 
         // Convert event location to CG coordinates for SCWindow frame hit-testing

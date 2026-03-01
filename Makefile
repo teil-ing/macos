@@ -57,8 +57,8 @@ release:
 	git commit -m "Bump version to v$(V)"
 	@echo "==> Tagging v$(V)..."
 	git tag -a "v$(V)" -m "v$(V)"
-	@echo "==> Creating GitHub release..."
-	gh release create "v$(V)" --title "v$(V)" --generate-notes
 	@echo "==> Pushing..."
 	git push && git push --tags
+	@echo "==> Creating GitHub release..."
+	gh release create "v$(V)" --title "v$(V)" --generate-notes
 	@echo "==> Released v$(V) — CI will build and upload DMG"

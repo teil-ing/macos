@@ -317,6 +317,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 stripExif: PreferencesStore.shared.stripExif,
                 openInBrowser: PreferencesStore.shared.openInBrowser,
                 clipboardCopy: PreferencesStore.shared.clipboardCopy,
+                clipboardMode: PreferencesStore.shared.clipboardMode.rawValue,
                 onFeedback: { [weak self] event in
                     self?.handleUploadFeedback(event)
                 }
@@ -367,6 +368,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                         stripExif: PreferencesStore.shared.stripExif,
                         openInBrowser: PreferencesStore.shared.openInBrowser,
                         clipboardCopy: PreferencesStore.shared.clipboardCopy,
+                        clipboardMode: PreferencesStore.shared.clipboardMode.rawValue,
                         onFeedback: { [weak self] event in
                             self?.handleUploadFeedback(event)
                         }
@@ -411,6 +413,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                         stripExif: PreferencesStore.shared.stripExif,
                         openInBrowser: PreferencesStore.shared.openInBrowser,
                         clipboardCopy: PreferencesStore.shared.clipboardCopy,
+                        clipboardMode: PreferencesStore.shared.clipboardMode.rawValue,
                         onFeedback: { [weak self] event in
                             self?.handleUploadFeedback(event)
                         }
@@ -473,6 +476,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                             stripExif: PreferencesStore.shared.stripExif,
                             openInBrowser: PreferencesStore.shared.openInBrowser,
                             clipboardCopy: PreferencesStore.shared.clipboardCopy,
+                            clipboardMode: PreferencesStore.shared.clipboardMode.rawValue,
                             onFeedback: { [weak self] event in
                                 self?.handleUploadFeedback(event)
                             }
@@ -497,6 +501,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                             stripExif: PreferencesStore.shared.stripExif,
                             openInBrowser: PreferencesStore.shared.openInBrowser,
                             clipboardCopy: PreferencesStore.shared.clipboardCopy,
+                            clipboardMode: PreferencesStore.shared.clipboardMode.rawValue,
                             onFeedback: { [weak self] event in
                                 self?.handleUploadFeedback(event)
                             }

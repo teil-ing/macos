@@ -55,6 +55,7 @@ actor UploadService {
         stripExif: Bool,
         openInBrowser: Bool,
         clipboardCopy: Bool,
+        clipboardMode: String,
         onFeedback: @MainActor @Sendable @escaping (UploadFeedbackEvent) -> Void
     ) {
         pendingCount += 1
@@ -62,6 +63,7 @@ actor UploadService {
         let capturedStripExif = stripExif
         let capturedOpenInBrowser = openInBrowser
         let capturedClipboardCopy = clipboardCopy
+        let capturedClipboardMode = clipboardMode
         failedCapture = nil
         lastError = nil
 
@@ -74,6 +76,7 @@ actor UploadService {
                 stripExif: capturedStripExif,
                 shouldOpenInBrowser: capturedOpenInBrowser,
                 shouldCopyToClipboard: capturedClipboardCopy,
+                capturedClipboardMode: capturedClipboardMode,
                 onFeedback: onFeedback
             )
         }
@@ -87,6 +90,7 @@ actor UploadService {
         stripExif: Bool,
         openInBrowser: Bool,
         clipboardCopy: Bool,
+        clipboardMode: String,
         onFeedback: @MainActor @Sendable @escaping (UploadFeedbackEvent) -> Void
     ) {
         if let capture = failedCapture {
@@ -95,6 +99,7 @@ actor UploadService {
                 stripExif: stripExif,
                 openInBrowser: openInBrowser,
                 clipboardCopy: clipboardCopy,
+                clipboardMode: clipboardMode,
                 onFeedback: onFeedback
             )
         }
@@ -108,6 +113,7 @@ actor UploadService {
         stripExif: Bool,
         shouldOpenInBrowser: Bool,
         shouldCopyToClipboard: Bool,
+        capturedClipboardMode: String,
         onFeedback: @MainActor @Sendable @escaping (UploadFeedbackEvent) -> Void
     ) async {
         await onFeedback(.uploadStarted)
@@ -142,7 +148,11 @@ actor UploadService {
             let isLast = capturedPendingCount == pendingCount
             if isLast {
                 if shouldCopyToClipboard {
-                    await copyToClipboard(result.shareUrl)
+                    if capturedClipboardMode == "image" {
+                        await copyImageToClipboard(capture.image)
+                    } else {
+                        await copyToClipboard(result.shareUrl)
+                    }
                 }
                 if shouldOpenInBrowser {
                     await openInBrowser(result.shareUrl)
@@ -282,6 +292,16 @@ actor UploadService {
             let pb = NSPasteboard.general
             pb.clearContents()
             pb.setString(urlString, forType: .string)
+        }
+    }
+
+    private func copyImageToClipboard(_ image: CGImage) async {
+        await MainActor.run {
+            let rep = NSBitmapImageRep(cgImage: image)
+            guard let pngData = rep.representation(using: .png, properties: [:]) else { return }
+            let pb = NSPasteboard.general
+            pb.clearContents()
+            pb.setData(pngData, forType: .png)
         }
     }
 

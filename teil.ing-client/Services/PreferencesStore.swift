@@ -1,5 +1,25 @@
 import SwiftUI
 
+// MARK: - ClipboardMode
+
+/// Controls what is written to the clipboard after a successful upload.
+enum ClipboardMode: String, CaseIterable, Identifiable {
+    /// Copy the share URL (default — existing behavior).
+    case url = "url"
+    /// Copy the captured image as PNG data.
+    case image = "image"
+
+    var id: String { rawValue }
+
+    /// Human-readable label for display in the preferences UI.
+    var displayName: String {
+        switch self {
+        case .url: return "Share URL"
+        case .image: return "Image"
+        }
+    }
+}
+
 // MARK: - PreferencesStore
 
 /// Central observable store for user-configurable upload preferences.
@@ -37,6 +57,18 @@ final class PreferencesStore: ObservableObject {
     /// Default: false (opt-in).
     @AppStorage("pref_launchAtLogin")
     var launchAtLogin: Bool = false
+
+    /// Controls what is written to the clipboard after upload.
+    /// Stored as raw String value because @AppStorage does not support custom enums directly.
+    /// Default: .url (preserves existing behavior for all users).
+    @AppStorage("pref_clipboardMode")
+    private var clipboardModeRaw: String = ClipboardMode.url.rawValue
+
+    /// Typed accessor for the clipboard mode preference.
+    var clipboardMode: ClipboardMode {
+        get { ClipboardMode(rawValue: clipboardModeRaw) ?? .url }
+        set { clipboardModeRaw = newValue.rawValue }
+    }
 
     private init() {}
 }

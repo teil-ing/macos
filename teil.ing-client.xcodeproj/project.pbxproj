@@ -29,7 +29,6 @@
 		AC145F60D0E6BEF8EA4DB645 /* PopoverFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97256E7981DEDBD082B4D40 /* PopoverFooterView.swift */; };
 		AC8737301B1E097457FB19BB /* teil_ing_clientApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79FE129C6A4205DC4ED337DE /* teil_ing_clientApp.swift */; };
 		ACF036FBBB9800FFD64F9E89 /* HistorySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04D9491FC028C6675EE0198 /* HistorySection.swift */; };
-		B3FCF8258E855D01E91D0D8B /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114868C5080045BD746A44E0 /* PreferencesWindowController.swift */; };
 		B4A503F13E90A57790AC3F41 /* WindowSelectionOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF80C8EE166F12938BAECE74 /* WindowSelectionOverlayView.swift */; };
 		B97F7735F3BE56A331860E04 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CB8DB0131D5892BBD148D423 /* Assets.xcassets */; };
 		BD3327977BFAF09A65DF6080 /* WindowSelectionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1BDA6C75FB9D6458F05C02 /* WindowSelectionCoordinator.swift */; };
@@ -58,7 +57,6 @@
 /* Begin PBXFileReference section */
 		04ABF06C86D6AE92C0CBC4D8 /* CaptureEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureEngine.swift; sourceTree = "<group>"; };
 		11286FFD4E91BED24067A03F /* UploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadService.swift; sourceTree = "<group>"; };
-		114868C5080045BD746A44E0 /* PreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
 		169AE4303DE7180CDD3A95F6 /* OverlayCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayCoordinator.swift; sourceTree = "<group>"; };
 		18DF3404403957C6127C6AF8 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		1F1BDA6C75FB9D6458F05C02 /* WindowSelectionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSelectionCoordinator.swift; sourceTree = "<group>"; };
@@ -113,7 +111,6 @@
 			isa = PBXGroup;
 			children = (
 				A12C97ADB87DD38629B37429 /* PreferencesView.swift */,
-				114868C5080045BD746A44E0 /* PreferencesWindowController.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -364,7 +361,6 @@
 				21C5A036B5B0348E3AF8B71B /* PopoverRootView.swift in Sources */,
 				CABCDA558A792C8CB7826BE2 /* PreferencesStore.swift in Sources */,
 				1F94EF02C641801A90EC0D35 /* PreferencesView.swift in Sources */,
-				B3FCF8258E855D01E91D0D8B /* PreferencesWindowController.swift in Sources */,
 				DC5A39D572A9C3F2A0A5CF2C /* ScreenshotCapture.swift in Sources */,
 				8C64C92FE4C5313EABD79442 /* SelectionOverlayView.swift in Sources */,
 				344652B52AD6DB7EDA5FAB83 /* StreamCaptureBridge.swift in Sources */,

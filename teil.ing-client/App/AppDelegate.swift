@@ -12,7 +12,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var popover: NSPopover!
     private var eventMonitor: Any?
     private var onboardingWindowController: OnboardingWindowController?
-    private var preferencesWindowController: PreferencesWindowController?
     private let hotkeyMonitor = HotkeyMonitor()
 
     // MARK: - Persistence
@@ -146,7 +145,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             onRegionCapture: { [weak self] in self?.startRegionCapture() },
             onFullscreenCapture: { [weak self] in self?.startFullscreenCapture() },
             onWindowCapture: { [weak self] in self?.startWindowCapture() },
-            onOpenPreferences: { [weak self] in self?.openPreferences() },
             captureError: captureError,
             uploadError: uploadError,
             onRetry: { [weak self] in self?.retryUpload() },
@@ -173,7 +171,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             onRegionCapture: { [weak self] in self?.startRegionCapture() },
             onFullscreenCapture: { [weak self] in self?.startFullscreenCapture() },
             onWindowCapture: { [weak self] in self?.startWindowCapture() },
-            onOpenPreferences: { [weak self] in self?.openPreferences() },
             captureError: captureError,
             uploadError: uploadError,
             onRetry: { [weak self] in self?.retryUpload() },
@@ -215,16 +212,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func closePopover() {
         popover.performClose(nil)
         stopEventMonitor()
-    }
-
-    // MARK: - Preferences
-
-    private func openPreferences() {
-        if preferencesWindowController == nil {
-            preferencesWindowController = PreferencesWindowController()
-        }
-        preferencesWindowController?.open()
-        closePopover()
     }
 
     // MARK: - Upload Feedback Handler
@@ -538,4 +525,3 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 }
-

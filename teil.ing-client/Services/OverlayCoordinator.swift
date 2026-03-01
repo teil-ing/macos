@@ -52,10 +52,11 @@ final class OverlayCoordinator {
         NSApp.activate(ignoringOtherApps: true)
 
         // Make the window under the current cursor the key window so it receives
-        // keyboard events (Escape) immediately
+        // keyboard events (Escape) immediately. Use NSMouseInRect instead of
+        // CGRect.contains — contains() is exclusive on maxX/maxY boundaries.
         let mouseLocation = NSEvent.mouseLocation
         if let (keyWindow, _) = windows.first(where: { (window, _) in
-            window.frame.contains(mouseLocation)
+            NSMouseInRect(mouseLocation, window.frame, false)
         }) {
             keyWindow.makeKey()
         }
@@ -83,17 +84,44 @@ final class OverlayCoordinator {
         return result
     }
 
+    // MARK: - Cross-screen selection broadcast
+
+    /// Updates all overlay views except the sender with the current selection.
+    /// Each view receives the selection converted to its local coordinate space.
+    ///
+    /// - Parameters:
+    ///   - globalRect: The selection in global screen coordinates, or nil to clear.
+    ///   - sender: The view that originated the selection (excluded from updates).
+    func broadcastSelection(globalRect: CGRect?, from sender: SelectionOverlayView) {
+        for (window, view) in overlayWindows where view !== sender {
+            if let globalRect {
+                // Convert global rect to view-local coordinates.
+                // For borderless windows: view (0,0) == window frame origin.
+                let localOrigin = CGPoint(
+                    x: globalRect.origin.x - window.frame.origin.x,
+                    y: globalRect.origin.y - window.frame.origin.y
+                )
+                let localRect = CGRect(origin: localOrigin, size: globalRect.size)
+                view.showCrossScreenSelection(localRect)
+            } else {
+                view.clearCrossScreenSelection()
+            }
+        }
+    }
+
     // MARK: - Window creation
 
     private func createOverlayWindows() -> [(KeyableOverlayWindow, SelectionOverlayView)] {
         NSScreen.screens.map { screen in
-            // Create a KeyableOverlayWindow so it can receive keyboard events (Escape)
+            // Create a KeyableOverlayWindow so it can receive keyboard events (Escape).
+            // Do NOT pass `screen:` — on macOS 15 the system may adjust the window
+            // position to "fit" the specified screen, breaking multi-screen placement.
+            // Instead, set the frame explicitly after creation.
             let window = KeyableOverlayWindow(
-                contentRect: screen.frame,
+                contentRect: .zero,
                 styleMask: [.borderless],
                 backing: .buffered,
-                defer: false,
-                screen: screen
+                defer: false
             )
 
             // Visual configuration
@@ -112,9 +140,13 @@ final class OverlayCoordinator {
             // On macOS 15 the SCContentFilter handles exclusion on the capture side.
             window.sharingType = .none
 
+            // Explicitly position the window on the correct screen using global coordinates
+            window.setFrame(screen.frame, display: true)
+
             // Create the overlay view covering the whole screen
             let view = SelectionOverlayView(frame: CGRect(origin: .zero, size: screen.frame.size))
             view.owningScreen = screen
+            view.coordinator = self
             window.contentView = view
 
             // The view needs to be first responder so it receives key events (Escape)

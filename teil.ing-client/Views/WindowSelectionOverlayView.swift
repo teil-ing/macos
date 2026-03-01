@@ -30,7 +30,9 @@ final class WindowSelectionOverlayView: NSView {
     /// Weak to avoid a reference cycle between coordinator (which holds the view pair) and the view.
     weak var coordinator: WindowSelectionCoordinator?
 
-    /// Camera cursor set by WindowSelectionCoordinator, used in resetCursorRects.
+    /// Camera cursor set by WindowSelectionCoordinator, used in resetCursorRects
+    /// for the key window. The coordinator also pushes this cursor globally so it
+    /// appears on non-key overlay windows (other screens).
     var cameraCursor: NSCursor?
 
     // MARK: - Layers

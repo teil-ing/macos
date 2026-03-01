@@ -79,10 +79,13 @@ final class WindowSelectionCoordinator {
         let idToWindow = Dictionary(scWindows.map { ($0.windowID, $0) }, uniquingKeysWith: { first, _ in first })
         cachedWindows = orderedIDs.compactMap { idToWindow[$0] }
 
-        // 2. Load camera cursor
+        // 2. Load camera cursor and push it globally so it appears on ALL screens.
+        // Do NOT rely on per-window cursor rects (addCursorRect) — those only activate
+        // on the key window, so the cursor would vanish when moving to other screens.
         let cursor = makeWindowSelectionCursor()
+        cursor.push()
 
-        // 3. Create overlay windows for each screen (pass cursor for addCursorRect)
+        // 3. Create overlay windows for each screen
         let windows = createOverlayWindows(cursor: cursor)
         overlayWindows = windows
 
@@ -94,9 +97,10 @@ final class WindowSelectionCoordinator {
         // 6. Activate the app so makeKey() works from .accessory mode / hotkey path
         NSApp.activate(ignoringOtherApps: true)
 
-        // Make the window under the current cursor key so it receives keyboard events (Escape)
+        // Make the window under the current cursor key so it receives keyboard events (Escape).
+        // Use NSMouseInRect instead of CGRect.contains — contains() is exclusive on maxX/maxY.
         let mouseLocation = NSEvent.mouseLocation
-        if let (keyWindow, _) = windows.first(where: { $0.0.frame.contains(mouseLocation) }) {
+        if let (keyWindow, _) = windows.first(where: { NSMouseInRect(mouseLocation, $0.0.frame, false) }) {
             keyWindow.makeKey()
         } else if let (firstWindow, _) = windows.first {
             firstWindow.makeKey()
@@ -163,13 +167,13 @@ final class WindowSelectionCoordinator {
     private func createOverlayWindows(cursor: NSCursor) -> [(KeyableWindow, WindowSelectionOverlayView)] {
         NSScreen.screens.map { screen in
             // KeyableWindow allows becoming key — required for keyDown (Escape) to fire.
-            // Standard borderless NSWindow returns canBecomeKey=false by default.
+            // Do NOT pass `screen:` — on macOS 15 the system may adjust the window
+            // position to "fit" the specified screen, breaking multi-screen placement.
             let window = KeyableWindow(
-                contentRect: screen.frame,
+                contentRect: .zero,
                 styleMask: [.borderless],
                 backing: .buffered,
-                defer: false,
-                screen: screen
+                defer: false
             )
 
             // Visual configuration — mirrors OverlayCoordinator
@@ -186,6 +190,9 @@ final class WindowSelectionCoordinator {
 
             // Exclude this window from ScreenCaptureKit capture
             window.sharingType = .none
+
+            // Explicitly position the window on the correct screen using global coordinates
+            window.setFrame(screen.frame, display: true)
 
             // Create the overlay view covering the whole screen
             let view = WindowSelectionOverlayView(frame: CGRect(origin: .zero, size: screen.frame.size))
@@ -271,6 +278,8 @@ final class WindowSelectionCoordinator {
     // MARK: - Tear-Down
 
     private func tearDown() {
+        NSCursor.pop()
+
         for (window, _) in overlayWindows {
             window.orderOut(nil)
             window.close()

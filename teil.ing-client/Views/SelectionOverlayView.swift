@@ -20,6 +20,9 @@ final class SelectionOverlayView: NSView {
     /// The screen this view covers. Set by OverlayCoordinator immediately after init.
     var owningScreen: NSScreen?
 
+    /// Back-reference to the coordinator for cross-screen selection broadcasting.
+    weak var coordinator: OverlayCoordinator?
+
     /// Called once when the user finishes or cancels. CGRect is in global screen
     /// coordinates (origin at bottom-left of primary display). nil means cancelled.
     var onSelectionComplete: ((CGRect?) -> Void)?
@@ -279,6 +282,9 @@ final class SelectionOverlayView: NSView {
                 updateSelectionLayer(rect: raw)
                 updateGuideLines(at: current)
                 updateDimensionLabel(rect: raw)
+                // Broadcast to other screens so they show their portion of the selection
+                let globalRect = convertToScreenCoordinates(raw)
+                coordinator?.broadcastSelection(globalRect: globalRect, from: self)
 
             case .leftMouseUp:
                 let current = convert(next.locationInWindow, from: nil)
@@ -316,8 +322,28 @@ final class SelectionOverlayView: NSView {
         updateDimmingPath(selection: .zero)
         selectionLayer.isHidden = true
         dimensionBackground.isHidden = true
+        // Clear cross-screen selection on all other views
+        coordinator?.broadcastSelection(globalRect: nil, from: self)
 
         onSelectionComplete?(finalRect)
+    }
+
+    // MARK: - Cross-screen selection
+
+    /// Shows the portion of a cross-screen selection that intersects this view.
+    /// Called by OverlayCoordinator when another screen's view is actively dragging.
+    ///
+    /// - Parameter localRect: The selection rect in this view's local coordinate space.
+    ///   May extend beyond bounds — layers will clip naturally.
+    func showCrossScreenSelection(_ localRect: CGRect) {
+        updateDimmingPath(selection: localRect)
+        updateSelectionLayer(rect: localRect)
+    }
+
+    /// Clears any cross-screen selection visual state.
+    func clearCrossScreenSelection() {
+        updateDimmingPath(selection: .zero)
+        selectionLayer.isHidden = true
     }
 
     // MARK: - Coordinate conversion

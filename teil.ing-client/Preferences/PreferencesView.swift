@@ -327,6 +327,23 @@ struct UploadSettingsSection: View {
                 description: "Copy the share URL to the clipboard after each upload.",
                 isOn: $prefs.clipboardCopy
             )
+
+            if prefs.clipboardCopy {
+                VStack(alignment: .leading, spacing: 4) {
+                    Picker("Clipboard Content", selection: $prefs.clipboardMode) {
+                        ForEach(ClipboardMode.allCases) { mode in
+                            Text(mode.displayName).tag(mode)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .labelsHidden()
+
+                    Text("Choose whether to copy the share URL or the captured image.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.leading, 16)
+            }
         }
     }
 }

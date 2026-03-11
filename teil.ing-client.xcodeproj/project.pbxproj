@@ -33,6 +33,7 @@
 		ACF036FBBB9800FFD64F9E89 /* HistorySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04D9491FC028C6675EE0198 /* HistorySection.swift */; };
 		B4A503F13E90A57790AC3F41 /* WindowSelectionOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF80C8EE166F12938BAECE74 /* WindowSelectionOverlayView.swift */; };
 		B97F7735F3BE56A331860E04 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CB8DB0131D5892BBD148D423 /* Assets.xcassets */; };
+		B9A119836BAB318906331300 /* QuotaBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8410FC03580E757791531BC0 /* QuotaBarView.swift */; };
 		BD3327977BFAF09A65DF6080 /* WindowSelectionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1BDA6C75FB9D6458F05C02 /* WindowSelectionCoordinator.swift */; };
 		C065ADB4C13D90B8B0FEC693 /* UploadResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75ACC5A437F11482181CFFBF /* UploadResponse.swift */; };
 		C84A325D1BF1E0351FA76927 /* ErrorPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A36000FFE90B65A17C61F6D /* ErrorPathTests.swift */; };
@@ -41,6 +42,7 @@
 		CD7571658B028D36436443B9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30B02122931ACB9EF7603C7 /* AppDelegate.swift */; };
 		D99F4B871A0EC1530359C44D /* CaptureSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A7E4F5870AEC3F97ED8639 /* CaptureSection.swift */; };
 		DC5A39D572A9C3F2A0A5CF2C /* ScreenshotCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6D7FE277E3A1F19C33FD18 /* ScreenshotCapture.swift */; };
+		E66699EFB88948BCC925A54A /* ImageDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211BB43987B46242D3F280CA /* ImageDetailSheet.swift */; };
 		EC33EB84069EC184BBAA5168 /* CaptureResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E401D2612FBAAB3278E3E38A /* CaptureResult.swift */; };
 		EFAE9486DCB9C506D2B04582 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4A8699592B3ECA0209739D /* OnboardingViewModel.swift */; };
 		F2AAB53279FDDB1C49CA8D3E /* PermissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2636850C839B31C96E837D77 /* PermissionService.swift */; };
@@ -62,6 +64,7 @@
 		169AE4303DE7180CDD3A95F6 /* OverlayCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayCoordinator.swift; sourceTree = "<group>"; };
 		18DF3404403957C6127C6AF8 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		1F1BDA6C75FB9D6458F05C02 /* WindowSelectionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowSelectionCoordinator.swift; sourceTree = "<group>"; };
+		211BB43987B46242D3F280CA /* ImageDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetailSheet.swift; sourceTree = "<group>"; };
 		2636850C839B31C96E837D77 /* PermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionService.swift; sourceTree = "<group>"; };
 		28A7E4F5870AEC3F97ED8639 /* CaptureSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSection.swift; sourceTree = "<group>"; };
 		2F57EB412468C0BDB94A7D80 /* APIValidationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIValidationService.swift; sourceTree = "<group>"; };
@@ -80,6 +83,7 @@
 		79FE129C6A4205DC4ED337DE /* teil_ing_clientApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = teil_ing_clientApp.swift; sourceTree = "<group>"; };
 		7AAB224C8E73B97CA40860A0 /* LaunchAtLoginService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginService.swift; sourceTree = "<group>"; };
 		814583DD4F976A375EE3DBC4 /* OnboardingWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWindowController.swift; sourceTree = "<group>"; };
+		8410FC03580E757791531BC0 /* QuotaBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotaBarView.swift; sourceTree = "<group>"; };
 		8BDCACD477F380473237D353 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		9E7D871039556E73670AEAE0 /* APIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIModels.swift; sourceTree = "<group>"; };
 		A12C97ADB87DD38629B37429 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
@@ -134,8 +138,10 @@
 				28A7E4F5870AEC3F97ED8639 /* CaptureSection.swift */,
 				5DDA4550CC0BA799E09CB978 /* HistoryRowView.swift */,
 				D04D9491FC028C6675EE0198 /* HistorySection.swift */,
+				211BB43987B46242D3F280CA /* ImageDetailSheet.swift */,
 				A97256E7981DEDBD082B4D40 /* PopoverFooterView.swift */,
 				DAD361891CBFD8EC7D9217D1 /* PopoverRootView.swift */,
+				8410FC03580E757791531BC0 /* QuotaBarView.swift */,
 				E513EEE6F5A576C862945AF1 /* SelectionOverlayView.swift */,
 				CF80C8EE166F12938BAECE74 /* WindowSelectionOverlayView.swift */,
 			);
@@ -358,6 +364,7 @@
 				ACF036FBBB9800FFD64F9E89 /* HistorySection.swift in Sources */,
 				6001B8C0C77B96A32960FA86 /* HistoryStore.swift in Sources */,
 				CC096D043FDE10F76B00D80A /* HotkeyMonitor.swift in Sources */,
+				E66699EFB88948BCC925A54A /* ImageDetailSheet.swift in Sources */,
 				4430E4C2DB797C284DB455F9 /* KeychainService.swift in Sources */,
 				4539669645DCDF2E19823B81 /* LaunchAtLoginService.swift in Sources */,
 				0C679B94FD7402456A78E8F5 /* OnboardingView.swift in Sources */,
@@ -369,6 +376,7 @@
 				21C5A036B5B0348E3AF8B71B /* PopoverRootView.swift in Sources */,
 				CABCDA558A792C8CB7826BE2 /* PreferencesStore.swift in Sources */,
 				1F94EF02C641801A90EC0D35 /* PreferencesView.swift in Sources */,
+				B9A119836BAB318906331300 /* QuotaBarView.swift in Sources */,
 				DC5A39D572A9C3F2A0A5CF2C /* ScreenshotCapture.swift in Sources */,
 				8C64C92FE4C5313EABD79442 /* SelectionOverlayView.swift in Sources */,
 				344652B52AD6DB7EDA5FAB83 /* StreamCaptureBridge.swift in Sources */,

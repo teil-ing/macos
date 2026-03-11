@@ -21,9 +21,34 @@ struct PopoverRootView: View {
     /// Tracks whether the popover is currently showing preferences inline.
     @State private var showingPreferences = false
 
+    /// The image ID selected for detail view (non-nil when detail sheet is showing).
+    @State private var selectedImageId: String?
+
+    /// Whether the image detail sheet is visible.
+    @State private var showingImageDetail = false
+
     var body: some View {
         Group {
-            if showingPreferences {
+            if showingImageDetail, let imageId = selectedImageId {
+                ImageDetailSheet(
+                    imageId: imageId,
+                    onDismiss: {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            showingImageDetail = false
+                            selectedImageId = nil
+                        }
+                    },
+                    onDeleted: {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            showingImageDetail = false
+                            selectedImageId = nil
+                        }
+                        // Refresh the list after deletion
+                        Task { await historyStore.refreshAll() }
+                    }
+                )
+                .transition(.move(edge: .trailing))
+            } else if showingPreferences {
                 PreferencesView(onBack: {
                     withAnimation(.easeInOut(duration: 0.2)) {
                         showingPreferences = false
@@ -95,8 +120,23 @@ struct PopoverRootView: View {
                 onWindowCapture: onWindowCapture
             )
             Divider()
-            HistorySection(store: historyStore)
+            HistorySection(
+                store: historyStore,
+                onSelectDetail: { imageId in
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        selectedImageId = imageId
+                        showingImageDetail = true
+                    }
+                }
+            )
             Divider()
+
+            // Quota bar — shown when quota data is available
+            if let quota = historyStore.quota {
+                QuotaBarView(quota: quota)
+                Divider()
+            }
+
             PopoverFooterView(onOpenPreferences: {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     showingPreferences = true

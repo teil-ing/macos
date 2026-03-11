@@ -351,6 +351,11 @@ struct UploadSettingsSection: View {
                 isOn: $prefs.stripExif
             )
             ToggleRow(
+                label: "Private Upload",
+                description: "Make uploaded images private (owner-only, not accessible via share link).",
+                isOn: $prefs.privateUpload
+            )
+            ToggleRow(
                 label: "Open in Browser",
                 description: "Automatically open the share URL after each upload.",
                 isOn: $prefs.openInBrowser

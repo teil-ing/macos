@@ -58,6 +58,11 @@ final class PreferencesStore: ObservableObject {
     @AppStorage("pref_launchAtLogin")
     var launchAtLogin: Bool = false
 
+    /// Automatically check for updates on launch and every 4 hours.
+    /// Default: true (users get updates without manual checking).
+    @AppStorage("pref_autoCheckForUpdates")
+    var autoCheckForUpdates: Bool = true
+
     /// Make uploaded images private (owner-only, not accessible via share link).
     /// When true, sends `private=true` as a multipart form field.
     /// When false, omits the field entirely (API contract: omission = public).

@@ -18,6 +18,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var modelContainer: ModelContainer!
     private var historyStore: HistoryStore!
 
+    // MARK: - Update Service
+    private let updateService = UpdateService.shared
+
     // MARK: - Capture Services
     private let captureEngine = CaptureEngine()
     private let overlayCoordinator = OverlayCoordinator()
@@ -95,6 +98,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // the hotkey handlers reference statusItem, overlayCoordinator,
         // windowSelectionCoordinator, and captureEngine (research Pitfall 7).
         setupHotkeyMonitor()
+
+        // Start auto-update check if enabled
+        if PreferencesStore.shared.autoCheckForUpdates {
+            updateService.startPeriodicCheck()
+            Task { await updateService.checkForUpdates() }
+        }
     }
 
     // MARK: - Status Item Setup

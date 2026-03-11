@@ -11,6 +11,7 @@
 		1F94EF02C641801A90EC0D35 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12C97ADB87DD38629B37429 /* PreferencesView.swift */; };
 		21C5A036B5B0348E3AF8B71B /* PopoverRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD361891CBFD8EC7D9217D1 /* PopoverRootView.swift */; };
 		2C36B92ACD493D01DB3BBF02 /* CaptureEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04ABF06C86D6AE92C0CBC4D8 /* CaptureEngine.swift */; };
+		3210C01E0F71886B6034F2D3 /* UpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B16CE6C4637DAC03D64B03F2 /* UpdateService.swift */; };
 		344652B52AD6DB7EDA5FAB83 /* StreamCaptureBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B81FC0B1570C3A7DABAC5B54 /* StreamCaptureBridge.swift */; };
 		4430E4C2DB797C284DB455F9 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DF3404403957C6127C6AF8 /* KeychainService.swift */; };
 		4539669645DCDF2E19823B81 /* LaunchAtLoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AAB224C8E73B97CA40860A0 /* LaunchAtLoginService.swift */; };
@@ -89,6 +90,7 @@
 		A12C97ADB87DD38629B37429 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		A97256E7981DEDBD082B4D40 /* PopoverFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverFooterView.swift; sourceTree = "<group>"; };
 		AE4A8699592B3ECA0209739D /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
+		B16CE6C4637DAC03D64B03F2 /* UpdateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateService.swift; sourceTree = "<group>"; };
 		B30B02122931ACB9EF7603C7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B81FC0B1570C3A7DABAC5B54 /* StreamCaptureBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamCaptureBridge.swift; sourceTree = "<group>"; };
 		C6946776B2A0FD372528A677 /* CrossMonitorStitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossMonitorStitcher.swift; sourceTree = "<group>"; };
@@ -227,6 +229,7 @@
 				CE6D7FE277E3A1F19C33FD18 /* ScreenshotCapture.swift */,
 				B81FC0B1570C3A7DABAC5B54 /* StreamCaptureBridge.swift */,
 				4EFF43B32AEDA5B2AAA021FB /* ThumbnailService.swift */,
+				B16CE6C4637DAC03D64B03F2 /* UpdateService.swift */,
 				11286FFD4E91BED24067A03F /* UploadService.swift */,
 				1F1BDA6C75FB9D6458F05C02 /* WindowSelectionCoordinator.swift */,
 			);
@@ -381,6 +384,7 @@
 				8C64C92FE4C5313EABD79442 /* SelectionOverlayView.swift in Sources */,
 				344652B52AD6DB7EDA5FAB83 /* StreamCaptureBridge.swift in Sources */,
 				6585FEDDAB400D50E827243F /* ThumbnailService.swift in Sources */,
+				3210C01E0F71886B6034F2D3 /* UpdateService.swift in Sources */,
 				C065ADB4C13D90B8B0FEC693 /* UploadResponse.swift in Sources */,
 				538A11BEDE77FF87F4273BF4 /* UploadService.swift in Sources */,
 				BD3327977BFAF09A65DF6080 /* WindowSelectionCoordinator.swift in Sources */,

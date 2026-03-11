@@ -78,10 +78,11 @@ private struct SectionHeader: View {
 
 // MARK: - GeneralSection
 
-/// General app settings including launch-at-login toggle.
+/// General app settings including launch-at-login and auto-update toggles.
 private struct GeneralSection: View {
 
     @ObservedObject var prefs: PreferencesStore
+    @ObservedObject private var updateService = UpdateService.shared
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -102,6 +103,81 @@ private struct GeneralSection: View {
                     .onChange(of: prefs.launchAtLogin) { _, newValue in
                         LaunchAtLoginService.shared.setEnabled(newValue)
                     }
+            }
+
+            HStack(alignment: .center) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Auto-Check for Updates")
+                        .font(.body)
+                    Text("Check for new versions on launch and periodically")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Toggle("", isOn: $prefs.autoCheckForUpdates)
+                    .labelsHidden()
+                    .toggleStyle(.switch)
+                    .onChange(of: prefs.autoCheckForUpdates) { _, newValue in
+                        if newValue {
+                            UpdateService.shared.startPeriodicCheck()
+                        } else {
+                            UpdateService.shared.stopPeriodicCheck()
+                        }
+                    }
+            }
+
+            // Check for Updates button and update status
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(spacing: 8) {
+                    Button {
+                        Task { await updateService.checkForUpdates() }
+                    } label: {
+                        Text("Check for Updates")
+                    }
+                    .disabled(updateService.isChecking || updateService.isDownloading)
+
+                    if updateService.isChecking {
+                        ProgressView()
+                            .scaleEffect(0.7)
+                    }
+                }
+
+                if updateService.updateAvailable, let version = updateService.latestVersion {
+                    HStack(spacing: 8) {
+                        Text("Version \(version) available")
+                            .font(.caption)
+                            .foregroundStyle(.green)
+
+                        if updateService.downloadURL != nil {
+                            if updateService.isDownloading {
+                                ProgressView()
+                                    .scaleEffect(0.7)
+                                Text("Installing update...")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            } else {
+                                Button {
+                                    Task { await updateService.downloadAndInstall() }
+                                } label: {
+                                    Text("Update Now")
+                                }
+                                .disabled(updateService.isDownloading)
+                            }
+                        }
+                    }
+                }
+
+                if let error = updateService.errorMessage {
+                    Text(error)
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                }
+
+                if let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+                    Text("Current: v\(currentVersion)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
     }

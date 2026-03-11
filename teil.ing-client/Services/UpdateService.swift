@@ -209,7 +209,14 @@ final class UpdateService: ObservableObject {
             return
         }
 
-        // 4. Replace the running .app
+        // 4. Unregister login item before replacing the bundle so macOS doesn't
+        //    see a duplicate after relaunch. The new instance will re-register
+        //    in completeLaunch() if the preference is still enabled.
+        if PreferencesStore.shared.launchAtLogin {
+            LaunchAtLoginService.shared.setEnabled(false)
+        }
+
+        // 5. Replace the running .app
         let currentAppPath = Bundle.main.bundlePath
         let currentAppURL = URL(fileURLWithPath: currentAppPath)
         let backupURL = URL(fileURLWithPath: currentAppPath + ".old")
@@ -233,27 +240,37 @@ final class UpdateService: ObservableObject {
             if FileManager.default.fileExists(atPath: backupURL.path) {
                 try? FileManager.default.moveItem(at: backupURL, to: currentAppURL)
             }
+            // Re-register login item since we didn't replace
+            if PreferencesStore.shared.launchAtLogin {
+                LaunchAtLoginService.shared.setEnabled(true)
+            }
             errorMessage = "Could not install update: \(error.localizedDescription)"
             _ = runProcess("/usr/bin/hdiutil", arguments: ["detach", mountPoint, "-force"])
             try? FileManager.default.removeItem(at: dmgPath)
             return
         }
 
-        // 5. Unmount and clean up
+        // 6. Unmount and clean up
         _ = runProcess("/usr/bin/hdiutil", arguments: ["detach", mountPoint, "-force"])
         try? FileManager.default.removeItem(at: dmgPath)
 
         downloadProgress = 1.0
 
-        // 6. Relaunch the new version and quit
-        let appPath = currentAppURL.path
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            let openProcess = Process()
-            openProcess.executableURL = URL(fileURLWithPath: "/usr/bin/open")
-            openProcess.arguments = ["-n", appPath]
-            try? openProcess.run()
-            NSApp.terminate(nil)
-        }
+        // 7. Relaunch the new version via a shell script that waits for this
+        //    process to exit first, then opens the app normally (no -n flag).
+        //    Using -n would create a "new instance" that macOS registers as a
+        //    separate login item.
+        let pid = ProcessInfo.processInfo.processIdentifier
+        let script = """
+            while kill -0 \(pid) 2>/dev/null; do sleep 0.2; done
+            open "\(currentAppURL.path)"
+            """
+        let shellProcess = Process()
+        shellProcess.executableURL = URL(fileURLWithPath: "/bin/sh")
+        shellProcess.arguments = ["-c", script]
+        try? shellProcess.run()
+
+        NSApp.terminate(nil)
     }
 
     // MARK: - Periodic Check

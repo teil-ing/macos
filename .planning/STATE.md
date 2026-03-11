@@ -144,6 +144,10 @@ Recent decisions affecting current work:
 - [quick-4]: UploadFeedbackEvent.uploadSucceeded carries imageId alongside shareUrl to link local SwiftData entries to remote API images
 - [quick-4]: HistorySection shows remoteImages when non-empty (preferred), falls back to local entries for graceful degradation when offline or no API key
 - [quick-4]: refreshAll() uses withTaskGroup for concurrent fetchRemoteImages + fetchQuota — minimal latency on popover open
+- [quick-5]: UpdateService is @MainActor final class (not actor) — needs @Published for SwiftUI binding in footer badge and preferences; follows PreferencesStore pattern
+- [quick-5]: isRunningFromDMG() checks both /Volumes/ path prefix and parent-directory write permission — handles both standard and non-standard DMG mount points
+- [quick-5]: Rename-then-copy (moveItem + copyItem + removeItem backup) for app replacement — .app.old backup ensures rollback path on copy failure
+- [quick-5]: xcodegen regeneration required after adding UpdateService.swift — new Swift source files are not automatically included in pbxproj Sources build phase
 
 ### Pending Todos
 
@@ -157,6 +161,7 @@ None.
 | 2 | Move preferences from separate window into popover as inline navigation | 2026-03-01 | a2ac5cd | [2-move-preferences-from-separate-window-in](./quick/2-move-preferences-from-separate-window-in/) |
 | 3 | Fix multiscreen capture: use NSMouseInRect instead of CGRect.contains for correct secondary screen targeting | 2026-03-01 | 921b195 | [3-fix-multiscreen-capture-when-mouse-is-on](./quick/3-fix-multiscreen-capture-when-mouse-is-on/) |
 | 4 | Implement new API features: private uploads, API-backed history, image detail sheet, server-side deletion, storage quota bar | 2026-03-11 | 6ef4bab | [4-implement-new-api-features-in-the-client](./quick/4-implement-new-api-features-in-the-client/) |
+| 5 | Auto-update: check GitHub releases on launch and every 4 hours, download DMG, mount, replace app, relaunch | 2026-03-11 | d6d9bbf | [5-auto-update-feature-check-github-release](./quick/5-auto-update-feature-check-github-release/) |
 
 ### Blockers/Concerns
 
@@ -167,5 +172,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-11
-Stopped at: Completed quick task 4 — full API v1 integration with private uploads, API-backed history, image detail sheet, quota bar
+Stopped at: Completed quick task 5 — auto-update feature: GitHub release check, DMG install flow, update badge in popover footer
 Resume file: None

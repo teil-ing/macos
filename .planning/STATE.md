@@ -139,6 +139,11 @@ Recent decisions affecting current work:
 - [Phase 09-polish-and-distribution]: Permission gate pattern: checkScreenRecordingPermission() check before capture in all three AppDelegate capture methods, with presentScreenRecordingDeniedAlert() modal on denial
 - [Phase 09-polish-and-distribution P03]: All 7 Phase 9 verification items confirmed by user — error paths work, build infrastructure reviewed; full pipeline execution deferred until Developer ID certificate is configured
 - [quick-3]: NSMouseInRect(mouse, frame, false) used instead of CGRect.contains for screen hit-testing in findCurrentDisplay() — CGRect.contains is exclusive on maxX/maxY and fails at screen boundaries; NSMouseInRect is the idiomatic AppKit function that handles all boundary cases correctly
+- [quick-4]: APIService uses convertFromSnakeCase JSONDecoder — API returns camelCase JSON matching Swift naming, no custom CodingKeys needed
+- [quick-4]: HistoryDisplayItem adapter struct unifies local HistoryEntry and remote ImageResponse into a single display model — no protocol required; both sources map to the same lightweight struct
+- [quick-4]: UploadFeedbackEvent.uploadSucceeded carries imageId alongside shareUrl to link local SwiftData entries to remote API images
+- [quick-4]: HistorySection shows remoteImages when non-empty (preferred), falls back to local entries for graceful degradation when offline or no API key
+- [quick-4]: refreshAll() uses withTaskGroup for concurrent fetchRemoteImages + fetchQuota — minimal latency on popover open
 
 ### Pending Todos
 
@@ -151,6 +156,7 @@ None.
 | 1 | Add config option: copy URL or copy image to clipboard (URL default) | 2026-03-01 | 0c0ae6b | [1-add-config-option-copy-url-or-copy-image](./quick/1-add-config-option-copy-url-or-copy-image/) |
 | 2 | Move preferences from separate window into popover as inline navigation | 2026-03-01 | a2ac5cd | [2-move-preferences-from-separate-window-in](./quick/2-move-preferences-from-separate-window-in/) |
 | 3 | Fix multiscreen capture: use NSMouseInRect instead of CGRect.contains for correct secondary screen targeting | 2026-03-01 | 921b195 | [3-fix-multiscreen-capture-when-mouse-is-on](./quick/3-fix-multiscreen-capture-when-mouse-is-on/) |
+| 4 | Implement new API features: private uploads, API-backed history, image detail sheet, server-side deletion, storage quota bar | 2026-03-11 | 6ef4bab | [4-implement-new-api-features-in-the-client](./quick/4-implement-new-api-features-in-the-client/) |
 
 ### Blockers/Concerns
 
@@ -160,6 +166,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-01
-Stopped at: Completed quick task 3 — NSMouseInRect fix for multi-screen fullscreen capture targeting
+Last session: 2026-03-11
+Stopped at: Completed quick task 4 — full API v1 integration with private uploads, API-backed history, image detail sheet, quota bar
 Resume file: None

@@ -10,15 +10,30 @@ import SwiftUI
 /// which avoids all actor-isolation complexity. All history operations — insert, delete, LRU
 /// eviction — are synchronous and fast at the ~50-entry scale used here.
 ///
-/// `@Published private(set) var entries` is the single source of truth for SwiftUI.
+/// `@Published private(set) var entries` is the single source of truth for local SwiftData.
+/// `@Published private(set) var remoteImages` is populated by fetching from the API.
 /// Manual `fetchEntries()` after every mutation is required because manually-fetched
 /// arrays do not observe context changes automatically (unlike `@Query`).
 @MainActor
 final class HistoryStore: ObservableObject {
 
-    // MARK: - Published State
+    // MARK: - Published State (Local SwiftData)
 
     @Published private(set) var entries: [HistoryEntry] = []
+
+    // MARK: - Published State (Remote API)
+
+    /// Remote images fetched from the API. Separate from local SwiftData entries.
+    @Published private(set) var remoteImages: [ImageResponse] = []
+
+    /// True while an API fetch is in progress.
+    @Published private(set) var isLoadingRemote: Bool = false
+
+    /// Non-nil when the most recent remote fetch failed.
+    @Published private(set) var remoteError: String?
+
+    /// Storage quota for the authenticated user.
+    @Published private(set) var quota: QuotaResponse?
 
     // MARK: - Private State
 
@@ -32,7 +47,7 @@ final class HistoryStore: ObservableObject {
         fetchEntries()
     }
 
-    // MARK: - Fetch
+    // MARK: - Fetch (Local)
 
     /// Refreshes the @Published `entries` array from SwiftData.
     ///
@@ -45,16 +60,17 @@ final class HistoryStore: ObservableObject {
         entries = (try? context.fetch(descriptor)) ?? []
     }
 
-    // MARK: - CRUD
+    // MARK: - CRUD (Local)
 
     /// Inserts a new history entry, evicts if over the 50-entry cap, then refreshes.
     ///
     /// - Parameters:
+    ///   - imageId: The teil.ing image UUID from the upload API response.
     ///   - shareURL: The teil.ing share URL string for this upload.
     ///   - thumbnailPath: Absolute path to the saved thumbnail JPEG file.
     ///   - timestamp: Capture timestamp (defaults to now if not provided).
-    func addEntry(shareURL: String, thumbnailPath: String, timestamp: Date = Date()) {
-        let entry = HistoryEntry(shareURL: shareURL, thumbnailPath: thumbnailPath, timestamp: timestamp)
+    func addEntry(imageId: String? = nil, shareURL: String, thumbnailPath: String, timestamp: Date = Date()) {
+        let entry = HistoryEntry(imageId: imageId, shareURL: shareURL, thumbnailPath: thumbnailPath, timestamp: timestamp)
         context.insert(entry)
         try? context.save()
         evictOldEntriesIfNeeded()
@@ -80,6 +96,52 @@ final class HistoryStore: ObservableObject {
         try? context.save()
         fetchEntries()
         allPaths.forEach { try? FileManager.default.removeItem(atPath: $0) }
+    }
+
+    // MARK: - Remote API Operations
+
+    /// Fetches the list of remote images from the API and updates `remoteImages`.
+    ///
+    /// Fetches up to 50 images to match local history cap.
+    func fetchRemoteImages() async {
+        isLoadingRemote = true
+        remoteError = nil
+        do {
+            let response = try await APIService.shared.listImages(limit: 50, offset: 0)
+            remoteImages = response.images
+        } catch {
+            remoteError = (error as? APIError)?.errorDescription ?? error.localizedDescription
+        }
+        isLoadingRemote = false
+    }
+
+    /// Fetches the authenticated user's storage quota.
+    func fetchQuota() async {
+        do {
+            quota = try await APIService.shared.getQuota()
+        } catch {
+            // Quota fetch failure is non-critical — silently ignore.
+        }
+    }
+
+    /// Deletes a remote image by its API UUID and refreshes the remote list.
+    func deleteRemoteImage(id: String) async throws {
+        try await APIService.shared.deleteImage(id: id)
+        remoteImages.removeAll { $0.id == id }
+        // Also remove matching local entry if one exists.
+        if let localEntry = entries.first(where: { $0.imageId == id }) {
+            delete(localEntry)
+        }
+        // Refresh quota after deletion.
+        await fetchQuota()
+    }
+
+    /// Fetches both remote images and storage quota concurrently.
+    func refreshAll() async {
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { await self.fetchRemoteImages() }
+            group.addTask { await self.fetchQuota() }
+        }
     }
 
     // MARK: - LRU Eviction

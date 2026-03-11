@@ -227,7 +227,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             uploadError = nil
             CaptureFeedback.showUploadSpinner(on: statusItem)
 
-        case .uploadSucceeded(let shareUrl, let capture):
+        case .uploadSucceeded(let imageId, let shareUrl, let capture):
             _ = shareUrl  // clipboard/browser handled by UploadService internally
             CaptureFeedback.stopUploadSpinner(on: statusItem)
             CaptureFeedback.playCaptureSound()
@@ -238,6 +238,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // (CGImage resize at 64px is negligibly fast; no background dispatch needed)
             if let thumbnailPath = try? ThumbnailService.saveThumbnail(from: capture.image, id: UUID()) {
                 historyStore.addEntry(
+                    imageId: imageId,
                     shareURL: shareUrl,
                     thumbnailPath: thumbnailPath,
                     timestamp: capture.timestamp
@@ -302,6 +303,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Task {
             await UploadService.shared.retry(
                 stripExif: PreferencesStore.shared.stripExif,
+                privateUpload: PreferencesStore.shared.privateUpload,
                 openInBrowser: PreferencesStore.shared.openInBrowser,
                 clipboardCopy: PreferencesStore.shared.clipboardCopy,
                 clipboardMode: PreferencesStore.shared.clipboardMode.rawValue,
@@ -353,6 +355,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     await UploadService.shared.enqueue(
                         result,
                         stripExif: PreferencesStore.shared.stripExif,
+                        privateUpload: PreferencesStore.shared.privateUpload,
                         openInBrowser: PreferencesStore.shared.openInBrowser,
                         clipboardCopy: PreferencesStore.shared.clipboardCopy,
                         clipboardMode: PreferencesStore.shared.clipboardMode.rawValue,
@@ -398,6 +401,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     await UploadService.shared.enqueue(
                         result,
                         stripExif: PreferencesStore.shared.stripExif,
+                        privateUpload: PreferencesStore.shared.privateUpload,
                         openInBrowser: PreferencesStore.shared.openInBrowser,
                         clipboardCopy: PreferencesStore.shared.clipboardCopy,
                         clipboardMode: PreferencesStore.shared.clipboardMode.rawValue,
@@ -461,6 +465,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                         await UploadService.shared.enqueue(
                             result,
                             stripExif: PreferencesStore.shared.stripExif,
+                            privateUpload: PreferencesStore.shared.privateUpload,
                             openInBrowser: PreferencesStore.shared.openInBrowser,
                             clipboardCopy: PreferencesStore.shared.clipboardCopy,
                             clipboardMode: PreferencesStore.shared.clipboardMode.rawValue,
@@ -486,6 +491,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                         await UploadService.shared.enqueue(
                             result,
                             stripExif: PreferencesStore.shared.stripExif,
+                            privateUpload: PreferencesStore.shared.privateUpload,
                             openInBrowser: PreferencesStore.shared.openInBrowser,
                             clipboardCopy: PreferencesStore.shared.clipboardCopy,
                             clipboardMode: PreferencesStore.shared.clipboardMode.rawValue,

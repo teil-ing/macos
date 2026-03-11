@@ -13,6 +13,10 @@ final class HistoryEntry {
     /// Unique identifier. `@Attribute(.unique)` prevents duplicate entries.
     @Attribute(.unique) var id: UUID
 
+    /// The teil.ing image UUID returned by the upload API.
+    /// Non-nil for all new uploads; nil for entries created before this field was added.
+    var imageId: String?
+
     /// Share URL returned by the teil.ing API (stored as String to avoid URL encoding quirks).
     var shareURL: String
 
@@ -24,11 +28,13 @@ final class HistoryEntry {
 
     init(
         id: UUID = UUID(),
+        imageId: String? = nil,
         shareURL: String,
         thumbnailPath: String,
         timestamp: Date = Date()
     ) {
         self.id = id
+        self.imageId = imageId
         self.shareURL = shareURL
         self.thumbnailPath = thumbnailPath
         self.timestamp = timestamp

@@ -14,6 +14,7 @@
 		344652B52AD6DB7EDA5FAB83 /* StreamCaptureBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B81FC0B1570C3A7DABAC5B54 /* StreamCaptureBridge.swift */; };
 		4430E4C2DB797C284DB455F9 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DF3404403957C6127C6AF8 /* KeychainService.swift */; };
 		4539669645DCDF2E19823B81 /* LaunchAtLoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AAB224C8E73B97CA40860A0 /* LaunchAtLoginService.swift */; };
+		4E48A23B3DA3CEDD968B6045 /* APIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7D871039556E73670AEAE0 /* APIModels.swift */; };
 		538A11BEDE77FF87F4273BF4 /* UploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11286FFD4E91BED24067A03F /* UploadService.swift */; };
 		5C873EE6760DF44690424A4F /* OverlayCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 169AE4303DE7180CDD3A95F6 /* OverlayCoordinator.swift */; };
 		6001B8C0C77B96A32960FA86 /* HistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D0B338FCE68B3FFEFFCBFB /* HistoryStore.swift */; };
@@ -26,6 +27,7 @@
 		8CF12B5954399FB5E4BAA1DD /* HistoryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E1A2F03DCF529D0FA5AFD6C /* HistoryEntry.swift */; };
 		94AD34961158A908E95A724F /* APIValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F57EB412468C0BDB94A7D80 /* APIValidationService.swift */; };
 		95DE43BC330676B09EFDC5EE /* OnboardingWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814583DD4F976A375EE3DBC4 /* OnboardingWindowController.swift */; };
+		989FD6F154D9DE3112CFD575 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BDCACD477F380473237D353 /* APIService.swift */; };
 		AC145F60D0E6BEF8EA4DB645 /* PopoverFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97256E7981DEDBD082B4D40 /* PopoverFooterView.swift */; };
 		AC8737301B1E097457FB19BB /* teil_ing_clientApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79FE129C6A4205DC4ED337DE /* teil_ing_clientApp.swift */; };
 		ACF036FBBB9800FFD64F9E89 /* HistorySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04D9491FC028C6675EE0198 /* HistorySection.swift */; };
@@ -78,6 +80,8 @@
 		79FE129C6A4205DC4ED337DE /* teil_ing_clientApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = teil_ing_clientApp.swift; sourceTree = "<group>"; };
 		7AAB224C8E73B97CA40860A0 /* LaunchAtLoginService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginService.swift; sourceTree = "<group>"; };
 		814583DD4F976A375EE3DBC4 /* OnboardingWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWindowController.swift; sourceTree = "<group>"; };
+		8BDCACD477F380473237D353 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		9E7D871039556E73670AEAE0 /* APIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIModels.swift; sourceTree = "<group>"; };
 		A12C97ADB87DD38629B37429 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		A97256E7981DEDBD082B4D40 /* PopoverFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverFooterView.swift; sourceTree = "<group>"; };
 		AE4A8699592B3ECA0209739D /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
@@ -171,6 +175,7 @@
 		98A436E9AFF90F5721A61AC6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				9E7D871039556E73670AEAE0 /* APIModels.swift */,
 				E401D2612FBAAB3278E3E38A /* CaptureResult.swift */,
 				4E1A2F03DCF529D0FA5AFD6C /* HistoryEntry.swift */,
 				75ACC5A437F11482181CFFBF /* UploadResponse.swift */,
@@ -201,6 +206,7 @@
 		B79AA908498BB41070F69537 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				8BDCACD477F380473237D353 /* APIService.swift */,
 				2F57EB412468C0BDB94A7D80 /* APIValidationService.swift */,
 				04ABF06C86D6AE92C0CBC4D8 /* CaptureEngine.swift */,
 				4455AC96905B120220E2DE7A /* CaptureFeedback.swift */,
@@ -338,6 +344,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E48A23B3DA3CEDD968B6045 /* APIModels.swift in Sources */,
+				989FD6F154D9DE3112CFD575 /* APIService.swift in Sources */,
 				94AD34961158A908E95A724F /* APIValidationService.swift in Sources */,
 				CD7571658B028D36436443B9 /* AppDelegate.swift in Sources */,
 				2C36B92ACD493D01DB3BBF02 /* CaptureEngine.swift in Sources */,

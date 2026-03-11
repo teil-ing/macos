@@ -58,6 +58,13 @@ final class PreferencesStore: ObservableObject {
     @AppStorage("pref_launchAtLogin")
     var launchAtLogin: Bool = false
 
+    /// Make uploaded images private (owner-only, not accessible via share link).
+    /// When true, sends `private=true` as a multipart form field.
+    /// When false, omits the field entirely (API contract: omission = public).
+    /// Default: false (public uploads by default, privacy is opt-in).
+    @AppStorage("pref_privateUpload")
+    var privateUpload: Bool = false
+
     /// Controls what is written to the clipboard after upload.
     /// Stored as raw String value because @AppStorage does not support custom enums directly.
     /// Default: .url (preserves existing behavior for all users).

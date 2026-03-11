@@ -6,7 +6,7 @@ import Foundation
 /// Events emitted by UploadService to drive UI feedback on the main actor.
 enum UploadFeedbackEvent: Sendable {
     case uploadStarted
-    case uploadSucceeded(shareUrl: String, capture: CaptureResult)
+    case uploadSucceeded(imageId: String, shareUrl: String, capture: CaptureResult)
     case uploadFailed(error: UploadError)
 }
 
@@ -53,6 +53,7 @@ actor UploadService {
     func enqueue(
         _ capture: CaptureResult,
         stripExif: Bool,
+        privateUpload: Bool,
         openInBrowser: Bool,
         clipboardCopy: Bool,
         clipboardMode: String,
@@ -61,6 +62,7 @@ actor UploadService {
         pendingCount += 1
         let capturedPendingCount = pendingCount
         let capturedStripExif = stripExif
+        let capturedPrivateUpload = privateUpload
         let capturedOpenInBrowser = openInBrowser
         let capturedClipboardCopy = clipboardCopy
         let capturedClipboardMode = clipboardMode
@@ -74,6 +76,7 @@ actor UploadService {
                 capture: capture,
                 capturedPendingCount: capturedPendingCount,
                 stripExif: capturedStripExif,
+                isPrivate: capturedPrivateUpload,
                 shouldOpenInBrowser: capturedOpenInBrowser,
                 shouldCopyToClipboard: capturedClipboardCopy,
                 capturedClipboardMode: capturedClipboardMode,
@@ -88,6 +91,7 @@ actor UploadService {
     /// made between failure and retry are honoured.
     func retry(
         stripExif: Bool,
+        privateUpload: Bool,
         openInBrowser: Bool,
         clipboardCopy: Bool,
         clipboardMode: String,
@@ -97,6 +101,7 @@ actor UploadService {
             enqueue(
                 capture,
                 stripExif: stripExif,
+                privateUpload: privateUpload,
                 openInBrowser: openInBrowser,
                 clipboardCopy: clipboardCopy,
                 clipboardMode: clipboardMode,
@@ -111,6 +116,7 @@ actor UploadService {
         capture: CaptureResult,
         capturedPendingCount: Int,
         stripExif: Bool,
+        isPrivate: Bool,
         shouldOpenInBrowser: Bool,
         shouldCopyToClipboard: Bool,
         capturedClipboardMode: String,
@@ -135,8 +141,8 @@ actor UploadService {
             return
         }
 
-        // Step 3: Build multipart request (stripExif field conditionally included).
-        let (request, bodyData) = buildMultipartRequest(apiKey: apiKey, pngData: pngData, stripExif: stripExif)
+        // Step 3: Build multipart request (stripExif and private fields conditionally included).
+        let (request, bodyData) = buildMultipartRequest(apiKey: apiKey, pngData: pngData, stripExif: stripExif, isPrivate: isPrivate)
 
         // Step 4: Perform upload with retry.
         do {
@@ -160,7 +166,7 @@ actor UploadService {
             }
 
             lastError = nil
-            await onFeedback(.uploadSucceeded(shareUrl: result.shareUrl, capture: capture))
+            await onFeedback(.uploadSucceeded(imageId: result.id, shareUrl: result.shareUrl, capture: capture))
         } catch let uploadError as UploadError {
             failedCapture = capture
             lastError = uploadError
@@ -175,7 +181,7 @@ actor UploadService {
 
     // MARK: - Private: Multipart Request Builder
 
-    private func buildMultipartRequest(apiKey: String, pngData: Data, stripExif: Bool) -> (URLRequest, Data) {
+    private func buildMultipartRequest(apiKey: String, pngData: Data, stripExif: Bool, isPrivate: Bool) -> (URLRequest, Data) {
         let boundary = "Boundary-\(UUID().uuidString)"
         let url = URL(string: "https://teil.ing/api/v1/upload")!
 
@@ -200,6 +206,16 @@ actor UploadService {
         if stripExif {
             body.append("--\(boundary)\r\n")
             body.append("Content-Disposition: form-data; name=\"stripExif\"\r\n")
+            body.append("\r\n")
+            body.append("true")
+            body.append("\r\n")
+        }
+
+        // private field — only included when preference is ON.
+        // API contract: omit the field entirely when not private (absence = public).
+        if isPrivate {
+            body.append("--\(boundary)\r\n")
+            body.append("Content-Disposition: form-data; name=\"private\"\r\n")
             body.append("\r\n")
             body.append("true")
             body.append("\r\n")
@@ -234,9 +250,24 @@ actor UploadService {
         switch httpResponse.statusCode {
         case 201:
             let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
             return try decoder.decode(UploadResponse.self, from: data)
         case 401:
             throw UploadError.unauthorized
+        case 413:
+            // Storage quota exceeded — decode storageUsed/storageQuota from error body if available.
+            struct QuotaErrorBody: Decodable {
+                let storageUsed: Int?
+                let storageQuota: Int?
+            }
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            if let body = try? decoder.decode(QuotaErrorBody.self, from: data),
+               let used = body.storageUsed,
+               let quota = body.storageQuota {
+                throw UploadError.quotaExceeded(storageUsed: used, storageQuota: quota)
+            }
+            throw UploadError.quotaExceeded(storageUsed: 0, storageQuota: 0)
         case 429:
             let retryAfter = httpResponse.value(forHTTPHeaderField: "Retry-After").flatMap { Int($0) }
             throw UploadError.rateLimited(retryAfter: retryAfter)

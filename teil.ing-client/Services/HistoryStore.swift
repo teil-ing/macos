@@ -107,8 +107,10 @@ final class HistoryStore: ObservableObject {
         isLoadingRemote = true
         remoteError = nil
         do {
-            let response = try await APIService.shared.listImages(limit: 50, offset: 0)
-            remoteImages = response.images
+            let response = try await APIService.shared.listImages(limit: 5, offset: 0)
+            remoteImages = response.images.sorted {
+                $0.createdAt > $1.createdAt
+            }
         } catch {
             remoteError = (error as? APIError)?.errorDescription ?? error.localizedDescription
         }

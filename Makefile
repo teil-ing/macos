@@ -4,7 +4,9 @@
 #   make build              — Debug build
 #   make build-release      — Release build
 #   make test               — Run unit tests
-#   make dmg                — Build DMG locally
+#   make dmg                — Build unsigned DMG locally (fast)
+#   make dmg-signed         — Build signed DMG locally
+#   make dmg-release        — Build signed + notarized DMG
 #   make release V=1.0.5    — Bump, build, commit, tag, create GH release, push
 #   make clean              — Remove build artifacts
 
@@ -13,7 +15,7 @@ SCHEME   := teil.ing-client
 VERSION  := $(shell sed -n 's/.*MARKETING_VERSION: *"\(.*\)"/\1/p' project.yml | head -1)
 BUILD    := $(shell sed -n 's/.*CURRENT_PROJECT_VERSION: *"\(.*\)"/\1/p' project.yml | head -1)
 
-.PHONY: build build-release test xcodegen dmg bump release push clean
+.PHONY: build build-release test xcodegen dmg dmg-signed dmg-release bump release push clean
 
 build: xcodegen
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration Debug build
@@ -28,7 +30,13 @@ xcodegen:
 	xcodegen generate
 
 dmg:
+	CODE_SIGN_IDENTITY=- ./build-dmg.sh $(VERSION)
+
+dmg-signed:
 	./build-dmg.sh $(VERSION)
+
+dmg-release:
+	NOTARIZE=1 ./build-dmg.sh $(VERSION)
 
 clean:
 	rm -rf build/

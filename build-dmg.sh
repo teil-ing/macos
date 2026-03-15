@@ -60,6 +60,7 @@ if [ "${SHOULD_SIGN}" = true ]; then
                DEVELOPMENT_TEAM=5A7M476YY2 \
                CODE_SIGNING_REQUIRED=YES \
                CODE_SIGNING_ALLOWED=YES \
+               CODE_SIGN_INJECT_BASE_ENTITLEMENTS=NO \
                OTHER_CODE_SIGN_FLAGS="--timestamp --options runtime"
 else
     xcodebuild -project "${PROJECT}" \
@@ -109,12 +110,28 @@ fi
 # Step 5: Notarize
 if [ "${NOTARIZE:-0}" = "1" ]; then
     echo "==> [5/${STEPS}] Submitting for notarization..."
-    xcrun notarytool submit "${DMG_PATH}" \
+    SUBMIT_OUTPUT=$(xcrun notarytool submit "${DMG_PATH}" \
         --key "${ASC_KEY_PATH}" \
         --key-id "${ASC_KEY_ID}" \
         --issuer "${ASC_ISSUER_ID}" \
         --wait \
-        --timeout 900
+        --timeout 900 2>&1) || true
+    echo "${SUBMIT_OUTPUT}"
+
+    SUBMISSION_ID=$(echo "${SUBMIT_OUTPUT}" | grep -m1 '  id:' | awk '{print $2}')
+    STATUS=$(echo "${SUBMIT_OUTPUT}" | grep '  status:' | tail -1 | awk '{print $2}')
+
+    if [ "${STATUS}" != "Accepted" ]; then
+        echo ""
+        echo "==> Notarization failed (status: ${STATUS}). Fetching log..."
+        xcrun notarytool log "${SUBMISSION_ID}" \
+            --key "${ASC_KEY_PATH}" \
+            --key-id "${ASC_KEY_ID}" \
+            --issuer "${ASC_ISSUER_ID}" \
+            "${BUILD_DIR}/notarization-log.json" || true
+        cat "${BUILD_DIR}/notarization-log.json" 2>/dev/null || true
+        exit 1
+    fi
 fi
 
 # Step 6: Staple

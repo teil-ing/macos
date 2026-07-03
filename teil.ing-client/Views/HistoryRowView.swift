@@ -82,8 +82,10 @@ struct HistoryRowView: View {
     private let formatter = RelativeDateTimeFormatter()
 
     var body: some View {
-        // TimelineView(.everyMinute) auto-refreshes the relative timestamp every minute
-        TimelineView(.everyMinute) { context in
+        // TimelineView(.everyMinute) auto-refreshes the relative timestamp every minute.
+        // The scheduled tick only drives re-rendering; the label itself is computed against
+        // the real current instant (see relativeTimestamp) rather than the minute-aligned tick.
+        TimelineView(.everyMinute) { _ in
             HStack(spacing: 8) {
                 thumbnailView
                     .frame(width: 32, height: 32)
@@ -91,7 +93,7 @@ struct HistoryRowView: View {
 
                 VStack(alignment: .leading, spacing: 1) {
                     HStack(spacing: 4) {
-                        Text(formatter.localizedString(for: item.timestamp, relativeTo: context.date))
+                        Text(relativeTimestamp())
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
@@ -187,6 +189,19 @@ struct HistoryRowView: View {
                 }
             }
         }
+    }
+
+    // MARK: - Relative Timestamp
+
+    /// Human-friendly relative time for this row, measured against the real current instant.
+    ///
+    /// Clamps freshly-created or future timestamps to "Just now": a just-captured upload's
+    /// server `createdAt` can be a second or two ahead of the local clock, and the minute-aligned
+    /// TimelineView tick lags real time — either would otherwise render a nonsensical "in N seconds".
+    private func relativeTimestamp() -> String {
+        let secondsAgo = Date().timeIntervalSince(item.timestamp)
+        if secondsAgo < 5 { return "Just now" }
+        return formatter.localizedString(for: item.timestamp, relativeTo: Date())
     }
 
     // MARK: - Thumbnail

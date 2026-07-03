@@ -118,6 +118,19 @@ struct HistoryRowView: View {
 
                 Spacer()
 
+                // Edit button — opens the web edit page for this image in the browser
+                // (e.g. https://teil.ing/i/{slug}/edit), derived by appending "/edit" to
+                // the share URL.
+                Button {
+                    if let url = URL(string: item.shareURL + "/edit") {
+                        NSWorkspace.shared.open(url)
+                    }
+                } label: {
+                    Image(systemName: "square.and.pencil")
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+
                 // Copy URL button — shows checkmark for 1.5 seconds after copying
                 Button {
                     NSPasteboard.general.clearContents()

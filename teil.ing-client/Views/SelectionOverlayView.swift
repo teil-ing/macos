@@ -105,7 +105,7 @@ final class SelectionOverlayView: NSView {
         // Marching-ants animation
         let dash = CABasicAnimation(keyPath: "lineDashPhase")
         dash.fromValue = 0
-        dash.toValue = -(6 + 4)   // sum of dash + gap
+        dash.toValue = -(6.0 + 4.0)   // sum of dash + gap
         dash.duration = 0.5
         dash.repeatCount = .infinity
         selectionLayer.add(dash, forKey: "marchingAnts")

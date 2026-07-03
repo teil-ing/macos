@@ -253,6 +253,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     timestamp: capture.timestamp
                 )
             }
+            // Refresh the remote image list so the newly uploaded screenshot appears at the
+            // top of the history immediately. The history list prefers remote images over local
+            // entries, so adding a local entry alone would not surface the new upload.
+            Task { await historyStore.refreshAll() }
 
         case .uploadFailed(let error):
             CaptureFeedback.stopUploadSpinner(on: statusItem)

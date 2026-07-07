@@ -67,6 +67,6 @@ release:
 	git tag -a "v$(V)" -m "v$(V)"
 	@echo "==> Pushing..."
 	git push && git push --tags
-	@echo "==> Creating GitHub release..."
-	gh release create "v$(V)" --title "v$(V)" --generate-notes
+	@echo "==> Creating draft GitHub release (CI publishes it after attaching the DMG)..."
+	gh release create "v$(V)" --title "v$(V)" --generate-notes --draft
 	@echo "==> Released v$(V) — CI will build and upload DMG"

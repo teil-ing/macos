@@ -24,6 +24,11 @@ final class UpdateService: ObservableObject {
     /// Direct download URL for the DMG asset.
     @Published private(set) var downloadURL: URL?
 
+    /// URL of the GitHub release page for the latest version. Used as a manual-download
+    /// fallback when no DMG asset is available for in-app installation (e.g. the release
+    /// was just published and its DMG is still being built/uploaded by CI).
+    @Published private(set) var releaseURL: URL?
+
     /// True while the GitHub API request is in-flight.
     @Published private(set) var isChecking: Bool = false
 
@@ -46,6 +51,7 @@ final class UpdateService: ObservableObject {
 
     private struct GitHubRelease: Decodable {
         let tagName: String
+        let htmlUrl: String
         let assets: [Asset]
 
         struct Asset: Decodable {
@@ -107,6 +113,10 @@ final class UpdateService: ObservableObject {
             updateAvailable = false
             return
         }
+
+        // Newer version confirmed — record the release page so the user always has a
+        // manual-download fallback even if no DMG asset is found below.
+        releaseURL = URL(string: release.htmlUrl)
 
         // Find the DMG asset — prefer one matching "teil.ing-client-*.dmg", then any .dmg
         let dmgAsset = release.assets.first { $0.name.hasSuffix(".dmg") && $0.name.contains("teil.ing-client") }

@@ -74,6 +74,14 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Publish only after the DMG is attached. Releases are created as drafts so the
+      # GitHub "latest" API never returns a version whose DMG is still building —
+      # which would show the app an update with no installable asset.
+      - name: Publish release
+        run: gh release edit "v${VERSION}" --draft=false --latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Upload notarization log on failure
         if: failure()
         uses: actions/upload-artifact@v4

@@ -148,20 +148,26 @@ private struct GeneralSection: View {
                             .font(.caption)
                             .foregroundStyle(.green)
 
-                        if updateService.downloadURL != nil {
-                            if updateService.isDownloading {
-                                ProgressView()
-                                    .scaleEffect(0.7)
-                                Text("Installing update...")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            } else {
-                                Button {
-                                    Task { await updateService.downloadAndInstall() }
-                                } label: {
-                                    Text("Update Now")
-                                }
-                                .disabled(updateService.isDownloading)
+                        if updateService.isDownloading {
+                            ProgressView()
+                                .scaleEffect(0.7)
+                            Text("Installing update...")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        } else if updateService.downloadURL != nil {
+                            // DMG asset available — install in place.
+                            Button {
+                                Task { await updateService.downloadAndInstall() }
+                            } label: {
+                                Text("Update Now")
+                            }
+                        } else if let releaseURL = updateService.releaseURL {
+                            // No DMG asset yet (e.g. the release is still building) — fall back
+                            // to opening the release page so the update is never uninstallable.
+                            Button {
+                                NSWorkspace.shared.open(releaseURL)
+                            } label: {
+                                Text("Download Update")
                             }
                         }
                     }

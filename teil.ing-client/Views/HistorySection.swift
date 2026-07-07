@@ -110,11 +110,6 @@ struct HistorySection: View {
             }
         }
         .padding(.bottom, 4)
-        .onAppear {
-            if store.remoteImages.isEmpty {
-                Task { await store.refreshAll() }
-            }
-        }
         .confirmationDialog(
             "Clear all upload history?",
             isPresented: $showClearConfirmation,

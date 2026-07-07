@@ -212,6 +212,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.activate(ignoringOtherApps: true)
         startEventMonitor()
 
+        // Refresh the recent-upload list every time the menu opens so it reflects the
+        // latest server state (new uploads, edits, or deletions made elsewhere).
+        Task { await historyStore.refreshAll() }
+
         // Acknowledge error icon by restoring normal icon when popover opens
         if uploadError != nil {
             CaptureFeedback.restoreNormalIcon(on: statusItem)

@@ -122,7 +122,8 @@ final class ErrorPathTests: XCTestCase {
             "slug": "test-slug",
             "shareUrl": "https://teil.ing/i/test-slug",
             "imageUrl": "https://teil.ing/images/abc123.png",
-            "thumbnailUrl": "https://teil.ing/thumbnails/abc123.png"
+            "thumbnailUrl": "https://teil.ing/thumbnails/abc123.png",
+            "isPrivate": false
         }
         """.data(using: .utf8)!
 
@@ -132,6 +133,7 @@ final class ErrorPathTests: XCTestCase {
         XCTAssertEqual(response.shareUrl, "https://teil.ing/i/test-slug")
         XCTAssertEqual(response.imageUrl, "https://teil.ing/images/abc123.png")
         XCTAssertEqual(response.thumbnailUrl, "https://teil.ing/thumbnails/abc123.png")
+        XCTAssertFalse(response.isPrivate)
     }
 
     func testUploadResponseDecodingFailsWithMissingFields() {

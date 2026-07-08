@@ -183,7 +183,7 @@ actor UploadService {
 
     private func buildMultipartRequest(apiKey: String, pngData: Data, stripExif: Bool, isPrivate: Bool) -> (URLRequest, Data) {
         let boundary = "Boundary-\(UUID().uuidString)"
-        let url = URL(string: "https://teil.ing/api/v1/upload")!
+        let url = URL(string: "\(TeilAPI.v1)/upload")!
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"

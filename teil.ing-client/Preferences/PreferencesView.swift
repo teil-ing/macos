@@ -191,14 +191,17 @@ private struct GeneralSection: View {
 
 // MARK: - AccountSection
 
-/// Displays the stored API key masked (last 8 chars visible), with inline replace
-/// and delete-with-confirmation flows.
+/// Displays the stored API key masked (last 8 chars visible). Signing in via
+/// the browser (email, GitHub, or Google) provisions a fresh device key
+/// automatically; a manual API key field remains as fallback.
 private struct AccountSection: View {
 
     @State private var currentKey: String?
     @State private var isEditing: Bool = false
+    @State private var useManualKey: Bool = false
     @State private var newKeyInput: String = ""
     @State private var isValidating: Bool = false
+    @State private var isWaitingForBrowser: Bool = false
     @State private var errorMessage: String?
 
     var body: some View {
@@ -213,8 +216,7 @@ private struct AccountSection: View {
                         .foregroundStyle(.primary)
 
                     Button("Change") {
-                        newKeyInput = ""
-                        errorMessage = nil
+                        resetEntryState()
                         isEditing = true
                     }
 
@@ -223,37 +225,10 @@ private struct AccountSection: View {
                     }
                 }
             } else if isEditing || currentKey == nil {
-                // Edit mode: text field for new key entry
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 8) {
-                        TextField("Enter API key", text: $newKeyInput)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(maxWidth: .infinity)
-
-                        if isValidating {
-                            ProgressView()
-                                .scaleEffect(0.8)
-                        } else {
-                            Button("Save") {
-                                Task { await saveKey() }
-                            }
-                            .disabled(newKeyInput.trimmingCharacters(in: .whitespaces).isEmpty)
-                        }
-
-                        if isEditing, currentKey != nil {
-                            Button("Cancel") {
-                                newKeyInput = ""
-                                errorMessage = nil
-                                isEditing = false
-                            }
-                        }
-                    }
-
-                    if let error = errorMessage {
-                        Text(error)
-                            .font(.caption)
-                            .foregroundStyle(.red)
-                    }
+                if useManualKey {
+                    manualKeyEntry
+                } else {
+                    signInEntry
                 }
             }
         }
@@ -262,7 +237,108 @@ private struct AccountSection: View {
         }
     }
 
+    // MARK: - Sign In Entry
+
+    private var signInEntry: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if isWaitingForBrowser {
+                HStack(spacing: 8) {
+                    ProgressView()
+                        .scaleEffect(0.8)
+
+                    Text("Finish signing in to teil.ing in your browser…")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    Button("Cancel") {
+                        AuthService.shared.cancel()
+                    }
+                }
+            } else {
+                HStack(spacing: 8) {
+                    Button("Sign in with teil.ing") {
+                        Task { await signIn() }
+                    }
+
+                    if isEditing, currentKey != nil {
+                        Button("Cancel") {
+                            resetEntryState()
+                            isEditing = false
+                        }
+                    }
+                }
+
+                Text("Your browser will open — sign in with your email, GitHub, or Google account and approve this Mac.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Button("Use an API key instead") {
+                AuthService.shared.cancel()
+                errorMessage = nil
+                useManualKey = true
+            }
+            .buttonStyle(.link)
+            .font(.caption)
+
+            if let error = errorMessage {
+                Text(error)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
+        }
+    }
+
+    // MARK: - Manual Key Entry
+
+    private var manualKeyEntry: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 8) {
+                TextField("Enter API key", text: $newKeyInput)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(maxWidth: .infinity)
+
+                if isValidating {
+                    ProgressView()
+                        .scaleEffect(0.8)
+                } else {
+                    Button("Save") {
+                        Task { await saveKey() }
+                    }
+                    .disabled(newKeyInput.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+
+                if isEditing, currentKey != nil {
+                    Button("Cancel") {
+                        resetEntryState()
+                        isEditing = false
+                    }
+                }
+            }
+
+            Button("Sign in with teil.ing instead") {
+                errorMessage = nil
+                useManualKey = false
+            }
+            .buttonStyle(.link)
+            .font(.caption)
+
+            if let error = errorMessage {
+                Text(error)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
+        }
+    }
+
     // MARK: - Private Helpers
+
+    private func resetEntryState() {
+        AuthService.shared.cancel()
+        newKeyInput = ""
+        errorMessage = nil
+        useManualKey = false
+    }
 
     private func maskedKey(_ key: String) -> String {
         let visibleCount = 8
@@ -271,6 +347,27 @@ private struct AccountSection: View {
         }
         let bulletCount = key.count - visibleCount
         return String(repeating: "\u{2022}", count: bulletCount) + key.suffix(visibleCount)
+    }
+
+    @MainActor
+    private func signIn() async {
+        isWaitingForBrowser = true
+        errorMessage = nil
+        defer { isWaitingForBrowser = false }
+
+        do {
+            let key = try await AuthService.shared.signInViaBrowser()
+            try KeychainService.shared.save(key)
+            currentKey = key
+            resetEntryState()
+            isEditing = false
+        } catch AuthError.cancelled {
+            // User backed out — not an error worth a banner.
+        } catch let authError as AuthError {
+            errorMessage = authError.localizedDescription
+        } catch {
+            errorMessage = "Failed to save API key. Please try again."
+        }
     }
 
     @MainActor
@@ -290,8 +387,7 @@ private struct AccountSection: View {
             do {
                 try KeychainService.shared.save(trimmed)
                 currentKey = trimmed
-                newKeyInput = ""
-                errorMessage = nil
+                resetEntryState()
                 isEditing = false
             } catch {
                 errorMessage = "Failed to save API key. Please try again."
@@ -308,19 +404,18 @@ private struct AccountSection: View {
     @MainActor
     private func confirmDeleteAPIKey() {
         let alert = NSAlert()
-        alert.messageText = "Delete API Key?"
-        alert.informativeText = "You will need to enter a new API key to use teil.ing."
+        alert.messageText = "Sign Out?"
+        alert.informativeText = "The API key will be removed from this Mac. Sign in again (or enter an API key) to keep uploading."
         alert.alertStyle = .warning
-        alert.addButton(withTitle: "Delete")
+        alert.addButton(withTitle: "Sign Out")
         alert.addButton(withTitle: "Cancel")
 
         guard alert.runModal() == .alertFirstButtonReturn else { return }
 
         KeychainService.shared.delete()
-        // Stay in preferences with empty key field — per locked decision
+        // Stay in preferences with the sign-in form shown — per locked decision
         currentKey = nil
-        newKeyInput = ""
-        errorMessage = nil
+        resetEntryState()
         isEditing = true
     }
 }

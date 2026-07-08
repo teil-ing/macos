@@ -44,7 +44,7 @@ struct OnboardingView: View {
                     .font(.title)
                     .multilineTextAlignment(.center)
 
-                Text("Enter your API key to get started")
+                Text(subtitle)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -56,8 +56,12 @@ struct OnboardingView: View {
 
             // MARK: Phase-dependent section
             switch viewModel.phase {
-            case .apiKey:
-                apiKeySection
+            case .signIn:
+                if viewModel.useManualKey {
+                    apiKeySection
+                } else {
+                    signInSection
+                }
 
             case .screenRecording:
                 screenRecordingSection
@@ -79,7 +83,74 @@ struct OnboardingView: View {
         }
     }
 
-    // MARK: - API Key Section
+    private var subtitle: String {
+        switch viewModel.phase {
+        case .signIn:
+            return viewModel.useManualKey
+                ? "Enter your API key to get started"
+                : "Sign in with your teil.ing account to get started"
+        case .screenRecording, .complete:
+            return "One more step"
+        }
+    }
+
+    // MARK: - Sign In Section
+
+    private var signInSection: some View {
+        VStack(spacing: 12) {
+            if viewModel.isWaitingForBrowser {
+                VStack(spacing: 10) {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+
+                    Text("Finish signing in to teil.ing in your browser, then approve this Mac.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+
+                    Button("Cancel") {
+                        viewModel.cancelBrowserSignIn()
+                    }
+                    .buttonStyle(.bordered)
+                }
+                .padding(.horizontal, 40)
+            } else {
+                Button {
+                    Task { await viewModel.signInWithBrowser() }
+                } label: {
+                    Text("Sign in with teil.ing")
+                        .padding(.horizontal, 12)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .modifier(ShakeEffect(animatableData: CGFloat(viewModel.shakeAttempts)))
+
+                Text("Your browser will open — sign in with your email, GitHub, or Google account and approve this Mac.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 40)
+            }
+
+            // Error message
+            if let errorMessage = viewModel.errorMessage {
+                Text(errorMessage)
+                    .foregroundStyle(.red)
+                    .font(.caption)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 40)
+            }
+
+            Button("Prefer an API key? Enter one manually") {
+                viewModel.toggleManualKey()
+            }
+            .buttonStyle(.link)
+            .font(.caption)
+        }
+        .padding(.horizontal, 40)
+    }
+
+    // MARK: - API Key Section (manual fallback)
 
     private var apiKeySection: some View {
         VStack(spacing: 12) {
@@ -114,7 +185,7 @@ struct OnboardingView: View {
             .padding(.horizontal, 40)
 
             // Hint text
-            Text("Find your key at teil.ing/settings")
+            Text("Create a key at teil.ing/dashboard/api-keys")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
@@ -140,6 +211,12 @@ struct OnboardingView: View {
                 viewModel.isValidating
             )
             .padding(.top, 4)
+
+            Button("Back to sign in") {
+                viewModel.toggleManualKey()
+            }
+            .buttonStyle(.link)
+            .font(.caption)
         }
         .padding(.horizontal, 40)
     }

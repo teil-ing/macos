@@ -4,7 +4,7 @@ import SwiftUI
 // MARK: - OnboardingPhase
 
 enum OnboardingPhase {
-    case apiKey
+    case signIn
     case screenRecording
     case complete
 }
@@ -16,18 +16,50 @@ final class OnboardingViewModel: ObservableObject {
 
     // MARK: - Published State
 
+    /// Fallback for users who prefer to paste a dashboard-created key.
+    @Published var useManualKey: Bool = false
     @Published var apiKey: String = ""
     @Published var isRevealed: Bool = false
     @Published var isValidating: Bool = false
+    /// True while the browser handshake is in flight (waiting for the
+    /// teiling:// callback and the key exchange).
+    @Published var isWaitingForBrowser: Bool = false
     @Published var errorMessage: String? = nil
     @Published var shakeAttempts: Int = 0
-    @Published var phase: OnboardingPhase = .apiKey
+    @Published var phase: OnboardingPhase = .signIn
 
     // MARK: - Callbacks
 
     var onComplete: (() -> Void)?
 
-    // MARK: - API Key Validation
+    // MARK: - Sign In (browser connect flow → provisioned API key)
+
+    func signInWithBrowser() async {
+        errorMessage = nil
+        isWaitingForBrowser = true
+        defer { isWaitingForBrowser = false }
+
+        do {
+            let key = try await AuthService.shared.signInViaBrowser()
+            try KeychainService.shared.save(key)
+            phase = .screenRecording
+        } catch AuthError.cancelled {
+            // User backed out — not an error worth a banner.
+        } catch let authError as AuthError {
+            errorMessage = authError.localizedDescription
+            withAnimation(.default) {
+                shakeAttempts += 1
+            }
+        } catch {
+            errorMessage = "Could not save your credentials: \(error.localizedDescription)"
+        }
+    }
+
+    func cancelBrowserSignIn() {
+        AuthService.shared.cancel()
+    }
+
+    // MARK: - Manual API Key Fallback
 
     func validateAndSave() async {
         let trimmedKey = apiKey.trimmingCharacters(in: .whitespaces)
@@ -70,6 +102,13 @@ final class OnboardingViewModel: ObservableObject {
                 shakeAttempts += 1
             }
         }
+    }
+
+    func toggleManualKey() {
+        // Entering (or leaving) manual mode abandons any waiting browser flow.
+        AuthService.shared.cancel()
+        useManualKey.toggle()
+        errorMessage = nil
     }
 
     // MARK: - Screen Recording Permission

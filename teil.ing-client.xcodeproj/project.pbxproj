@@ -41,8 +41,10 @@
 		CABCDA558A792C8CB7826BE2 /* PreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F332AA95EDADAACBE2013279 /* PreferencesStore.swift */; };
 		CC096D043FDE10F76B00D80A /* HotkeyMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5576D5A3E4BF4D32E477CB95 /* HotkeyMonitor.swift */; };
 		CD7571658B028D36436443B9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30B02122931ACB9EF7603C7 /* AppDelegate.swift */; };
+		CFE4B9FA51FB51E04E124521 /* TeilAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2B8E7FF71AF0BBEBAD4286 /* TeilAPI.swift */; };
 		D99F4B871A0EC1530359C44D /* CaptureSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A7E4F5870AEC3F97ED8639 /* CaptureSection.swift */; };
 		DC5A39D572A9C3F2A0A5CF2C /* ScreenshotCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6D7FE277E3A1F19C33FD18 /* ScreenshotCapture.swift */; };
+		E3864839D800AB8AFE40A202 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE09E1672DB4DC905142406B /* AuthService.swift */; };
 		E66699EFB88948BCC925A54A /* ImageDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211BB43987B46242D3F280CA /* ImageDetailSheet.swift */; };
 		EC33EB84069EC184BBAA5168 /* CaptureResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E401D2612FBAAB3278E3E38A /* CaptureResult.swift */; };
 		EFAE9486DCB9C506D2B04582 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4A8699592B3ECA0209739D /* OnboardingViewModel.swift */; };
@@ -79,6 +81,7 @@
 		5B75AC409AE3C9BA83581CEE /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		5DDA4550CC0BA799E09CB978 /* HistoryRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryRowView.swift; sourceTree = "<group>"; };
 		6A36000FFE90B65A17C61F6D /* ErrorPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorPathTests.swift; sourceTree = "<group>"; };
+		6E2B8E7FF71AF0BBEBAD4286 /* TeilAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeilAPI.swift; sourceTree = "<group>"; };
 		75ACC5A437F11482181CFFBF /* UploadResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadResponse.swift; sourceTree = "<group>"; };
 		7692C7AE7E8C96C3F604576E /* teil.ing-clientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "teil.ing-clientTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		79FE129C6A4205DC4ED337DE /* teil_ing_clientApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = teil_ing_clientApp.swift; sourceTree = "<group>"; };
@@ -100,6 +103,7 @@
 		D04D9491FC028C6675EE0198 /* HistorySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySection.swift; sourceTree = "<group>"; };
 		D57FD8412C278D2F498DA447 /* teil.ing-client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "teil.ing-client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAD361891CBFD8EC7D9217D1 /* PopoverRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverRootView.swift; sourceTree = "<group>"; };
+		DE09E1672DB4DC905142406B /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		E401D2612FBAAB3278E3E38A /* CaptureResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureResult.swift; sourceTree = "<group>"; };
 		E513EEE6F5A576C862945AF1 /* SelectionOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionOverlayView.swift; sourceTree = "<group>"; };
 		F332AA95EDADAACBE2013279 /* PreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesStore.swift; sourceTree = "<group>"; };
@@ -216,6 +220,7 @@
 			children = (
 				8BDCACD477F380473237D353 /* APIService.swift */,
 				2F57EB412468C0BDB94A7D80 /* APIValidationService.swift */,
+				DE09E1672DB4DC905142406B /* AuthService.swift */,
 				04ABF06C86D6AE92C0CBC4D8 /* CaptureEngine.swift */,
 				4455AC96905B120220E2DE7A /* CaptureFeedback.swift */,
 				C6946776B2A0FD372528A677 /* CrossMonitorStitcher.swift */,
@@ -228,6 +233,7 @@
 				F332AA95EDADAACBE2013279 /* PreferencesStore.swift */,
 				CE6D7FE277E3A1F19C33FD18 /* ScreenshotCapture.swift */,
 				B81FC0B1570C3A7DABAC5B54 /* StreamCaptureBridge.swift */,
+				6E2B8E7FF71AF0BBEBAD4286 /* TeilAPI.swift */,
 				4EFF43B32AEDA5B2AAA021FB /* ThumbnailService.swift */,
 				B16CE6C4637DAC03D64B03F2 /* UpdateService.swift */,
 				11286FFD4E91BED24067A03F /* UploadService.swift */,
@@ -357,6 +363,7 @@
 				989FD6F154D9DE3112CFD575 /* APIService.swift in Sources */,
 				94AD34961158A908E95A724F /* APIValidationService.swift in Sources */,
 				CD7571658B028D36436443B9 /* AppDelegate.swift in Sources */,
+				E3864839D800AB8AFE40A202 /* AuthService.swift in Sources */,
 				2C36B92ACD493D01DB3BBF02 /* CaptureEngine.swift in Sources */,
 				8AAEA88A2870707E3E050D31 /* CaptureFeedback.swift in Sources */,
 				EC33EB84069EC184BBAA5168 /* CaptureResult.swift in Sources */,
@@ -383,6 +390,7 @@
 				DC5A39D572A9C3F2A0A5CF2C /* ScreenshotCapture.swift in Sources */,
 				8C64C92FE4C5313EABD79442 /* SelectionOverlayView.swift in Sources */,
 				344652B52AD6DB7EDA5FAB83 /* StreamCaptureBridge.swift in Sources */,
+				CFE4B9FA51FB51E04E124521 /* TeilAPI.swift in Sources */,
 				6585FEDDAB400D50E827243F /* ThumbnailService.swift in Sources */,
 				3210C01E0F71886B6034F2D3 /* UpdateService.swift in Sources */,
 				C065ADB4C13D90B8B0FEC693 /* UploadResponse.swift in Sources */,

@@ -46,7 +46,7 @@ actor APIService {
 
     static let shared = APIService()
 
-    private static let baseURL = "https://teil.ing/api/v1"
+    private static let baseURL = TeilAPI.v1
 
     private init() {}
 

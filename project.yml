@@ -47,6 +47,10 @@ targets:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         LSUIElement: true
         NSHumanReadableCopyright: "Copyright © 2026 ing.teil. All rights reserved."
+        CFBundleURLTypes:
+          - CFBundleURLName: "ing.teil.client"
+            CFBundleURLSchemes:
+              - teiling
     entitlements:
       path: teil.ing-client/App/teil_ing_client.entitlements
       properties:

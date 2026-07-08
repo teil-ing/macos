@@ -51,6 +51,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         stopEventMonitor()
     }
 
+    /// teiling:// callbacks from the browser sign-in flow land here
+    /// (registered via CFBundleURLTypes in project.yml).
+    func application(_ application: NSApplication, open urls: [URL]) {
+        for url in urls {
+            AuthService.shared.handleCallback(url)
+        }
+    }
+
     // MARK: - Onboarding Gate
 
     private func showOnboardingWindow() {

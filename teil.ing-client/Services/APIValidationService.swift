@@ -13,7 +13,7 @@ enum ValidationResult: Sendable {
 
 enum APIValidationService {
 
-    static let validationURL = URL(string: "https://teil.ing/api/v1/images")!
+    static let validationURL = URL(string: "\(TeilAPI.v1)/images")!
 
     static func validate(apiKey: String) async -> ValidationResult {
         var request = URLRequest(url: validationURL)

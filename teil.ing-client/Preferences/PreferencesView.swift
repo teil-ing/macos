@@ -13,6 +13,10 @@ struct PreferencesView: View {
     /// Called when the user taps the back button. Optional so the view can be previewed standalone.
     var onBack: (() -> Void)?
 
+    /// History store injected from the popover — account section clears it on
+    /// sign-out and refreshes it after signing in. Optional for previews.
+    var historyStore: HistoryStore?
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
@@ -45,7 +49,7 @@ struct PreferencesView: View {
                 }
                 .padding(.bottom, 12)
 
-                AccountSection()
+                AccountSection(historyStore: historyStore)
                 Divider().padding(.vertical, 8)
                 GeneralSection(prefs: prefs)
                 Divider().padding(.vertical, 8)
@@ -195,6 +199,9 @@ private struct GeneralSection: View {
 /// the browser (email, GitHub, or Google) provisions a fresh device key
 /// automatically; a manual API key field remains as fallback.
 private struct AccountSection: View {
+
+    /// Cleared on sign-out, refreshed after sign-in. Nil only in previews.
+    var historyStore: HistoryStore?
 
     @State private var currentKey: String?
     @State private var isEditing: Bool = false
@@ -361,6 +368,8 @@ private struct AccountSection: View {
             currentKey = key
             resetEntryState()
             isEditing = false
+            // Populate history/quota for the (possibly different) account.
+            await historyStore?.refreshAll()
         } catch AuthError.cancelled {
             // User backed out — not an error worth a banner.
         } catch let authError as AuthError {
@@ -389,6 +398,8 @@ private struct AccountSection: View {
                 currentKey = trimmed
                 resetEntryState()
                 isEditing = false
+                // Populate history/quota for the (possibly different) account.
+                await historyStore?.refreshAll()
             } catch {
                 errorMessage = "Failed to save API key. Please try again."
             }
@@ -413,6 +424,10 @@ private struct AccountSection: View {
         guard alert.runModal() == .alertFirstButtonReturn else { return }
 
         KeychainService.shared.delete()
+        // Nothing account-bound may survive: clear upload history (local and
+        // cached remote) and the quota so the popover doesn't keep showing the
+        // signed-out account's images.
+        historyStore?.clearAccountData()
         // Stay in preferences with the sign-in form shown — per locked decision
         currentKey = nil
         resetEntryState()

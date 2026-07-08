@@ -136,6 +136,16 @@ final class HistoryStore: ObservableObject {
         await fetchQuota()
     }
 
+    /// Full reset on sign-out: local history (incl. thumbnails on disk),
+    /// the cached remote image list, and the quota — nothing account-bound
+    /// may survive the key deletion.
+    func clearAccountData() {
+        clearAll()
+        remoteImages = []
+        quota = nil
+        remoteError = nil
+    }
+
     /// Fetches both remote images and storage quota concurrently.
     func refreshAll() async {
         await withTaskGroup(of: Void.self) { group in

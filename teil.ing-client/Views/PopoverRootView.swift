@@ -49,11 +49,14 @@ struct PopoverRootView: View {
                 )
                 .transition(.move(edge: .trailing))
             } else if showingPreferences {
-                PreferencesView(onBack: {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        showingPreferences = false
-                    }
-                })
+                PreferencesView(
+                    onBack: {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            showingPreferences = false
+                        }
+                    },
+                    historyStore: historyStore
+                )
                 .transition(.move(edge: .trailing))
             } else {
                 mainContent

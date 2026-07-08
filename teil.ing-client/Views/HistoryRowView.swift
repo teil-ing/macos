@@ -222,8 +222,10 @@ struct HistoryRowView: View {
                     switch phase {
                     case .success(let img):
                         img.resizable().aspectRatio(contentMode: .fill)
-                    default:
+                    case .failure:
                         placeholderThumbnail
+                    default:
+                        loadingThumbnail
                     }
                 }
             } else {
@@ -238,6 +240,15 @@ struct HistoryRowView: View {
             .overlay {
                 Image(systemName: "photo")
                     .foregroundStyle(.secondary)
+            }
+    }
+
+    private var loadingThumbnail: some View {
+        RoundedRectangle(cornerRadius: 4)
+            .fill(Color.secondary.opacity(0.1))
+            .overlay {
+                ProgressView()
+                    .controlSize(.small)
             }
     }
 }
